@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String      @id @default(uuid())
+  nama      String
+  username  String      @unique
+  password  String
+  token     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?   @updatedAt
+  deleted   DateTime?
+}
+
+model Jabatan {
+  id          String     @id @default(uuid())
+  jabatan     String
+  keterangan  String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime?   @updatedAt
+  deleted     DateTime?
+  dimiliki    Pegawai[]
+}
+
+model Divisi {
+  id          String     @id @default(uuid())
+  divisi      String
+  keterangan  String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime?   @updatedAt
+  deleted     DateTime?
+}
+
+model Pegawai {
+  id          String      @id @default(uuid())  
+  username    String      @unique
+  password    String
+  token       String?
+  nip         String
+  nama        String
+  tglLahir    DateTime    @db.Date
+  idJabatan   String
+  idDivisi    String?
+  foto        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime?   @updatedAt
+  deleted     DateTime?
+  jabatan     Jabatan     @relation(fields: [idJabatan], references: [id])
+  mengerjakan AktivitasPegawai[]
+}
+
+model Pekerjaan {
+  id            String     @id @default(uuid())
+  pekerjaan     String
+  durasi        Int
+  target        Int
+  satuanTarget  String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+  dikerjakan    AktivitasPegawai[]
+}
+
+model AktivitasPegawai {
+  idPegawai     String
+  idPekerjaan   String
+  tglMulai      DateTime    @db.Date
+  tglSelesai    DateTime    @db.Date
+  realisasi     Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+  pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
+  pekerjaan     Pekerjaan @relation(fields: [idPekerjaan], references: [id])
+
+  @@id([idPegawai, idPekerjaan])
+}

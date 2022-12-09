@@ -1,0 +1,16 @@
+<%- include('./partials/topTemplate') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- 404 Error Text -->
+    <div class="text-center">
+        <div class="error mx-auto"><%= statusCode %></div>
+        <p class="lead text-gray-800 mb-5">Maaf Telah Terjadi Kesalahan</p>
+        <a href="<%= baseUrl %>/admin/">&larr; Kembali ke halaman utama</a>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<%- include('./partials/bottomTemplate') %>
