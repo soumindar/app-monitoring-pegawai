@@ -5,7 +5,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Tambah Admin</h1>
+      <h1 class="h3 mb-0 text-gray-800">Ubah Data Admin</h1>
   </div>
 
   <% if (req.session.alert) { %>
@@ -43,21 +43,13 @@
               <form method="post" action="">
                 <div class="form-group mb-4">
                   <label for="nama" class="text-dark">Nama</label>
-                  <input type="text" name="nama" class="form-control" value="<%= (req.session.old) ? req.session.old.nama : '' %>">
+                  <input type="text" name="nama" class="form-control" value="<%= data.nama %>">
                 </div>
                 <div class="form-group mb-4">
                   <label for="username" class="text-dark">Username</label>
-                  <input type="text" name="username" class="form-control" value="<%= (req.session.old) ? req.session.old.username : '' %>">
+                  <input type="text" name="username" class="form-control" value="<%= data.username %>">
                 </div>
-                <div class="form-group mb-4">
-                  <label for="password" class="text-dark">Password</label>
-                  <input type="password" name="password" class="form-control">
-                </div>
-                <div class="form-group mb-4">
-                  <label for="password_confirm" class="text-dark">Konfirmasi Password</label>
-                  <input type="password" name="password_confirm" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary">Tambah</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
               </form>
             </div>
           </div>

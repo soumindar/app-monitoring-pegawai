@@ -15,8 +15,6 @@ const dataAdmin = async (req, res) => {
         id: true,
         nama: true,
         username: true,
-        createdAt: true,
-        updatedAt: true,
       },
       where: {
         deleted: null,
@@ -35,7 +33,6 @@ const dataAdmin = async (req, res) => {
     const totalPage = Math.ceil(totalData / limit);
 
     return {
-      message: 'success',
       statusCode: 200,
       data,
       currentPage,
@@ -43,17 +40,55 @@ const dataAdmin = async (req, res) => {
       totalPage,
     };
   } catch (error) {
-    return res.render('error', {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
       baseUrl,
-      statusCode: getData.statusCode,
+      statusCode: 500,
     });
   }
 };
+
+// get admin by id
+const dataIdAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await prisma.admin.findFirst({
+      select: {
+        id: true,
+        nama: true,
+        username: true,
+      },
+      where: { id },
+    });
+
+    return {
+      data,
+    }
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+}
 
 // create admin service
 const tambahAdmin = async (req, res) => {
   try {
     const { nama, username, password } = req.body;
+
+    const usernameExist = await prisma.admin.findFirst({
+      select: { username: true },
+      where: { username },
+    });
+    if (usernameExist) {
+      req.session.old = { nama, username };
+      req.session.error = [{msg: 'Username sudah digunakan oleh user lain'}];
+      return {
+        statusCode: 409,
+      };
+    }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -65,21 +100,114 @@ const tambahAdmin = async (req, res) => {
       }
     });
 
+    req.session.alert = [
+      { msg: 'Admin berhasil ditambahkan'}
+    ];
+
     return {
-      message: 'tambah admin sukses',
       statusCode: 200,
     };
   } catch (error) {
-    return {
-      message: error.message,
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
       statusCode: 500,
-    }
+    });
   }
 };
 
+// edit admin service
+const edit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama, username } = req.body;
 
+    const idExist = await prisma.admin.findFirst({
+      select: { id: true },
+      where: { 
+        id,
+        deleted: null,
+      },
+    });
+    if (!idExist) {
+      req.session.error = [{ msg: 'ID tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    const usernameExist = await prisma.admin.findFirst({
+      select: { username: true },
+      where: { username },
+    });
+    if (usernameExist) {
+      req.session.old = { nama, username };
+      req.session.error = [{msg: 'Username sudah digunakan oleh user lain'}];
+      return {
+        statusCode: 409,
+      };
+    }
+
+    await prisma.admin.update({
+      data: {
+        nama,
+        username,
+      },
+      where: { id },
+    });
+    req.session.alert = [{ msg: 'Data berhasil diubah'}];
+
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
+// delete admin service
+const hapusAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const idExist = await prisma.admin.findFirst({
+      select: { id: true },
+      where: { 
+        id,
+        deleted: null,
+      },
+    });
+    if (!idExist) {
+      req.session.error = [{ msg: 'ID tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    await prisma.admin.delete({
+      where: { id },
+    });
+
+    req.session.alert = [{ msg: 'Berhasil menghapus' }];
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+}
 
 module.exports = {
-  tambahAdmin,
   dataAdmin,
+  dataIdAdmin,
+  tambahAdmin,
+  hapusAdmin
 };
