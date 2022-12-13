@@ -117,8 +117,9 @@ const tambahAdmin = async (req, res) => {
 };
 
 // edit admin service
-const edit = async (req, res) => {
+const editAdmin = async (req, res) => {
   try {
+    console.log('ok');
     const { id } = req.params;
     const { nama, username } = req.body;
 
@@ -137,10 +138,13 @@ const edit = async (req, res) => {
     }
 
     const usernameExist = await prisma.admin.findFirst({
-      select: { username: true },
+      select: {
+        id: true,
+        username: true,
+      },
       where: { username },
     });
-    if (usernameExist) {
+    if (usernameExist && (usernameExist.id != id)) {
       req.session.old = { nama, username };
       req.session.error = [{msg: 'Username sudah digunakan oleh user lain'}];
       return {
@@ -209,5 +213,6 @@ module.exports = {
   dataAdmin,
   dataIdAdmin,
   tambahAdmin,
-  hapusAdmin
+  editAdmin,
+  hapusAdmin,
 };
