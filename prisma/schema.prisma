@@ -47,12 +47,13 @@ model Pegawai {
   nama        String
   tglLahir    DateTime    @db.Date
   idJabatan   String
-  idDivisi    String?
+  idDivisi    String
   foto        String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime?   @updatedAt
   deleted     DateTime?
   jabatan     Jabatan     @relation(fields: [idJabatan], references: [id])
+  divisi      Divisi      @relation(fields: [idDivisi], references: [id])
   mengerjakan AktivitasPegawai[]
 }
 
