@@ -7,7 +7,7 @@ const sessionVerify = require('./auth/sessionVerify');
 
 // router.use(sessionVerify);
 
-// admin home page
+// home page admin
 router.get('/', (req, res) => {
   const baseUrl = getBaseUrl(req);
   return res.render('admin/index', {
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
   });
 });
 
-// admin list page
+// page daftar admin
 router.get('/daftar', async (req, res) => {
   try {
     const getData = await adminService.dataAdmin(req);
@@ -36,7 +36,7 @@ router.get('/daftar', async (req, res) => {
   }
 });
 
-// create admin page
+// page tambah admin
 router.get('/tambah', (req, res) => {
   const baseUrl = getBaseUrl(req);
   return res.render('admin/tambahAdmin', {
@@ -45,7 +45,7 @@ router.get('/tambah', (req, res) => {
   });
 });
 
-// create admin
+// tambah admin
 router.post('/tambah', adminValidator.tambahAdmin, async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
@@ -66,7 +66,7 @@ router.post('/tambah', adminValidator.tambahAdmin, async (req, res) => {
   }
 });
 
-// edit admin page
+// page edit admin
 router.get('/edit/:id', async (req, res) => {
   const baseUrl = getBaseUrl(req);
   const data = await adminService.dataIdAdmin(req);
@@ -76,9 +76,9 @@ router.get('/edit/:id', async (req, res) => {
     req,
     data: data.data,
   });
-})
+});
 
-// edit admin data
+// edit data admin
 router.post('/edit/:id', adminValidator.editAdmin, async (req, res) => {
   try {
     const editAdmin = await adminService.editAdmin(req);
@@ -97,18 +97,18 @@ router.post('/edit/:id', adminValidator.editAdmin, async (req, res) => {
       statusCode: 500,
     });
   }
-})
+});
 
-// change admin password page
+// page ubah password
 router.get('/ubah-password/:id', (req, res) => {
   const baseUrl = getBaseUrl(req);
   return res.render('admin/ubahPassword', {
     baseUrl,
     req,
   });
-})
+});
 
-// change admin password
+// ubah password
 router.post('/ubah-password/:id', adminValidator.ubahPass, async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
@@ -127,9 +127,9 @@ router.post('/ubah-password/:id', adminValidator.ubahPass, async (req, res) => {
       statusCode: 500,
     });
   }
-})
+});
 
-// delete admin
+// hapus admin
 router.get('/hapus/:id', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
@@ -147,6 +147,37 @@ router.get('/hapus/:id', async (req, res) => {
       statusCode: 500,
     });
   }
+});
+
+// page daftar pegawai
+router.get('/daftar-pegawai', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const getData = await adminService.dataPegawai(req);
+
+    return res.render('admin/daftarPegawai', {
+      baseUrl,
+      req,
+      data: getData.data,
+      currentPage: getData.currentPage,
+      totalPage: getData.totalPage,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// page tambah pegawai
+router.get('/tambah-pegawai', (req, res) => {
+  const baseUrl = getBaseUrl(req);
+  return res.render('admin/tambahPegawai', {
+    baseUrl,
+    req,
+  });
 });
 
 module.exports = router;

@@ -15,7 +15,6 @@ model Admin {
   nama      String
   username  String      @unique
   password  String
-  token     String?
   createdAt DateTime    @default(now())
   updatedAt DateTime?   @updatedAt
   deleted   DateTime?
@@ -44,7 +43,6 @@ model Pegawai {
   id          String      @id @default(uuid())  
   username    String      @unique
   password    String
-  token       String?
   nip         String
   nama        String
   tglLahir    DateTime    @db.Date

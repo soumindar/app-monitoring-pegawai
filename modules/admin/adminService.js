@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 
-// get data admin
+// ambil data admin
 const dataAdmin = async (req, res) => {
   try {
     const { page } = req.query;
@@ -48,7 +48,7 @@ const dataAdmin = async (req, res) => {
   }
 };
 
-// get admin by id
+// ambil data admin berdasarkan id
 const dataIdAdmin = async (req, res) => {
   try {
     const { id } = req.params;
@@ -73,7 +73,7 @@ const dataIdAdmin = async (req, res) => {
   }
 }
 
-// create admin service
+// service tambah admin 
 const tambahAdmin = async (req, res) => {
   try {
     const { nama, username, password } = req.body;
@@ -116,7 +116,7 @@ const tambahAdmin = async (req, res) => {
   }
 };
 
-// edit admin service
+// service edit admin 
 const editAdmin = async (req, res) => {
   try {
     console.log('ok');
@@ -173,7 +173,7 @@ const editAdmin = async (req, res) => {
   }
 };
 
-// change password service
+// service ubah password 
 const ubahPass = async (req, res) => {
   try {
     const { id } = req.params;
@@ -229,7 +229,7 @@ const ubahPass = async (req, res) => {
   }
 };
 
-// delete admin service
+// service hapus admin
 const hapusAdmin = async (req, res) => {
   try {
     const { id } = req.params;
@@ -263,7 +263,74 @@ const hapusAdmin = async (req, res) => {
       statusCode: 500,
     });
   }
-}
+};
+
+// ambil data pegawai
+const dataPegawai = async (req, res) => {
+  try {
+    const { page } = req.query;
+    const currentPage = (Number(page) > 0) ? Number(page) : 1;
+    const limit = 10;
+    const offset = (currentPage - 1) * limit;
+    
+    let data = await prisma.pegawai.findMany({
+      select: {
+        id: true,
+        nip: true,
+        nama: true,
+        jabatan: true,
+        idDivisi: true,
+      },
+      where: {
+        deleted: null,
+      },
+      skip: offset,
+      take: limit,
+      orderBy: {
+        nama: 'asc'
+      }
+    });
+
+    data = data.map(async pegawai => {
+      let divisi = '-';
+      if (pegawai.idDivisi) {
+        divisi = await prisma.divisi.findFirst({
+          select: {
+            divisi: true,
+          },
+          where: { id: pegawai.idDivisi }
+        });
+      }
+
+      return {
+        ...pegawai,
+        divisi,
+      }
+    })
+
+    console.log(data);
+
+    const countPegawai = await prisma.pegawai.aggregate({
+      _count: { id: true },
+    });
+    const totalData = Number(countPegawai._count.id);
+    const totalPage = Math.ceil(totalData / limit);
+
+    return {
+      statusCode: 200,
+      data,
+      currentPage,
+      totalData,
+      totalPage,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
 
 module.exports = {
   dataAdmin,
@@ -272,4 +339,5 @@ module.exports = {
   editAdmin,
   ubahPass,
   hapusAdmin,
+  dataPegawai,
 };
