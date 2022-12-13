@@ -79,7 +79,7 @@ router.get('/edit/:id', async (req, res) => {
 })
 
 // edit admin data
-router.patch('/edit/:id', adminValidator.editAdmin, async (req, res) => {
+router.post('/edit/:id', adminValidator.editAdmin, async (req, res) => {
   try {
     const editAdmin = await adminService.editAdmin(req);
     const baseUrl = getBaseUrl(req);
@@ -109,7 +109,25 @@ router.get('/ubah-password/:id', (req, res) => {
 })
 
 // change admin password
-router.patch('/ubah-password/:id')
+router.post('/ubah-password/:id', adminValidator.ubahPass, async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const ubahPass = await adminService.ubahPass(req);
+
+    if (ubahPass.statusCode > 200) {
+      const { id } = req.params;
+      return res.redirect(`${baseUrl}/admin/ubah-password/${id}`);
+    }
+
+    return res.redirect(`${baseUrl}/admin/daftar`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+})
 
 // delete admin
 router.get('/hapus/:id', async (req, res) => {

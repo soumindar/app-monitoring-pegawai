@@ -173,6 +173,62 @@ const editAdmin = async (req, res) => {
   }
 };
 
+// change password service
+const ubahPass = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { old_password, new_password } = req.body;
+
+    const adminExist = await prisma.admin.findFirst({
+      select: {
+        id: true,
+        password: true,
+      },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+
+    if (!adminExist) {
+      req.session.error = [{msg: 'ID tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+    
+    const passwordMatch = bcrypt.compareSync(old_password, adminExist.password);
+    if (!passwordMatch) {
+      req.session.error = [{msg: 'Password lama salah!'}];
+      return {
+        statusCode: 401,
+      };
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(new_password, salt);
+    await prisma.admin.update({
+      data: {
+        password: hashedPassword,
+      },
+      where: {
+        id
+      }
+    });
+
+    req.session.alert = [{msg: 'Password berhasil diubah'}];
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 // delete admin service
 const hapusAdmin = async (req, res) => {
   try {
@@ -214,5 +270,6 @@ module.exports = {
   dataIdAdmin,
   tambahAdmin,
   editAdmin,
+  ubahPass,
   hapusAdmin,
 };

@@ -64,15 +64,14 @@ const ubahPass = [
   check('password_confirm').notEmpty().withMessage('Konfirmasi password tidak boleh kosong!'),
   (req, res, next) => {
     let errors = validationResult(req).array();
-    
-    const { nama, username, password, password_confirm } = req.body;
-    if (password != password_confirm) {
+    console.log('ok');
+    const { new_password, password_confirm } = req.body;
+    if (new_password != password_confirm) {
       errors.push({ msg: 'Konfirmasi password tidak sesuai' });
     }
 
     const baseUrl = getBaseUrl(req);
     if (errors.length > 0) {
-      req.session.old = { nama, username };
       req.session.error = errors;
       const { id } = req.params;
       return res.redirect(`${baseUrl}/admin/ubah-password/${id}`);
@@ -85,4 +84,5 @@ const ubahPass = [
 module.exports = {
   tambahAdmin,
   editAdmin,
+  ubahPass,
 };

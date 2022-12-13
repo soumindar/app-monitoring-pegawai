@@ -30,7 +30,7 @@
     <!-- Content Row -->
     <div class="row">
         <div class="container-fluid">
-            <h1>
+            <h1 class="h1 mb-3 text-gray-800">
                 Daftar Administrator
             </h1>
             <div class="card">
@@ -55,7 +55,7 @@
                                         <td><%= admin.username %></td>
                                         <td>
                                             <a href="<%= baseUrl %>/admin/edit/<%= admin.id %>" data-toggle="tooltip" data-placement="top" title="Ubah data" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Ubah password" class="btn btn-warning btn-sm"><i class="fa fa-lock"></i></a>
+                                            <a href="<%= baseUrl %>/admin/ubah-password/<%= admin.id %>" data-toggle="tooltip" data-placement="top" title="Ubah password" class="btn btn-warning btn-sm"><i class="fa fa-lock"></i></a>
                                             <a href="<%= baseUrl %>/admin/hapus/<%= admin.id %>" data-toggle="tooltip" data-placement="top" title="Hapus data" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                                         </td>
                                     </tr>

@@ -40,7 +40,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-lg-6">
-              <form method="patch" action="<%= baseUrl %>/admin/edit/<%= req.params.id %>">
+              <form method="post" action="<%= baseUrl %>/admin/edit/<%= req.params.id %>">
                 <div class="form-group mb-4">
                   <label for="nama" class="text-dark">Nama</label>
                   <input type="text" name="nama" class="form-control" value="<%= data.nama %>">
