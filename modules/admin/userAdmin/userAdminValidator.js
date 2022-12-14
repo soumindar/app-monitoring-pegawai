@@ -1,10 +1,11 @@
 const { check, validationResult } = require('express-validator');
-const getBaseUrl = require('../../utils/getBaseUrl');
+const getBaseUrl = require('../../../utils/getBaseUrl');
 
-// create admin validator
+// validator tambah admin
 const tambahAdmin = [
   check('nama').notEmpty().withMessage('Nama tidak boleh kosong!'),
   check('nama').matches(/^[a-z ]+$/i).withMessage('Nama hanya boleh mengandung spasi dan alfabet!'),
+  check('username').notEmpty().withMessage('Username tidak boleh kosong!'),
   check('username').isAlphanumeric().withMessage('Username hanya boleh mengandung alfabet dan angka!'),
   check('username').isLength({min: 3}).withMessage('Username minimal terdiri dari 3 karakter!'),
   check('password').notEmpty().withMessage('Password tidak boleh kosong!'),
@@ -29,11 +30,12 @@ const tambahAdmin = [
   }
 ];
 
-// edit admin validator
+// validator edit admin
 const editAdmin = [
   check('id').notEmpty().withMessage('ID tidak boleh kosong!'),
   check('nama').notEmpty().withMessage('Nama tidak boleh kosong!'),
   check('nama').matches(/^[a-z ]+$/i).withMessage('Nama hanya boleh mengandung spasi dan alfabet!'),
+  check('username').notEmpty().withMessage('Username tidak boleh kosong!'),
   check('username').isAlphanumeric().withMessage('Username hanya boleh mengandung alfabet dan angka!'),
   check('username').isLength({min: 3}).withMessage('Username minimal terdiri dari 3 karakter!'),
   (req, res, next) => {
@@ -56,7 +58,7 @@ const editAdmin = [
   }
 ];
 
-// change password validator
+// validator ubah password
 const ubahPass = [
   check('old_password').notEmpty().withMessage('Pasword lama tidak boleh kosong!'),
   check('new_password').notEmpty().withMessage('Password baru tidak boleh kosong!'),
@@ -79,7 +81,7 @@ const ubahPass = [
 
     next();
   }
-]
+];
 
 module.exports = {
   tambahAdmin,

@@ -1,19 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const adminValidator = require('./adminValidator');
-const adminService = require('./adminService');
-const getBaseUrl = require('../../utils/getBaseUrl');
-const sessionVerify = require('./auth/sessionVerify');
+const adminValidator = require('./userAdminValidator');
+const adminService = require('./userAdminService');
+const getBaseUrl = require('../../../utils/getBaseUrl');
+const sessionVerify = require('../auth/sessionVerify');
 
 // router.use(sessionVerify);
-
-// home page admin
-router.get('/', (req, res) => {
-  const baseUrl = getBaseUrl(req);
-  return res.render('admin/index', {
-    baseUrl,
-  });
-});
 
 // page daftar admin
 router.get('/daftar', async (req, res) => {
@@ -147,37 +139,6 @@ router.get('/hapus/:id', async (req, res) => {
       statusCode: 500,
     });
   }
-});
-
-// page daftar pegawai
-router.get('/daftar-pegawai', async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-    const getData = await adminService.dataPegawai(req);
-
-    return res.render('admin/daftarPegawai', {
-      baseUrl,
-      req,
-      data: getData.data,
-      currentPage: getData.currentPage,
-      totalPage: getData.totalPage,
-    });
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// page tambah pegawai
-router.get('/tambah-pegawai', (req, res) => {
-  const baseUrl = getBaseUrl(req);
-  return res.render('admin/tambahPegawai', {
-    baseUrl,
-    req,
-  });
 });
 
 module.exports = router;
