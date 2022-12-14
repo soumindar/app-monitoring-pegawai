@@ -12,7 +12,7 @@ router.get('/daftar', async (req, res) => {
   try {
     const getData = await adminService.dataAdmin(req);
     const baseUrl = getBaseUrl(req); 
-    return res.render('admin/daftarAdmin', {
+    return res.render('admin/userAdmin/daftarAdmin', {
       baseUrl,
       req,
       data: getData.data,
@@ -31,7 +31,7 @@ router.get('/daftar', async (req, res) => {
 // page tambah admin
 router.get('/tambah', (req, res) => {
   const baseUrl = getBaseUrl(req);
-  return res.render('admin/tambahAdmin', {
+  return res.render('admin/userAdmin/tambahAdmin', {
     baseUrl,
     req,
   });
@@ -44,11 +44,11 @@ router.post('/tambah', adminValidator.tambahAdmin, async (req, res) => {
     const create = await adminService.tambahAdmin(req);
 
     if (create.statusCode > 200) {
-      return res.redirect(`${baseUrl}/admin/tambah`);
+      return res.redirect(`${baseUrl}/admin/user-admin/tambah`);
     }
 
     delete req.session.old;
-    return res.redirect(`${baseUrl}/admin/tambah`);
+    return res.redirect(`${baseUrl}/admin/user-admin/tambah`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
@@ -63,7 +63,7 @@ router.get('/edit/:id', async (req, res) => {
   const baseUrl = getBaseUrl(req);
   const data = await adminService.dataIdAdmin(req);
   
-  return res.render('admin/editAdmin', {
+  return res.render('admin/userAdmin/editAdmin', {
     baseUrl,
     req,
     data: data.data,
@@ -78,10 +78,10 @@ router.post('/edit/:id', adminValidator.editAdmin, async (req, res) => {
 
     if (editAdmin.statusCode > 200) {
       const { id } = req.params;
-      return res.redirect(`${baseUrl}/admin/edit/${id}`);
+      return res.redirect(`${baseUrl}/admin/user-admin/edit/${id}`);
     }
 
-    return res.redirect(`${baseUrl}/admin/daftar`);
+    return res.redirect(`${baseUrl}/admin/user-admin/daftar`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
@@ -94,7 +94,7 @@ router.post('/edit/:id', adminValidator.editAdmin, async (req, res) => {
 // page ubah password
 router.get('/ubah-password/:id', (req, res) => {
   const baseUrl = getBaseUrl(req);
-  return res.render('admin/ubahPassword', {
+  return res.render('admin/userAdmin/ubahPassword', {
     baseUrl,
     req,
   });
@@ -108,10 +108,10 @@ router.post('/ubah-password/:id', adminValidator.ubahPass, async (req, res) => {
 
     if (ubahPass.statusCode > 200) {
       const { id } = req.params;
-      return res.redirect(`${baseUrl}/admin/ubah-password/${id}`);
+      return res.redirect(`${baseUrl}/admin/user-admin/ubah-password/${id}`);
     }
 
-    return res.redirect(`${baseUrl}/admin/daftar`);
+    return res.redirect(`${baseUrl}/admin/user-admin/daftar`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
@@ -128,10 +128,10 @@ router.get('/hapus/:id', async (req, res) => {
     const hapusAdmin = await adminService.hapusAdmin(req);
     
     if (hapusAdmin.statusCode > 200) {
-      return res.redirect(`${baseUrl}/admin/daftar`)
+      return res.redirect(`${baseUrl}/admin/user-admin/daftar`)
     }
 
-    return res.redirect(`${baseUrl}/admin/daftar`);
+    return res.redirect(`${baseUrl}/admin/user-admin/daftar`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {

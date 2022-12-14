@@ -8,7 +8,7 @@ const sessionVerify = require('../auth/sessionVerify');
 // home page admin
 router.get('/', (req, res) => {
   const baseUrl = getBaseUrl(req);
-  return res.render('admin/index', {
+  return res.render('admin/beranda/beranda', {
     baseUrl,
   });
 });

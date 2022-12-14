@@ -23,7 +23,7 @@ const tambahAdmin = [
     if (errors.length > 0) {
       req.session.old = { nama, username };
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/tambah`);
+      return res.redirect(`${baseUrl}/admin/user-admin/tambah`);
     }
 
     next();
@@ -51,7 +51,7 @@ const editAdmin = [
       const { id } = req.params;
       req.session.old = { nama, username };
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/edit/${id}`);
+      return res.redirect(`${baseUrl}/admin/user-admin/edit/${id}`);
     }
 
     next();
@@ -76,7 +76,7 @@ const ubahPass = [
     if (errors.length > 0) {
       req.session.error = errors;
       const { id } = req.params;
-      return res.redirect(`${baseUrl}/admin/ubah-password/${id}`);
+      return res.redirect(`${baseUrl}/admin/user-admin/ubah-password/${id}`);
     }
 
     next();

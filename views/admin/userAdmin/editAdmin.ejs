@@ -1,4 +1,4 @@
-<%- include('./partials/topTemplate') %>
+<%- include('../partials/topTemplate') %>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -49,6 +49,7 @@
                   <label for="username" class="text-dark">Username</label>
                   <input type="text" name="username" class="form-control" value="<%= data.username %>">
                 </div>
+                <a href="<%= baseUrl %>/admin/user-admin/daftar" class="btn btn-danger">Batal</a>
                 <button type="submit" class="btn btn-primary">Simpan</button>
               </form>
             </div>
@@ -61,4 +62,4 @@
 </div>
 <!-- /.container-fluid -->
 
-<%- include('./partials/bottomTemplate') %>
+<%- include('../partials/bottomTemplate') %>

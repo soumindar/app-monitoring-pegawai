@@ -7,7 +7,7 @@ const pegawaiController = require('./pegawai/pegawaiController');
 
 router.use('/auth', authController);
 router.use('/', berandaController);
-router.use('/user-admin/', userAdminController);
+router.use('/user-admin', userAdminController);
 router.use('/pegawai', pegawaiController);
 
 module.exports = router;
