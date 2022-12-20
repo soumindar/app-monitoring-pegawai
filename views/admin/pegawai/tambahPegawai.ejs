@@ -1,4 +1,4 @@
-<%- include('./partials/topTemplate') %>
+<%- include('../partials/topTemplate') %>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -40,59 +40,81 @@
         <div class="card-body">
           <div class="row">
             <div class="col-lg-6">
-              <form method="post" action="<%= baseUrl %>/admin/tambah-pegawai" enctype="multipart/form-data">
+              <form method="post" action="<%= baseUrl %>/admin/pegawai/tambah" enctype="multipart/form-data">
                 <div class="form-group mb-4">
-                  <label for="nama" class="text-dark">NIP</label>
-                  <input type="text" name="nip" class="form-control" value="<%= (req.session.old) ? req.session.old.nip : '' %>">
+                  <label class="text-dark">NIP</label>
+                  <input type="text" name="nip" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.nip : '' %>">
                 </div>
                 <div class="form-group mb-4">
-                  <label for="nama" class="text-dark">Nama</label>
-                  <input type="text" name="nama" class="form-control" value="<%= (req.session.old) ? req.session.old.nama : '' %>">
+                  <label class="text-dark">Nama</label>
+                  <input type="text" name="nama" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.nama : '' %>">
                 </div>
                 <div class="form-group mb-4">
-                  <label for="nama" class="text-dark">Tanggal Lahir</label>
-                  <input type="date" name="tgl_lahir" class="form-control" value="">
+                  <label class="text-dark">Tanggal Lahir</label>
+                  <input type="date" name="tglLahir" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.tglLahir : '' %>">
                 </div>
                 <div class="form-group mb-4">
-                  <label for="nama" class="text-dark">Jabatan</label>
+                  <label class="text-dark">Jabatan</label>
                   <br>
-                  <select class="js-example-basic-single form-control" name="state">
-                    <option selected>Pilih Jabatan...</option>
-                    <option value="AL">Alabama</option>
-                    <option value="WY">Wyoming</option>
+                  <select class="js-example-basic-single form-control" name="idJabatan">
+                    <% if (!req.session.oldPegawai) { %>
+                      <option selected>Pilih Jabatan...</option>
+                    <% } %>
+                    <% jabatan.forEach(jabatan => { %>
+                      <% if (req.session.oldPegawai) { %>
+                        <% if (req.session.oldPegawai.idJabatan == jabatan.id) { %>
+                          <option selected value="<%= jabatan.id %>"><%= jabatan.jabatan %></option>
+                        <% } else { %>
+                          <option value="<%= jabatan.id %>"><%= jabatan.jabatan %></option>
+                        <% } %>
+                      <% } else { %>
+                        <option value="<%= jabatan.id %>"><%= jabatan.jabatan %></option>
+                      <% } %>
+                    <% }) %>
                   </select>
                 </div>
                 <div class="form-group mb-4">
-                  <label for="nama" class="text-dark">Divisi</label>
+                  <label class="text-dark">Divisi</label>
                   <br>
-                  <select class="js-example-basic-single form-control" name="state">
-                    <option selected>Pilih Divisi...</option>
-                    <option value="AL">Alabama</option>
-                    <option value="WY">Wyoming</option>
+                  <select class="js-example-basic-single form-control" name="idDivisi">
+                    <% if (!req.session.oldPegawai) { %>
+                      <option selected>Pilih Divisi...</option>
+                    <% } %>
+                    <% divisi.forEach(divisi => { %>
+                      <% if (req.session.oldPegawai) { %>
+                        <% if (req.session.oldPegawai.idDivisi == divisi.id) { %>
+                          <option selected value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                        <% } else { %>
+                          <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                        <% } %>
+                      <% } else { %>
+                        <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                      <% } %>
+                    <% }) %>
                   </select>
                 </div>
                 <div class="form-group mb-4">
-                  <label for="nama" class="text-dark">Foto Pegawai</label>
-                  <input type="file" class="form-control" id="formFile" onchange="preview()">
+                  <label class="text-dark">Foto Pegawai</label>
+                  <input type="file" name="foto" class="form-control" id="formFile" onchange="preview()">
                 </div>
                 <div class="container col-md-6">
                   <img id="frame" src="" class="img-fluid" />
                 </div>
                 <br>
                 <div class="form-group mb-4">
-                  <label for="username" class="text-dark">Username</label>
-                  <input type="text" name="username" class="form-control" value="<%= (req.session.old) ? req.session.old.username : '' %>">
+                  <label class="text-dark">Username</label>
+                  <input type="text" name="username" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.username : '' %>">
                 </div>
                 <div class="form-group mb-4">
-                  <label for="password" class="text-dark">Password</label>
+                  <label class="text-dark">Password</label>
                   <input type="password" name="password" class="form-control">
                 </div>
                 <div class="form-group mb-4">
-                  <label for="password_confirm" class="text-dark">Konfirmasi Password</label>
+                  <label class="text-dark">Konfirmasi Password</label>
                   <input type="password" name="passwordConfirm" class="form-control">
                 </div>
                 <br>
-                <button type="reset" onclick="clearImage()" class="btn btn-danger">Batal</button>
+                <a href="<%= baseUrl %>/admin/pegawai/tambah" class="btn btn-danger">Batal</a>
                 <button type="submit" class="btn btn-primary">Tambah</button>
               </form>
             </div>
@@ -105,4 +127,4 @@
 </div>
 <!-- /.container-fluid -->
 
-<%- include('./partials/bottomTemplate') %>
+<%- include('../partials/bottomTemplate') %>

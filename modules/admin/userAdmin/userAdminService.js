@@ -73,7 +73,7 @@ const dataIdAdmin = async (req, res) => {
   }
 }
 
-// service tambah admin 
+// tambah admin 
 const tambahAdmin = async (req, res) => {
   try {
     const { nama, username, password } = req.body;
@@ -84,7 +84,7 @@ const tambahAdmin = async (req, res) => {
     });
     if (usernameExist) {
       req.session.old = { nama, username };
-      req.session.error = [{msg: 'Username sudah digunakan oleh user lain'}];
+      req.session.error = [{msg: 'Username sudah digunakan oleh admin lain'}];
       return {
         statusCode: 409,
       };

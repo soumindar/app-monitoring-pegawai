@@ -8,8 +8,8 @@ const tambahPegawai = [
   check('nama').notEmpty().withMessage('Nama tidak boleh kosong!'),
   check('nama').matches(/^[a-z ]+$/i).withMessage('Nama hanya boleh mengandung spasi dan alfabet!'),
   check('tglLahir').notEmpty().withMessage('Tanggal lahir tidak boleh kosong!'),
-  check('idJabatan').notEmpty().withMessage('Jabatan tidak boleh kosong'),
-  check('idDivisi').notEmpty().withMessage('Divisi tidak boleh kosong!'),
+  check('idJabatan').not().equals('Pilih Jabatan...').withMessage('Jabatan tidak boleh kosong'),
+  check('idDivisi').not().equals('Pilih Divisi...').withMessage('Divisi tidak boleh kosong!'),
   check('username').isAlphanumeric().withMessage('Username hanya boleh mengandung alfabet dan angka!'),
   check('username').isLength({min: 3}).withMessage('Username minimal terdiri dari 3 karakter!'),
   check('password').notEmpty().withMessage('Password tidak boleh kosong!'),
@@ -18,16 +18,16 @@ const tambahPegawai = [
   (req, res, next) => {
     let errors = validationResult(req).array();
     
-    const { nip, nama, idJabatan, idDivisi, username, password, passwordConfirm } = req.body;
+    const { nip, nama, tglLahir, idJabatan, idDivisi, username, password, passwordConfirm } = req.body;
     if (password != passwordConfirm) {
       errors.push({ msg: 'Konfirmasi password tidak sesuai' });
     }
 
     const baseUrl = getBaseUrl(req);
     if (errors.length > 0) {
-      req.session.old = { nip, nama, idJabatan, idDivisi, username };
+      req.session.oldPegawai = { nip, nama, tglLahir, idJabatan, idDivisi, username };
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/tambah-pegawai`);
+      return res.redirect(`${baseUrl}/admin/pegawai/tambah?old_input=true`);
     }
 
     next();

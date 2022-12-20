@@ -1,4 +1,4 @@
-<%- include('./partials/topTemplate') %>
+<%- include('../partials/topTemplate') %>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -40,7 +40,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
+                                    <th width="2%">No.</th>
                                     <th>NIP</th>
                                     <th>Nama</th>
                                     <th>Jabatan</th>
@@ -55,8 +55,8 @@
                                         <td><%= i++ %></td>
                                         <td><%= pegawai.nip %></td>
                                         <td><%= pegawai.nama %></td>
-                                        <td><%= pegawai.jabatan %></td>
-                                        <td><%= pegawai.divisi %></td>
+                                        <td><%= pegawai.idJabatan %></td>
+                                        <td><%= pegawai.idDivisi %></td>
                                         <td>
                                             <a href="" data-toggle="tooltip" data-placement="top" title="Lihat detail" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></a>
                                             <a href="" data-toggle="tooltip" data-placement="top" title="Ubah data" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
@@ -123,4 +123,4 @@
 </div>
 <!-- /.container-fluid -->
 
-<%- include('./partials/bottomTemplate') %>
+<%- include('../partials/bottomTemplate') %>

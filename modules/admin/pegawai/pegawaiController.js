@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const adminValidator = require('./pegawaiValidator');
-const adminService = require('./pegawaiService');
+const pegawaiValidator = require('./pegawaiValidator');
+const pegawaiService = require('./pegawaiService');
+const jabatanService = require('../jabatan/jabatanService');
+const divisiService = require('../divisi/divisiService');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = require('../auth/sessionVerify');
 
@@ -9,37 +11,48 @@ const sessionVerify = require('../auth/sessionVerify');
 
 // page daftar pegawai
 router.get('/daftar', async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-    const getData = await adminService.dataPegawai(req);
+  const baseUrl = getBaseUrl(req);
+  const dataPegawai = await pegawaiService.dataPegawai(req, res);
 
-    return res.render('admin/daftarPegawai', {
-      baseUrl,
-      req,
-      data: getData.data,
-      currentPage: getData.currentPage,
-      totalPage: getData.totalPage,
-    });
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
+  return res.render('admin/pegawai/daftarPegawai', {
+    baseUrl,
+    req,
+    data: dataPegawai.data,
+    currentPage: dataPegawai.currentPage,
+    totalPage: dataPegawai.totalPage,
+  });
 });
 
 // page tambah pegawai
-router.get('/tambah-pegawai', (req, res) => {
+router.get('/tambah', async (req, res) => {
   const baseUrl = getBaseUrl(req);
-  const jabatan = await 
-  return res.render('admin/tambahPegawai', {
+  const { old_input } = req.query;
+  if (!old_input) {
+    delete req.session.oldPegawai;
+  }
+
+  const jabatan = await jabatanService.ambilData(req);
+  const divisi = await divisiService.ambilData(req, res);
+  return res.render('admin/pegawai/tambahPegawai', {
     baseUrl,
     req,
+    jabatan: jabatan.data,
+    divisi: divisi.data,
   });
 });
 
 // tambah pegawai
-router.post('/tambah-pegawai', adminValidator.tambahPegawai);
+router.post('/tambah', pegawaiValidator.tambahPegawai, async (req, res) => {
+  const baseUrl = getBaseUrl(req);
+  const tambahPegawai = await pegawaiService.tambahPegawai(req, res);
+  if (tambahPegawai.statusCode > 200) {
+    return res.redirect(`${baseUrl}/admin/pegawai/tambah?old_input=true`);
+  }
+
+  delete req.session.oldPegawai;
+  req.session.alert = [{msg: 'Berhasil menambah pegawai'}];
+
+  return res.redirect(`${baseUrl}/admin/pegawai/tambah`);
+});
 
 module.exports = router;
