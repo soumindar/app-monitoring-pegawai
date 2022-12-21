@@ -4,7 +4,7 @@ const getBaseUrl = require('../../../utils/getBaseUrl');
 const bcrypt = require('bcrypt');
 const divisiService = require('../divisi/divisiService');
 
-// ambil data pegawai
+// ambil data pekerjaan berdasarkan divisi
 const dataPekerjaanDivisi = async (req, res) => {
   try {
     const { page, idDivisi } = req.query;
@@ -67,6 +67,84 @@ const dataPekerjaanDivisi = async (req, res) => {
   }
 };
 
+// tambah pekerjaan
+const tambahPekerjaan = async (req, res) => {
+  try {
+    const { idDivisi, pekerjaan, satuanTarget, idLevel } = req.body;
+    let { durasi, target } = req.body;
+    durasi = Number(durasi);
+    target = Number(target);
+    
+    const divisiExist = await prisma.divisi.findFirst({
+      select: { id: true },
+      where: {
+        id: idDivisi,
+        deleted: null,
+      },
+    });
+    if (!divisiExist) {
+      req.session.oldPekerjaan = { idDivisi, pekerjaan, durasi, target, satuanTarget, idLevel };
+      req.session.error = [{msg: 'Divisi tidak ditemukan!'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    const levelExist = await prisma.level.findFirst({
+      select: { id: true },
+      where: {
+        id: idLevel,
+        deleted: null,
+      },
+    });
+    if (!levelExist) {
+      req.session.oldPekerjaan = { idDivisi, pekerjaan, durasi, target, satuanTarget, idLevel };
+      req.session.error = [{msg: 'Level tidak ditemukan!'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    const pekerjaanExist = await prisma.pekerjaan.findFirst({
+      select: { pekerjaan: true },
+      where: { 
+        pekerjaan,
+        deleted: null,
+      },
+    });
+    if (pekerjaanExist) {
+      req.session.oldpekerjaan = { idDivisi, pekerjaan, durasi, target, satuanTarget, idLevel };
+      req.session.error = [{msg: 'Pekerjaan sudah ada!'}];
+      return {
+        statusCode: 409,
+      };
+    }
+
+    await prisma.pekerjaan.create({
+      data: {
+        idDivisi,
+        pekerjaan,
+        durasi,
+        target,
+        satuanTarget,
+        idLevel,
+      }
+    });
+
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports ={
   dataPekerjaanDivisi,
+  tambahPekerjaan,
 };

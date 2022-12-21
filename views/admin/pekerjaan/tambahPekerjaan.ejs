@@ -1,0 +1,108 @@
+<%- include('../partials/topTemplate') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h1 mb-0 text-gray-800">Tambah Pekerjaan</h1>
+  </div>
+
+  <% if (req.session.error) { %>
+    <% req.session.error.forEach(error => { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error.msg %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <% }) %>
+  <% } %>
+
+  <% delete req.session.error; %>
+  
+  <!-- Content Row -->
+  <div class="row">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <form method="post" action="<%= baseUrl %>/admin/pekerjaan/tambah">
+                <div class="form-group mb-4">
+                  <label class="text-dark">Divisi</label>
+                  <br>
+                  <select class="js-example-basic-single form-control" name="idDivisi">
+                    <% if (!req.session.oldPekerjaan) { %>
+                      <option selected>Pilih Divisi...</option>
+                    <% } else if (req.session.oldPekerjaan.idDivisi == 'Pilih Divisi...') { %>
+                      <option selected>Pilih Divisi...</option>
+                    <% } %>
+                    <% divisi.forEach(divisi => { %>
+                      <% if (req.session.oldPekerjaan) { %>
+                        <% if (req.session.oldPekerjaan.idDivisi == divisi.id) { %>
+                          <option selected value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                        <% } else { %>
+                          <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                        <% } %>
+                      <% } else { %>
+                        <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                      <% } %>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group mb-4">
+                  <label class="text-dark">Pekerjaan</label>
+                  <input type="text" name="pekerjaan" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.pekerjaan : '' %>">
+                </div>
+                <div class="form-group mb-4">
+                  <label class="text-dark">Durasi (hari)</label>
+                  <input type="number" name="durasi" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.durasi : '' %>">
+                </div>
+                <div class="form-group mb-4">
+                  <label class="text-dark">Target</label>
+                  <input type="number" name="target" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.target : '' %>">
+                </div>
+                <div class="form-group mb-4">
+                  <label class="text-dark">Satuan Target</label>
+                  <input type="text" name="satuanTarget" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.satuanTarget : '' %>">
+                </div>
+                <div class="form-group mb-4">
+                  <label class="text-dark">Level</label>
+                  <br>
+                  <select class="js-example-basic-single form-control" name="idLevel">
+                    <% if (!req.session.oldPekerjaan) { %>
+                      <option selected>Pilih Level...</option>
+                    <% } else if (req.session.oldPekerjaan.idDivisi == 'Pilih Divisi...') { %>
+                      <option selected>Pilih Level...</option>
+                    <% } %>
+                    <% let selected = false; %>
+                    <% level.forEach(level => { %>
+                      <% if (req.session.oldPekerjaan) { %>
+                        <% if (req.session.oldPekerjaan.idLevel == level.id) { %>
+                          <option selected value="<%= level.id %>"><%= level.level %></option>
+                          <% selected = true; %>
+                        <% } else { %>
+                          <option value="<%= level.id %>"><%= level.level %></option>
+                        <% } %>
+                      <% } else { %>
+                        <option value="<%= level.id %>"><%= level.level %></option>
+                      <% } %>
+                    <% }); %>
+                  </select>
+                </div>
+                <br>
+                <a href="<%= baseUrl %>/admin/pekerjaan/tambah" class="btn btn-danger">Batal</a>
+                <button type="submit" class="btn btn-primary">Tambah</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<%- include('../partials/bottomTemplate') %>
