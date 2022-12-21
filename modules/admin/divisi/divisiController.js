@@ -29,4 +29,77 @@ router.get('/daftar', async (req, res) => {
   }
 });
 
+// page tambah divisi
+router.get('/tambah', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const { old_input } = req.query;
+    if (!old_input) {
+      delete req.session.oldDivisi;
+    }
+
+    return res.render('admin/divisi/tambahDivisi', {
+      baseUrl,
+      req,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// tambah divisi
+router.post('/tambah', divisiValidator.tambahDivisi, async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+
+    const tambahdivisi = await divisiService.tambahDivisi(req, res);
+    if (tambahdivisi.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/divisi/tambah?old_input=true`);
+    }
+
+    delete req.session.oldDivisi;
+    req.session.alert = [{msg: 'Berhasil menambah divisi'}];
+
+    return res.redirect(`${baseUrl}/admin/divisi/daftar`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// page ubah data divisi
+router.get('/ubah/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const { old_input } = req.query;
+    if (!old_input) {
+      delete req.session.oldDivisi;
+    }
+    
+    const divisi = await divisiService.dataDivisiId(req, res);
+    if (divisi.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/divisi/daftar`);
+    }
+
+    return res.render('admin/divisi/ubahDivisi', {
+      baseUrl,
+      req,
+      divisi: divisi.data,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;
