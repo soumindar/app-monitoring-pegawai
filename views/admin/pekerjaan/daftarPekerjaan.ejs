@@ -1,0 +1,154 @@
+<%- include('../partials/topTemplate') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <% if (req.session.alert) { %>
+        <% req.session.alert.forEach(alert => { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= alert.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% if (req.session.error) { %>
+        <% req.session.error.forEach(error => { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= error.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% delete req.session.alert; %>
+    <% delete req.session.error; %>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="container-fluid">
+            <h1 class="h1 mb-3 text-gray-800">
+                Daftar Pekerjaan
+            </h1>
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-gray-800">Pilih Divisi:</h6>
+                    <form method="get" action="">
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <select class="js-example-basic-single form-control" name="idDivisi">
+                                <% if (!req.query.idDivisi) { %>
+                                    <option selected>Pilih Divisi...</option>
+                                <% } %>
+                                <% divisi.forEach(divisi => { %>
+                                    <% if (req.query.idDivisi == divisi.id) { %>
+                                        <option selected value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                                    <% } else { %>
+                                        <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                                    <% } %>
+                                <% }) %>
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-search"></i>
+                                    Filter
+                                </button>
+                            </div>
+                        </div>                       
+                    </form>
+                    <div class="table-responsive mt-5">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="2%">No.</th>
+                                    <th>Pekerjaan</th>
+                                    <th width="10%">Durasi (hari)</th>
+                                    <th width="5%">Target</th>
+                                    <th width="12%">Satuan Target</th>
+                                    <th width="5%">Level</th>
+                                    <th width="10%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% let i = 1 %>
+                                <% data.forEach(pekerjaan => { %>
+                                    <tr>
+                                        <td><%= i++ %></td>
+                                        <td><%= pekerjaan.pekerjaan %></td>
+                                        <td><%= pekerjaan.durasi %></td>
+                                        <td><%= pekerjaan.target %></td>
+                                        <td><%= pekerjaan.satuanTarget %></td>
+                                        <% level.forEach(level => { %>
+                                            <% if (pekerjaan.idLevel == level.id) { %>
+                                                <td><%= level.level%></td>
+                                            <% } %>
+                                        <% }) %>
+                                        <td>
+                                            <a href="<%= baseUrl %>/admin/pekerjaan/ubah/<%= pekerjaan.id %>" data-toggle="tooltip" data-placement="top" title="Ubah data" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
+                                            <a href="<%= baseUrl %>/admin/pekerjaan/hapus/<%= pekerjaan.id %>" data-toggle="tooltip" data-placement="top" title="Hapus data" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <% if (totalPage > 0) { %>
+                            <ul class="pagination justify-content-center">
+                                <% if (currentPage == 1) { %>
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Awal</a>
+                                    </li>
+                                <% } else {%>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<%= baseUrl %>/admin/pekerjaan/daftar/<%= req.params.idDivisi %>?page=1">Awal</a>
+                                    </li>
+                                <% } %>
+                                <% let i = (currentPage > 5) ? currentPage - 4 : 1 %>
+                                <% if (i != 1) { %>
+                                    <li class="page-item disabled">
+                                        <a class="page-link">...</a>
+                                    </li>
+                                <% } %>
+                                <% for (; (i <= currentPage + 4) && (i <= totalPage); i++) { %>
+                                    <% if (i == currentPage) { %>
+                                        <li class="page-item active">
+                                            <a class="page-link"><%= i %></a>
+                                        </li>
+                                    <% } else { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="<%= baseUrl %>/admin/pekerjaan/daftar/<%= req.params.idDivisi %>?page=<%= i%>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+                                    <% if ((i == currentPage + 4) && (i < totalPage)) { %>
+                                        <li class="page-item disabled">
+                                            <a class="page-link">...</a>
+                                        </li>
+                                    <% } %>
+                                <% } %>
+                                <% if (currentPage == totalPage) { %>
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Akhir</a>
+                                    </li>
+                                <% } else { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<%= baseUrl %>/admin/pekerjaan/daftar/<%= req.params.idDivisi %>?page=<%= totalPage %>">Akhir</a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<%- include('../partials/bottomTemplate') %>
