@@ -41,11 +41,11 @@
                             <thead>
                                 <tr>
                                     <th width="2%">No.</th>
-                                    <th>NIP</th>
+                                    <th width="10%">NIP</th>
                                     <th>Nama</th>
-                                    <th>Jabatan</th>
-                                    <th>Divisi</th>
-                                    <th>Aksi</th>
+                                    <th width="15%">Jabatan</th>
+                                    <th width="15%">Divisi</th>
+                                    <th width="15%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,8 +55,16 @@
                                         <td><%= i++ %></td>
                                         <td><%= pegawai.nip %></td>
                                         <td><%= pegawai.nama %></td>
-                                        <td><%= pegawai.idJabatan %></td>
-                                        <td><%= pegawai.idDivisi %></td>
+                                        <% jabatan.forEach(jabatan => { %>
+                                            <% if (jabatan.id == pegawai.idJabatan) { %>
+                                                <td><%= jabatan.jabatan %></td>
+                                            <% } %>
+                                        <% }) %>
+                                        <% divisi.forEach(divisi => { %>
+                                            <% if (divisi.id == pegawai.idDivisi) { %>
+                                                <td><%= divisi.divisi %></td>
+                                            <% } %>
+                                        <% }) %>
                                         <td>
                                             <a href="" data-toggle="tooltip" data-placement="top" title="Lihat detail" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></a>
                                             <a href="<%= baseUrl %>/admin/pegawai/ubah/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Ubah data" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>

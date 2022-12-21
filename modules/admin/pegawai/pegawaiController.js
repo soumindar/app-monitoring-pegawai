@@ -11,49 +11,77 @@ const sessionVerify = require('../auth/sessionVerify');
 
 // page daftar pegawai
 router.get('/daftar', async (req, res) => {
-  const baseUrl = getBaseUrl(req);
-  const dataPegawai = await pegawaiService.dataPegawai(req, res);
+  try {
+    const baseUrl = getBaseUrl(req);
+    const pegawai = await pegawaiService.dataPegawai(req, res);
+    const jabatan = await jabatanService.dataJabatan(req, res);
+    const divisi = await divisiService.dataDivisi(req, res);
 
-  return res.render('admin/pegawai/daftarPegawai', {
-    baseUrl,
-    req,
-    data: dataPegawai.data,
-    currentPage: dataPegawai.currentPage,
-    totalPage: dataPegawai.totalPage,
-  });
+    return res.render('admin/pegawai/daftarPegawai', {
+      baseUrl,
+      req,
+      data: pegawai.data,
+      currentPage: pegawai.currentPage,
+      totalPage: pegawai.totalPage,
+      jabatan: jabatan.data,
+      divisi: divisi.data,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
 });
 
 // page tambah pegawai
 router.get('/tambah', async (req, res) => {
-  const baseUrl = getBaseUrl(req);
-  const { old_input } = req.query;
-  if (!old_input) {
-    delete req.session.oldPegawai;
-  }
+  try {
+    const baseUrl = getBaseUrl(req);
+    const { old_input } = req.query;
+    if (!old_input) {
+      delete req.session.oldPegawai;
+    }
 
-  const jabatan = await jabatanService.ambilData(req, res);
-  const divisi = await divisiService.ambilData(req, res);
-  return res.render('admin/pegawai/tambahPegawai', {
-    baseUrl,
-    req,
-    jabatan: jabatan.data,
-    divisi: divisi.data,
-  });
+    const jabatan = await jabatanService.dataJabatan(req, res);
+    const divisi = await divisiService.dataDivisi(req, res);
+    return res.render('admin/pegawai/tambahPegawai', {
+      baseUrl,
+      req,
+      jabatan: jabatan.data,
+      divisi: divisi.data,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
 });
 
 // tambah pegawai
 router.post('/tambah', pegawaiValidator.tambahPegawai, async (req, res) => {
-  const baseUrl = getBaseUrl(req);
+  try {
+    const baseUrl = getBaseUrl(req);
 
-  const tambahPegawai = await pegawaiService.tambahPegawai(req, res);
-  if (tambahPegawai.statusCode > 200) {
-    return res.redirect(`${baseUrl}/admin/pegawai/tambah?old_input=true`);
+    const tambahPegawai = await pegawaiService.tambahPegawai(req, res);
+    if (tambahPegawai.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/pegawai/tambah?old_input=true`);
+    }
+
+    delete req.session.oldPegawai;
+    req.session.alert = [{msg: 'Berhasil menambah pegawai'}];
+
+    return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
   }
-
-  delete req.session.oldPegawai;
-  req.session.alert = [{msg: 'Berhasil menambah pegawai'}];
-
-  return res.redirect(`${baseUrl}/admin/pegawai/tambah`);
 });
 
 // page ubah data pegawai
