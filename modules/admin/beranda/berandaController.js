@@ -10,6 +10,7 @@ router.get('/', (req, res) => {
   const baseUrl = getBaseUrl(req);
   return res.render('admin/beranda/beranda', {
     baseUrl,
+    req,
   });
 });
 
