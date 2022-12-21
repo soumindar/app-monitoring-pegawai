@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 const getBaseUrl = require('../../../utils/getBaseUrl');
 
 // ambil data divisi
-const ambilData = async (req, res) => {
+const dataDivisi = async (req, res) => {
   try {
     const getData = await prisma.divisi.findMany({
       select: {
@@ -29,5 +29,5 @@ const ambilData = async (req, res) => {
 }
 
 module.exports = {
-  ambilData,
+  dataDivisi,
 };

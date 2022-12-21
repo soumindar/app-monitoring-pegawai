@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 const getBaseUrl = require('../../../utils/getBaseUrl');
 
 // ambil data jabatan
-const ambilData = async (req, res) => {
+const dataJabatan = async (req, res) => {
   try {
     const getData = await prisma.jabatan.findMany({
       select: {
@@ -29,5 +29,5 @@ const ambilData = async (req, res) => {
 };
 
 module.exports = {
-  ambilData,
+  dataJabatan,
 };
