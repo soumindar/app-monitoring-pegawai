@@ -27,7 +27,7 @@ model Jabatan {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime?   @updatedAt
   deleted     DateTime?
-  dimiliki    Pegawai[]
+  pegawai    Pegawai[]
 }
 
 model Divisi {
@@ -37,7 +37,8 @@ model Divisi {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime?   @updatedAt
   deleted     DateTime?
-  dimiliki    Pegawai[]
+  pegawai     Pegawai[]
+  pekerjaan   Pekerjaan[]
 }
 
 model Pegawai {
@@ -55,7 +56,7 @@ model Pegawai {
   deleted     DateTime?
   jabatan     Jabatan     @relation(fields: [idJabatan], references: [id])
   divisi      Divisi      @relation(fields: [idDivisi], references: [id])
-  mengerjakan AktivitasPegawai[]
+  aktivitas   AktivitasPegawai[]
 }
 
 model Level {
@@ -65,7 +66,7 @@ model Level {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime?   @updatedAt
   deleted      DateTime?
-  dimiliki     Pekerjaan[]
+  pekerjaan    Pekerjaan[]
 }
 
 model Pekerjaan {
@@ -75,11 +76,13 @@ model Pekerjaan {
   target        Int
   satuanTarget  String
   idLevel       String
+  idDivisi      String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
   level         Level       @relation(fields: [idLevel], references: [id])
-  dikerjakan    AktivitasPegawai[]
+  divisi        Divisi      @relation(fields: [idDivisi], references: [id])
+  aktivitas     AktivitasPegawai[]
 }
 
 model AktivitasPegawai {
