@@ -125,11 +125,7 @@ router.post('/ubah-password/:id', adminValidator.ubahPass, async (req, res) => {
 router.get('/hapus/:id', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
-    const hapusAdmin = await adminService.hapusAdmin(req);
-    
-    if (hapusAdmin.statusCode > 200) {
-      return res.redirect(`${baseUrl}/admin/user-admin/daftar`)
-    }
+    await adminService.hapusAdmin(req);
 
     return res.redirect(`${baseUrl}/admin/user-admin/daftar`);
   } catch (error) {

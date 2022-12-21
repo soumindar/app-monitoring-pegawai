@@ -252,7 +252,7 @@ const hapusAdmin = async (req, res) => {
       where: { id },
     });
 
-    req.session.alert = [{ msg: 'Berhasil menghapus' }];
+    req.session.alert = [{ msg: 'Berhasil menghapus admin' }];
     return {
       statusCode: 200,
     };

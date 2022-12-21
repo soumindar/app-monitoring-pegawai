@@ -66,7 +66,7 @@ const ubahPass = [
   check('password_confirm').notEmpty().withMessage('Konfirmasi password tidak boleh kosong!'),
   (req, res, next) => {
     let errors = validationResult(req).array();
-    console.log('ok');
+    
     const { new_password, password_confirm } = req.body;
     if (new_password != password_confirm) {
       errors.push({ msg: 'Konfirmasi password tidak sesuai' });
