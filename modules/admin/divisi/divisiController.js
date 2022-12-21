@@ -129,4 +129,21 @@ router.post('/ubah/:id', divisiValidator.tambahDivisi, async (req, res) => {
   }
 });
 
+// hapus divisi
+router.get('/hapus/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    await divisiService.hapusDivisi(req, res);
+
+    return res.redirect(`${baseUrl}/admin/divisi/daftar`);
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;
