@@ -132,7 +132,6 @@ const tambahPegawai = async (req, res) => {
     const objTglLahir = new Date(tglLahir);
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log(objTglLahir);
     await prisma.pegawai.create({
       data: {
         nip,
