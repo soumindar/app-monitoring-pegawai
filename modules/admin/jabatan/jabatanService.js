@@ -211,10 +211,47 @@ const ubahJabatan = async (req, res) => {
   }
 };
 
+// hapus jabatan
+const hapusJabatan = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const idExist = await prisma.jabatan.findFirst({
+      select: { id: true },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID jabatan tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+    
+    await prisma.jabatan.delete({
+      where: { id },
+    });
+
+    req.session.alert = [{ msg: 'Berhasil menghapus jabatan' }];
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataLengkap,
   dataPagination,
   dataJabatanId,
   tambahJabatan,
   ubahJabatan,
+  hapusJabatan,
 };

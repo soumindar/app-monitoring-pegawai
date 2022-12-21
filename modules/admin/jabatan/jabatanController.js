@@ -131,4 +131,21 @@ router.post('/ubah/:id', jabatanValidator.tambahJabatan, async (req, res) => {
   }
 });
 
+// hapus jabatan
+router.get('/hapus/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    await jabatanService.hapusJabatan(req, res);
+
+    return res.redirect(`${baseUrl}/admin/jabatan/daftar`);
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;
