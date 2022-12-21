@@ -75,4 +75,60 @@ router.post('/tambah', jabatanValidator.tambahJabatan, async (req, res) => {
   }
 });
 
+// page ubah data jabatan
+router.get('/ubah/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const { old_input } = req.query;
+    if (!old_input) {
+      delete req.session.oldJabatan;
+    }
+    
+    const jabatan = await jabatanService.dataJabatanId(req, res);
+    if (jabatan.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/jabatan/daftar`);
+    }
+
+    return res.render('admin/jabatan/ubahJabatan', {
+      baseUrl,
+      req,
+      jabatan: jabatan.data,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// ubah data jabatan
+router.post('/ubah/:id', jabatanValidator.tambahJabatan, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const baseUrl = getBaseUrl(req);
+
+    const ubahJabatan = await jabatanService.ubahJabatan(req, res);
+    if (ubahJabatan.statusCode == 404) {
+      return res.redirect(`${baseUrl}/admin/jabatan/daftar`);
+    }
+    if (ubahJabatan.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/jabatan/ubah/${id}?old_input=true`);
+    }
+
+    delete req.session.oldJabatan;
+    req.session.alert = [{msg: 'Berhasil mengubah data jabatan'}];
+
+    return res.redirect(`${baseUrl}/admin/jabatan/daftar`);
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;
