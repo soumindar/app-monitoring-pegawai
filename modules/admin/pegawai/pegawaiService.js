@@ -212,7 +212,6 @@ const ubahPegawai = async (req, res) => {
       statusCode: 200,
     };
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -221,9 +220,101 @@ const ubahPegawai = async (req, res) => {
   }
 };
 
+// ubah password
+const ubahPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { oldPassword, newPassword, passwordConfirm } = req.body;
+
+    const idExist = await prisma.pegawai.findFirst({
+      select: {
+        id: true,
+        password: true,
+      },
+      where: {
+        id,
+        deleted: null,
+      },
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID pegawai tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      }
+    }
+
+    const passwordMatch = bcrypt.compareSync(oldPassword, idExist.password);
+    if (!passwordMatch) {
+      req.session.error = [{msg: 'Password lama salah!'}];
+      return {
+        statusCode: 401,
+      };
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    await prisma.pegawai.update({
+      data: { password: hashedPassword },
+      where: { id }
+    });
+
+    req.session.alert = [{msg: 'Password berhasil diubah'}];
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+}
+
+// hapus pegawai
+const hapusPegawai = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const idExist = await prisma.pegawai.findFirst({
+      select: {
+        id: true,
+        password: true,
+      },
+      where: {
+        id,
+        deleted: null,
+      },
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID pegawai tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      }
+    }
+    
+    await prisma.pegawai.delete({
+      where: { id },
+    });
+
+    req.session.alert = [{ msg: 'Berhasil menghapus pegawai' }];
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+}
+
 module.exports = {
   dataPegawai,
   dataPegawaiId,
   tambahPegawai,
   ubahPegawai,
+  ubahPassword,
+  hapusPegawai,
 };

@@ -60,7 +60,33 @@ const ubahPegawai = [
   }
 ];
 
+// validator ubah password
+const ubahPassword = [
+  check('oldPassword').notEmpty().withMessage('Pasword lama tidak boleh kosong!'),
+  check('newPassword').notEmpty().withMessage('Password baru tidak boleh kosong!'),
+  check('newPassword').isLength({min: 6}).withMessage('Password baru minimal terdiri dari 6 karakter!'),
+  check('passwordConfirm').notEmpty().withMessage('Konfirmasi password tidak boleh kosong!'),
+  (req, res, next) => {
+    let errors = validationResult(req).array();
+
+    const { newPassword, passwordConfirm } = req.body;
+    if (newPassword != passwordConfirm) {
+      errors.push({ msg: 'Konfirmasi password tidak sesuai' });
+    }
+
+    if (errors.length > 0) {
+      req.session.error = errors;
+      const baseUrl = getBaseUrl(req);
+      const { id } = req.params;
+      return res.redirect(`${baseUrl}/admin/pegawai/ubah-password/${id}`);
+    }
+
+    next();
+  }
+];
+
 module.exports = {
   tambahPegawai,
   ubahPegawai,
+  ubahPassword,
 };

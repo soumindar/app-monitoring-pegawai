@@ -114,4 +114,63 @@ router.post('/ubah/:id', pegawaiValidator.ubahPegawai, async (req, res) => {
   }
 });
 
+// page ubah password
+router.get('/ubah-password/:id', (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/pegawai/ubahPassword', {
+      baseUrl,
+      req,
+    });
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// ubah password
+router.post('/ubah-password/:id', pegawaiValidator.ubahPassword, async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const ubahPassword = await pegawaiService.ubahPassword(req, res);
+    
+    if (ubahPassword.statusCode == 404) {
+      return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
+    }
+    if (ubahPassword.statusCode > 200) {
+      const { id } = req.params;
+      return res.redirect(`${baseUrl}/admin/pegawai/ubah-password/${id}`);
+    }
+
+    return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// hapus pegawai
+router.get('/hapus/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    await pegawaiService.hapusPegawai(req, res);
+
+    return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+})
 module.exports = router;
