@@ -15,7 +15,7 @@ router.get('/daftar', async (req, res) => {
     const baseUrl = getBaseUrl(req);
     const pegawai = await pegawaiService.dataPegawai(req, res);
     const jabatan = await jabatanService.dataLengkap(req, res);
-    const divisi = await divisiService.dataDivisi(req, res);
+    const divisi = await divisiService.dataLengkap(req, res);
 
     return res.render('admin/pegawai/daftarPegawai', {
       baseUrl,
@@ -45,7 +45,7 @@ router.get('/tambah', async (req, res) => {
     }
 
     const jabatan = await jabatanService.dataLengkap(req, res);
-    const divisi = await divisiService.dataDivisi(req, res);
+    const divisi = await divisiService.dataLengkap(req, res);
     return res.render('admin/pegawai/tambahPegawai', {
       baseUrl,
       req,
@@ -99,7 +99,7 @@ router.get('/ubah/:id/', async (req, res) => {
     }
 
     const jabatan = await jabatanService.dataLengkap(req, res);
-    const divisi = await divisiService.dataDivisi(req, res);
+    const divisi = await divisiService.dataLengkap(req, res);
     return res.render('admin/pegawai/ubahPegawai', {
       baseUrl,
       req,
