@@ -202,7 +202,6 @@ const ubahJabatan = async (req, res) => {
       statusCode: 200,
     };
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

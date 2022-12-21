@@ -121,7 +121,6 @@ router.post('/ubah/:id', jabatanValidator.tambahJabatan, async (req, res) => {
 
     return res.redirect(`${baseUrl}/admin/jabatan/daftar`);
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
