@@ -25,11 +25,9 @@ const dataPegawai = async (req, res) => {
       skip: offset,
       take: limit,
       orderBy: {
-        nama: 'asc'
+        nama: 'asc',
       }
     });
-
-    console.log(data);
 
     const countPegawai = await prisma.pegawai.aggregate({
       _count: { id: true },

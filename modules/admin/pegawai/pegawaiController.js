@@ -14,7 +14,7 @@ router.get('/daftar', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
     const pegawai = await pegawaiService.dataPegawai(req, res);
-    const jabatan = await jabatanService.dataJabatan(req, res);
+    const jabatan = await jabatanService.dataLengkap(req, res);
     const divisi = await divisiService.dataDivisi(req, res);
 
     return res.render('admin/pegawai/daftarPegawai', {
@@ -44,7 +44,7 @@ router.get('/tambah', async (req, res) => {
       delete req.session.oldPegawai;
     }
 
-    const jabatan = await jabatanService.dataJabatan(req, res);
+    const jabatan = await jabatanService.dataLengkap(req, res);
     const divisi = await divisiService.dataDivisi(req, res);
     return res.render('admin/pegawai/tambahPegawai', {
       baseUrl,
@@ -98,8 +98,8 @@ router.get('/ubah/:id/', async (req, res) => {
       return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
     }
 
-    const jabatan = await jabatanService.ambilData(req, res);
-    const divisi = await divisiService.ambilData(req, res);
+    const jabatan = await jabatanService.dataLengkap(req, res);
+    const divisi = await divisiService.dataDivisi(req, res);
     return res.render('admin/pegawai/ubahPegawai', {
       baseUrl,
       req,
@@ -108,6 +108,7 @@ router.get('/ubah/:id/', async (req, res) => {
       divisi: divisi.data,
     });
   } catch (error) {
+    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
