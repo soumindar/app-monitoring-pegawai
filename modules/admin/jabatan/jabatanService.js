@@ -74,7 +74,47 @@ const dataPagination = async (req, res) => {
   }
 };
 
+// tambah jabatan
+const tambahJabatan = async (req, res) => {
+  try {
+    const { jabatan, keterangan } = req.body;
+    
+    const jabatanExist = await prisma.jabatan.findFirst({
+      select: { jabatan: true },
+      where: { 
+        jabatan,
+        deleted: null,
+      },
+    });
+    if (jabatanExist) {
+      req.session.oldJabatan = { jabatan, keterangan };
+      req.session.error = [{msg: 'Jabatan sudah ada'}];
+      return {
+        statusCode: 409,
+      };
+    }
+
+    await prisma.jabatan.create({
+      data: {
+        jabatan,
+        keterangan,
+      },
+    });
+
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataLengkap,
   dataPagination,
+  tambahJabatan,
 };

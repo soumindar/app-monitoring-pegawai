@@ -19,6 +19,7 @@
     <% }) %>
   <% } %>
 
+  <% delete req.session.alert; %>
   <% delete req.session.error; %>
   
   <!-- Content Row -->
@@ -30,22 +31,16 @@
             <div class="col-lg-6">
               <form method="post" action="<%= baseUrl %>/admin/jabatan/tambah">
                 <div class="form-group mb-4">
-                  <label for="nama" class="text-dark">Jabatan</label>
-                  <input type="text" name="jabatan" class="form-control" value="<%= (req.session.old) ? req.session.old.nama : '' %>">
+                  <label class="text-dark">Jabatan</label>
+                  <input type="text" name="jabatan" class="form-control" value="<%= (req.session.oldJabatan) ? req.session.oldJabatan.jabatan : '' %>">
                 </div>
                 <div class="form-group mb-4">
-                  <label for="username" class="text-dark">Username</label>
-                  <input type="text" name="username" class="form-control" value="<%= (req.session.old) ? req.session.old.username : '' %>">
+                  <label class="text-dark">Keterangan</label>
+                  <div>Isi dengan '-' apabila tidak ada keterangan</div>
+                  <input type="text" name="keterangan" class="form-control" value="<%= (req.session.oldJabatan) ? req.session.oldJabatan.keterangan : '' %>">
                 </div>
-                <div class="form-group mb-4">
-                  <label for="password" class="text-dark">Password</label>
-                  <input type="password" name="password" class="form-control">
-                </div>
-                <div class="form-group mb-4">
-                  <label for="password_confirm" class="text-dark">Konfirmasi Password</label>
-                  <input type="password" name="password_confirm" class="form-control">
-                </div>
-                <a href="<%= baseUrl %>/admin/user-admin/daftar" class="btn btn-danger">Batal</a>
+                <br>
+                <a href="<%= baseUrl %>/admin/jabatan/tambah" class="btn btn-danger">Batal</a>
                 <button type="submit" class="btn btn-primary">Tambah</button>
               </form>
             </div>

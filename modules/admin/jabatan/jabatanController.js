@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const jabatanService = require('../jabatan/jabatanService');
+const jabatanValidator = require('./jabatanValidator');
+const jabatanService = require('./jabatanService');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = require('../auth/sessionVerify');
 
@@ -42,6 +43,29 @@ router.get('/tambah', async (req, res) => {
       baseUrl,
       req,
     });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// tambah jabatan
+router.post('/tambah', jabatanValidator.tambahJabatan, async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+
+    const tambahJabatan = await jabatanService.tambahJabatan(req, res);
+    if (tambahJabatan.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/jabatan/tambah?old_input=true`);
+    }
+
+    delete req.session.oldJabatan;
+    req.session.alert = [{msg: 'Berhasil menambah jabatan'}];
+
+    return res.redirect(`${baseUrl}/admin/jabatan/daftar`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
