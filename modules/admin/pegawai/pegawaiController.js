@@ -201,5 +201,6 @@ router.get('/hapus/:id', async (req, res) => {
       statusCode: 500,
     });
   }
-})
+});
+
 module.exports = router;

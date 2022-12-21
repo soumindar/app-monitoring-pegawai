@@ -282,7 +282,7 @@ const ubahPassword = async (req, res) => {
       statusCode: 500,
     });
   }
-}
+};
 
 // hapus pegawai
 const hapusPegawai = async (req, res) => {
@@ -321,7 +321,7 @@ const hapusPegawai = async (req, res) => {
       statusCode: 500,
     });
   }
-}
+};
 
 module.exports = {
   dataPegawai,
