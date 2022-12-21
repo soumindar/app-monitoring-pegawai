@@ -108,7 +108,6 @@ router.get('/ubah/:id/', async (req, res) => {
       divisi: divisi.data,
     });
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -124,8 +123,10 @@ router.post('/ubah/:id', pegawaiValidator.ubahPegawai, async (req, res) => {
     const baseUrl = getBaseUrl(req);
 
     const ubahPegawai = await pegawaiService.ubahPegawai(req, res);
+    if (ubahPegawai.statusCode == 404) {
+      return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
+    }
     if (ubahPegawai.statusCode > 200) {
-      console.log('input error');
       return res.redirect(`${baseUrl}/admin/pegawai/ubah/${id}?old_input=true`);
     }
 
@@ -133,8 +134,7 @@ router.post('/ubah/:id', pegawaiValidator.ubahPegawai, async (req, res) => {
     req.session.alert = [{msg: 'Berhasil mengubah data pegawai'}];
 
     return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
-  } catch (error) {
-    console.log(error.message);
+  } catch (error) {    
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

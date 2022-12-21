@@ -85,6 +85,7 @@ const dataPegawaiId = async (req, res) => {
     data.tglLahir = data.tglLahir.getFullYear() + "-" + ("0"+(data.tglLahir.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglLahir.getDate()).slice(-2);
     
     return {
+      statusCode: 200,
       data,
     };
   } catch (error) {
@@ -161,6 +162,20 @@ const ubahPegawai = async (req, res) => {
   try {
     const { id } = req.params;
     const { nip, nama, tglLahir, idJabatan, idDivisi, username } = req.body;
+
+    const idExist = await prisma.pegawai.findFirst({
+      select: { id: true },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID pegawai tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
 
     const nipExist = await prisma.pegawai.findFirst({
       select: { nip: true },
