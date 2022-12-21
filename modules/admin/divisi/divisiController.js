@@ -102,4 +102,31 @@ router.get('/ubah/:id', async (req, res) => {
   }
 });
 
+// ubah data divisi
+router.post('/ubah/:id', divisiValidator.tambahDivisi, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const baseUrl = getBaseUrl(req);
+
+    const ubahDivisi = await divisiService.ubahDivisi(req, res);
+    if (ubahDivisi.statusCode == 404) {
+      return res.redirect(`${baseUrl}/admin/divisi/daftar`);
+    }
+    if (ubahDivisi.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/divisi/ubah/${id}?old_input=true`);
+    }
+
+    delete req.session.oldDivisi;
+    req.session.alert = [{msg: 'Berhasil mengubah data divisi'}];
+
+    return res.redirect(`${baseUrl}/admin/divisi/daftar`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;

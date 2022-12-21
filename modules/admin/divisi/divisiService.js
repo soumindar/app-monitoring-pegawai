@@ -155,9 +155,66 @@ const tambahDivisi = async (req, res) => {
   }
 };
 
+// ubah data divisi
+const ubahDivisi = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { divisi, keterangan } = req.body;
+
+    const idExist = await prisma.divisi.findFirst({
+      select: { id: true },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID divisi tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    const divisiExist = await prisma.divisi.findFirst({
+      select: { divisi: true },
+      where: { 
+        divisi,
+        id: {not: id},
+        deleted: null,
+      },
+    });
+    if (divisiExist) {
+      req.session.oldDivisi = { divisi, keterangan };
+      req.session.error = [{msg: 'Divisi sudah ada'}];
+      return {
+        statusCode: 409,
+      };
+    }
+
+    await prisma.divisi.update({
+      data: {
+        divisi,
+        keterangan,
+      },
+      where: { id },
+    });
+
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataLengkap,
   dataPagination,
   dataDivisiId,
   tambahDivisi,
+  ubahDivisi,
 };
