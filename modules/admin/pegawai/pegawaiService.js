@@ -291,7 +291,6 @@ const hapusPegawai = async (req, res) => {
     const idExist = await prisma.pegawai.findFirst({
       select: {
         id: true,
-        password: true,
       },
       where: {
         id,
