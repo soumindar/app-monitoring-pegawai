@@ -10,28 +10,28 @@ const tambahAdmin = [
   check('username').isLength({min: 3}).withMessage('Username minimal terdiri dari 3 karakter!'),
   check('password').notEmpty().withMessage('Password tidak boleh kosong!'),
   check('password').isLength({min: 6}).withMessage('Password minimal terdiri dari 6 karakter!'),
-  check('password_confirm').notEmpty().withMessage('Konfirmasi password tidak boleh kosong!'),
+  check('passwordConfirm').notEmpty().withMessage('Konfirmasi password tidak boleh kosong!'),
   (req, res, next) => {
     let errors = validationResult(req).array();
     
-    const { nama, username, password, password_confirm } = req.body;
-    if (password != password_confirm) {
+    const { nama, username, password, passwordConfirm } = req.body;
+    if (password != passwordConfirm) {
       errors.push({ msg: 'Konfirmasi password tidak sesuai' });
     }
 
-    const baseUrl = getBaseUrl(req);
     if (errors.length > 0) {
-      req.session.old = { nama, username };
+      const baseUrl = getBaseUrl(req);
+      req.session.oldAdmin = { nama, username };
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/user-admin/tambah`);
+      return res.redirect(`${baseUrl}/admin/user-admin/tambah?old_input=true`);
     }
 
     next();
   }
 ];
 
-// validator edit admin
-const editAdmin = [
+// validator ubah data admin
+const ubahAdmin = [
   check('id').notEmpty().withMessage('ID tidak boleh kosong!'),
   check('nama').notEmpty().withMessage('Nama tidak boleh kosong!'),
   check('nama').matches(/^[a-z ]+$/i).withMessage('Nama hanya boleh mengandung spasi dan alfabet!'),
@@ -41,17 +41,17 @@ const editAdmin = [
   (req, res, next) => {
     let errors = validationResult(req).array();
     
-    const { nama, username, password, password_confirm } = req.body;
-    if (password != password_confirm) {
+    const { nama, username, password, passwordConfirm } = req.body;
+    if (password != passwordConfirm) {
       errors.push({ msg: 'Konfirmasi password tidak sesuai' });
     }
 
-    const baseUrl = getBaseUrl(req);
     if (errors.length > 0) {
+      const baseUrl = getBaseUrl(req);
       const { id } = req.params;
-      req.session.old = { nama, username };
+      req.session.oldAdmin = { nama, username };
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/user-admin/edit/${id}`);
+      return res.redirect(`${baseUrl}/admin/user-admin/ubah/${id}?old_input=true`);
     }
 
     next();
@@ -59,16 +59,16 @@ const editAdmin = [
 ];
 
 // validator ubah password
-const ubahPass = [
-  check('old_password').notEmpty().withMessage('Pasword lama tidak boleh kosong!'),
-  check('new_password').notEmpty().withMessage('Password baru tidak boleh kosong!'),
-  check('new_password').isLength({min: 6}).withMessage('Password baru minimal terdiri dari 6 karakter!'),
-  check('password_confirm').notEmpty().withMessage('Konfirmasi password tidak boleh kosong!'),
+const ubahPassword = [
+  check('oldPassword').notEmpty().withMessage('Pasword lama tidak boleh kosong!'),
+  check('newPassword').notEmpty().withMessage('Password baru tidak boleh kosong!'),
+  check('newPassword').isLength({min: 6}).withMessage('Password baru minimal terdiri dari 6 karakter!'),
+  check('passwordConfirm').notEmpty().withMessage('Konfirmasi password tidak boleh kosong!'),
   (req, res, next) => {
     let errors = validationResult(req).array();
     
-    const { new_password, password_confirm } = req.body;
-    if (new_password != password_confirm) {
+    const { newPassword, passwordConfirm } = req.body;
+    if (newPassword != passwordConfirm) {
       errors.push({ msg: 'Konfirmasi password tidak sesuai' });
     }
 
@@ -85,6 +85,6 @@ const ubahPass = [
 
 module.exports = {
   tambahAdmin,
-  editAdmin,
-  ubahPass,
+  ubahAdmin,
+  ubahPassword,
 };

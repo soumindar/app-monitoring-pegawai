@@ -8,17 +8,6 @@
       <h1 class="h3 mb-0 text-gray-800">Tambah Admin</h1>
   </div>
 
-  <% if (req.session.alert) { %>
-    <% req.session.alert.forEach(alert => { %>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= alert.msg %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    <% }) %>
-  <% } %>
-
   <% if (req.session.error) { %>
     <% req.session.error.forEach(error => { %>
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -30,7 +19,6 @@
     <% }) %>
   <% } %>
 
-  <% delete req.session.alert; %>
   <% delete req.session.error; %>
   
   <!-- Content Row -->
@@ -43,21 +31,21 @@
               <form method="post" action="<%= baseUrl %>/admin/user-admin/tambah">
                 <div class="form-group mb-4">
                   <label for="nama" class="text-dark">Nama</label>
-                  <input type="text" name="nama" class="form-control" value="<%= (req.session.old) ? req.session.old.nama : '' %>">
+                  <input type="text" name="nama" class="form-control" value="<%= (req.session.oldAdmin) ? req.session.oldAdmin.nama : '' %>">
                 </div>
                 <div class="form-group mb-4">
                   <label for="username" class="text-dark">Username</label>
-                  <input type="text" name="username" class="form-control" value="<%= (req.session.old) ? req.session.old.username : '' %>">
+                  <input type="text" name="username" class="form-control" value="<%= (req.session.oldAdmin) ? req.session.oldAdmin.username : '' %>">
                 </div>
                 <div class="form-group mb-4">
                   <label for="password" class="text-dark">Password</label>
                   <input type="password" name="password" class="form-control">
                 </div>
                 <div class="form-group mb-4">
-                  <label for="password_confirm" class="text-dark">Konfirmasi Password</label>
-                  <input type="password" name="password_confirm" class="form-control">
+                  <label for="passwordConfirm" class="text-dark">Konfirmasi Password</label>
+                  <input type="password" name="passwordConfirm" class="form-control">
                 </div>
-                <a href="<%= baseUrl %>/admin/user-admin/daftar" class="btn btn-danger">Batal</a>
+                <a href="<%= baseUrl %>/admin/user-admin/tambah" class="btn btn-danger">Batal</a>
                 <button type="submit" class="btn btn-primary">Tambah</button>
               </form>
             </div>

@@ -42,7 +42,7 @@
                                 <tr>
                                     <th width="2%">No.</th>
                                     <th>Nama</th>
-                                    <th>Username</th>
+                                    <th width="30%">Username</th>
                                     <th width="15%">Aksi</th>
                                 </tr>
                             </thead>
@@ -54,7 +54,7 @@
                                         <td><%= admin.nama %></td>
                                         <td><%= admin.username %></td>
                                         <td>
-                                            <a href="<%= baseUrl %>/admin/user-admin/edit/<%= admin.id %>" data-toggle="tooltip" data-placement="top" title="Ubah data" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
+                                            <a href="<%= baseUrl %>/admin/user-admin/ubah/<%= admin.id %>" data-toggle="tooltip" data-placement="top" title="Ubah data" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
                                             <a href="<%= baseUrl %>/admin/user-admin/ubah-password/<%= admin.id %>" data-toggle="tooltip" data-placement="top" title="Ubah password" class="btn btn-warning btn-sm"><i class="fa fa-lock"></i></a>
                                             <a href="<%= baseUrl %>/admin/user-admin/hapus/<%= admin.id %>" data-toggle="tooltip" data-placement="top" title="Hapus data" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
                                         </td>

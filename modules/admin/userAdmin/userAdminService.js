@@ -49,7 +49,7 @@ const dataAdmin = async (req, res) => {
 };
 
 // ambil data admin berdasarkan id
-const dataIdAdmin = async (req, res) => {
+const dataAdminId = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await prisma.admin.findFirst({
@@ -58,10 +58,21 @@ const dataIdAdmin = async (req, res) => {
         nama: true,
         username: true,
       },
-      where: { id },
+      where: {
+        id,
+        deleted: null,
+      },
     });
 
+    if (!data) {
+      req.session.error = [{msg: 'User admin tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
     return {
+      statusCode: 200,
       data,
     }
   } catch (error) {
@@ -83,8 +94,8 @@ const tambahAdmin = async (req, res) => {
       where: { username },
     });
     if (usernameExist) {
-      req.session.old = { nama, username };
-      req.session.error = [{msg: 'Username sudah digunakan oleh admin lain'}];
+      req.session.oldAdmin = { nama, username };
+      req.session.error = [{msg: 'Username sudah digunakan oleh user admin lain!'}];
       return {
         statusCode: 409,
       };
@@ -100,9 +111,7 @@ const tambahAdmin = async (req, res) => {
       }
     });
 
-    req.session.alert = [
-      { msg: 'Admin berhasil ditambahkan'}
-    ];
+    req.session.alert = [{ msg: 'User admin berhasil ditambahkan' }];
 
     return {
       statusCode: 200,
@@ -116,10 +125,9 @@ const tambahAdmin = async (req, res) => {
   }
 };
 
-// service edit admin 
-const editAdmin = async (req, res) => {
+// service ubah admin 
+const ubahAdmin = async (req, res) => {
   try {
-    console.log('ok');
     const { id } = req.params;
     const { nama, username } = req.body;
 
@@ -131,7 +139,7 @@ const editAdmin = async (req, res) => {
       },
     });
     if (!idExist) {
-      req.session.error = [{ msg: 'ID tidak ditemukan'}];
+      req.session.error = [{ msg: 'User admin tidak ditemukan'}];
       return {
         statusCode: 404,
       };
@@ -145,8 +153,8 @@ const editAdmin = async (req, res) => {
       where: { username },
     });
     if (usernameExist && (usernameExist.id != id)) {
-      req.session.old = { nama, username };
-      req.session.error = [{msg: 'Username sudah digunakan oleh user lain'}];
+      req.session.oldAdmin = { nama, username };
+      req.session.error = [{msg: 'Username sudah digunakan oleh user admin lain'}];
       return {
         statusCode: 409,
       };
@@ -174,10 +182,10 @@ const editAdmin = async (req, res) => {
 };
 
 // service ubah password 
-const ubahPass = async (req, res) => {
+const ubahPassword = async (req, res) => {
   try {
     const { id } = req.params;
-    const { old_password, new_password } = req.body;
+    const { oldPassword, newPassword } = req.body;
 
     const adminExist = await prisma.admin.findFirst({
       select: {
@@ -191,13 +199,13 @@ const ubahPass = async (req, res) => {
     });
 
     if (!adminExist) {
-      req.session.error = [{msg: 'ID tidak ditemukan'}];
+      req.session.error = [{msg: 'User admin tidak ditemukan'}];
       return {
         statusCode: 404,
       };
     }
     
-    const passwordMatch = bcrypt.compareSync(old_password, adminExist.password);
+    const passwordMatch = bcrypt.compareSync(oldPassword, adminExist.password);
     if (!passwordMatch) {
       req.session.error = [{msg: 'Password lama salah!'}];
       return {
@@ -206,7 +214,7 @@ const ubahPass = async (req, res) => {
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(new_password, salt);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
     await prisma.admin.update({
       data: {
         password: hashedPassword,
@@ -242,7 +250,7 @@ const hapusAdmin = async (req, res) => {
       },
     });
     if (!idExist) {
-      req.session.error = [{ msg: 'ID tidak ditemukan'}];
+      req.session.error = [{ msg: 'User admin tidak ditemukan'}];
       return {
         statusCode: 404,
       };
@@ -267,9 +275,9 @@ const hapusAdmin = async (req, res) => {
 
 module.exports = {
   dataAdmin,
-  dataIdAdmin,
+  dataAdminId,
   tambahAdmin,
-  editAdmin,
-  ubahPass,
+  ubahAdmin,
+  ubahPassword,
   hapusAdmin,
 };
