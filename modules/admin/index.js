@@ -8,6 +8,7 @@ const jabatanController = require('./jabatan/jabatanController');
 const divisiController = require('./divisi/divisiController');
 const pekerjaanController = require('./pekerjaan/pekerjaanController');
 const levelController = require('./level/levelController');
+const aktivitasController = require('./aktivitas/aktivitasController');
 
 router.use('/auth', authController);
 router.use('/', berandaController);
@@ -17,5 +18,6 @@ router.use('/jabatan', jabatanController);
 router.use('/divisi', divisiController);
 router.use('/pekerjaan', pekerjaanController);
 router.use('/level', levelController);
+router.use('/aktivitas', aktivitasController);
 
 module.exports = router;
