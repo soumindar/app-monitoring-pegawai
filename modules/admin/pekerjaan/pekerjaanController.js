@@ -102,4 +102,63 @@ router.post('/tambah', pekerjaanValidator.tambahPekerjaan, async (req, res) => {
   }
 });
 
+// page ubah data pekerjaan
+router.get('/ubah/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const { old_input } = req.query;
+    if (!old_input) {
+      delete req.session.oldPekerjaan;
+    }
+
+    const pekerjaan = await pekerjaanService.dataPekerjaanId(req, res);
+    if (pekerjaan.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/pekerjaan/daftar`);
+    }
+
+    const divisi = await divisiService.dataLengkap(req, res);
+    const level = await levelService.dataLengkap(req, res);
+    return res.render('admin/pekerjaan/ubahPekerjaan', {
+      baseUrl,
+      req,
+      pekerjaan: pekerjaan.data,
+      divisi: divisi.data,
+      level: level.data,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// ubah data pekerjaan
+router.post('/ubah/:id', pekerjaanValidator.ubahPekerjaan, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const baseUrl = getBaseUrl(req);
+
+    const ubahPekerjaan = await pekerjaanService.ubahPekerjaan(req, res);
+    if (ubahPekerjaan.statusCode == 404) {
+      return res.redirect(`${baseUrl}/admin/pekerjaan/daftar`);
+    }
+    if (ubahPekerjaan.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/pekerjaan/ubah/${id}?old_input=true`);
+    }
+
+    delete req.session.oldpekerjaan;
+    req.session.alert = [{msg: 'Berhasil mengubah data pekerjaan'}];
+
+    return res.redirect(`${baseUrl}/admin/pekerjaan/daftar?idDivisi=${ubahPekerjaan.idDivisi}`);
+  } catch (error) {    
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;

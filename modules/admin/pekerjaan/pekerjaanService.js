@@ -67,6 +67,51 @@ const dataPekerjaanDivisi = async (req, res) => {
   }
 };
 
+// ambil data pekerjaan berdasarkan id
+const dataPekerjaanId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const idExist = await prisma.pekerjaan.findFirst({
+      select: { id: true },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID pekerjaan tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    const data = await prisma.pekerjaan.findFirst({
+      select: {
+        id: true,
+        pekerjaan: true,
+        durasi: true,
+        target: true,
+        satuanTarget: true,
+        idDivisi: true,
+        idLevel: true,
+      },
+      where: { id },
+    });
+    
+    return {
+      statusCode: 200,
+      data,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+}
+
 // tambah pekerjaan
 const tambahPekerjaan = async (req, res) => {
   try {
@@ -144,7 +189,103 @@ const tambahPekerjaan = async (req, res) => {
   }
 };
 
+// ubah data pekerjaan
+const ubahPekerjaan = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { idDivisi, pekerjaan, satuanTarget, idLevel } = req.body;
+    let { durasi, target } = req.body;
+    durasi = Number(durasi);
+    target = Number(target);
+
+    const idExist = await prisma.pekerjaan.findFirst({
+      select: { id: true },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID pekerjaan tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+    
+    const divisiExist = await prisma.divisi.findFirst({
+      select: { id: true },
+      where: {
+        id: idDivisi,
+        deleted: null,
+      },
+    });
+    if (!divisiExist) {
+      req.session.oldPekerjaan = { idDivisi, pekerjaan, durasi, target, satuanTarget, idLevel };
+      req.session.error = [{msg: 'Divisi tidak ditemukan!'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    const levelExist = await prisma.level.findFirst({
+      select: { id: true },
+      where: {
+        id: idLevel,
+        deleted: null,
+      },
+    });
+    if (!levelExist) {
+      req.session.oldPekerjaan = { idDivisi, pekerjaan, durasi, target, satuanTarget, idLevel };
+      req.session.error = [{msg: 'Level tidak ditemukan!'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    const pekerjaanExist = await prisma.pekerjaan.findFirst({
+      select: { pekerjaan: true },
+      where: { 
+        pekerjaan,
+        id: {not: id},
+        deleted: null,
+      },
+    });
+    if (pekerjaanExist) {
+      req.session.oldpekerjaan = { idDivisi, pekerjaan, durasi, target, satuanTarget, idLevel };
+      req.session.error = [{msg: 'Pekerjaan sudah ada!'}];
+      return {
+        statusCode: 409,
+      };
+    }
+
+    await prisma.pekerjaan.update({
+      data: {
+        idDivisi,
+        pekerjaan,
+        durasi,
+        target,
+        satuanTarget,
+        idLevel,
+      },
+      where: { id },
+    });
+
+    return {
+      statusCode: 200,
+      idDivisi,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports ={
   dataPekerjaanDivisi,
+  dataPekerjaanId,
   tambahPekerjaan,
+  ubahPekerjaan,
 };
