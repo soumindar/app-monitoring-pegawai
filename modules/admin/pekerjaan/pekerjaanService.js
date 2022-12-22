@@ -283,9 +283,50 @@ const ubahPekerjaan = async (req, res) => {
   }
 };
 
+// hapus pekerjaan
+const hapusPekerjaan = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const idExist = await prisma.pekerjaan.findFirst({
+      select: {
+        id: true,
+        idDivisi: true,
+      },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID pekerjaan tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+    
+    await prisma.pekerjaan.delete({
+      where: { id },
+    });
+
+    req.session.alert = [{ msg: 'Berhasil menghapus pekerjaan' }];
+    return {
+      statusCode: 200,
+      idDivisi: idExist.idDivisi,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports ={
   dataPekerjaanDivisi,
   dataPekerjaanId,
   tambahPekerjaan,
   ubahPekerjaan,
+  hapusPekerjaan,
 };

@@ -161,4 +161,21 @@ router.post('/ubah/:id', pekerjaanValidator.ubahPekerjaan, async (req, res) => {
   }
 });
 
+// hapus pekerjaan
+router.get('/hapus/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const hapusPekerjaan = await pekerjaanService.hapusPekerjaan(req, res);
+
+    return res.redirect(`${baseUrl}/admin/pekerjaan/daftar?idDivisi=${hapusPekerjaan.idDivisi}`);
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;
