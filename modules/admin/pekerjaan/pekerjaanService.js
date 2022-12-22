@@ -12,8 +12,10 @@ const dataPekerjaanDivisi = async (req, res) => {
     const limit = 10;
     const offset = (currentPage - 1) * limit;
     
-    const dataDivisi = await divisiService.dataDivisiId(req, res);
-    if (!dataDivisi) {
+    const dataDivisi = await divisiService.dataIdQuery(req, res);
+    console.log(dataDivisi);
+    if (dataDivisi.statusCode > 200) {
+      req.session.error = [{msg: 'Divisi tidak ditemukan'}];
       return {
         statusCode: 404,
       }

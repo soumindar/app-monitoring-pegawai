@@ -83,7 +83,7 @@ router.get('/ubah/:id', async (req, res) => {
       delete req.session.oldDivisi;
     }
     
-    const divisi = await divisiService.dataDivisiId(req, res);
+    const divisi = await divisiService.dataIdParams(req, res);
     if (divisi.statusCode > 200) {
       return res.redirect(`${baseUrl}/admin/divisi/daftar`);
     }

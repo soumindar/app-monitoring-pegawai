@@ -20,9 +20,10 @@ router.get('/daftar', async (req, res) => {
     let totalPage = 1;
 
     if (idDivisi) {
-      pekerjaan = await pekerjaanService.dataPekerjaanDivisi(req, res);
-
+      const pekerjaan = await pekerjaanService.dataPekerjaanDivisi(req, res);
       if (pekerjaan.statusCode > 200) {
+        console.log('ok1');
+        console.log(req.query.idDivisi);
         return res.redirect(`${baseUrl}/admin/pekerjaan/daftar`);
       }
 

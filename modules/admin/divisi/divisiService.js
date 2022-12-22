@@ -75,26 +75,12 @@ const dataPagination = async (req, res) => {
   }
 };
 
-// ambil data divisi berdasarkan id
-const dataDivisiId = async (req, res) => {
+// ambil data divisi berdasarkan id di params
+const dataIdParams = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const idExist = await prisma.divisi.findFirst({
-      select: { id: true },
-      where: {
-        id,
-        deleted: null,
-      }
-    });
-    if (!idExist) {
-      req.session.error = [{msg: 'ID divisi tidak ditemukan'}];
-      return {
-        statusCode: 404,
-      };
-    }
-
-    let data = await prisma.divisi.findFirst({
+    const data = await prisma.divisi.findFirst({
       select: {
         id: true,
         divisi: true,
@@ -102,6 +88,45 @@ const dataDivisiId = async (req, res) => {
       },
       where: { id },
     });
+    if (!data) {
+      req.session.error = [{msg: 'Divisi tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+    
+    return {
+      statusCode: 200,
+      data,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+}
+
+// ambil data divisi berdasarkan id di query
+const dataIdQuery = async (req, res) => {
+  try {
+    const { idDivisi } = req.query;
+
+    const data = await prisma.divisi.findFirst({
+      select: {
+        id: true,
+        divisi: true,
+        keterangan: true,
+      },
+      where: { id: idDivisi },
+    });
+    if (!data) {
+      req.session.error = [{msg: 'Divisi tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
     
     return {
       statusCode: 200,
@@ -250,7 +275,8 @@ const hapusDivisi = async (req, res) => {
 module.exports = {
   dataLengkap,
   dataPagination,
-  dataDivisiId,
+  dataIdParams,
+  dataIdQuery,
   tambahDivisi,
   ubahDivisi,
   hapusDivisi,
