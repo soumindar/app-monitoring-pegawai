@@ -31,7 +31,7 @@
     <div class="row">
         <div class="container-fluid">
             <h1 class="h1 mb-3 text-gray-800">
-                Daftar Aktivitas aktivitas
+                Daftar Aktivitas Pegawai
             </h1>
             <div class="card">
                 <div class="card-body">                   
@@ -41,22 +41,33 @@
                             <thead>
                                 <tr>
                                     <th width="2%">No.</th>
-                                    <th>idPekerjaan</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Selesai</th>
-                                    <th width="15%">Isi Realisasi</th>
+                                    <th width="10%">NIP</th>
+                                    <th>Nama</th>
+                                    <th width="15%">Jabatan</th>
+                                    <th width="15%">Divisi</th>
+                                    <th width="15%">Aktivitas Pegawai</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <% let i = 1 %>
-                                <% data.forEach(aktivitas => { %>
+                                <% data.forEach(pegawai => { %>
                                     <tr>
                                         <td><%= i++ %></td>
-                                        <td><%= aktivitas.idPekerjaan %></td>
-                                        <td><%= aktivitas.tglMulai %></td>
-                                        <td><%= aktivitas.tglSelesai %></td>
+                                        <td><%= pegawai.nip %></td>
+                                        <td><%= pegawai.nama %></td>
+                                        <% jabatan.forEach(jabatan => { %>
+                                            <% if (jabatan.id == pegawai.idJabatan) { %>
+                                                <td><%= jabatan.jabatan %></td>
+                                            <% } %>
+                                        <% }) %>
+                                        <% divisi.forEach(divisi => { %>
+                                            <% if (divisi.id == pegawai.idDivisi) { %>
+                                                <td><%= divisi.divisi %></td>
+                                            <% } %>
+                                        <% }) %>
                                         <td>
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Isi Realisasi" class="btn btn-primary btn-sm"><i class="fa fa-arrow-right"></i></a>
+                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Lihat Aktivitas Pegawai" class="btn btn-primary btn-sm"><i class="fa fa-arrow-right"></i></a>
+                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/tambah/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Tambah Aktivitas Pegawai" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></a>
                                         </td>
                                     </tr>
                                 <% }) %>
@@ -73,7 +84,7 @@
                                     </li>
                                 <% } else {%>
                                     <li class="page-item">
-                                        <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= req.params.idPegawai %>?page=1">First</a>
+                                        <a class="page-link" href="<%= baseUrl %>/admin/pegawai/daftar?page=1">First</a>
                                     </li>
                                 <% } %>
                                 <% let i = (currentPage > 5) ? currentPage - 4 : 1 %>
@@ -89,7 +100,7 @@
                                         </li>
                                     <% } else { %>
                                         <li class="page-item">
-                                            <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= req.params.idPegawai %>?page=<%= i%>"><%= i %></a>
+                                            <a class="page-link" href="<%= baseUrl %>/admin/pegawai/daftar?page=<%= i%>"><%= i %></a>
                                         </li>
                                     <% } %>
                                     <% if ((i == currentPage + 4) && (i < totalPage)) { %>
@@ -104,7 +115,7 @@
                                     </li>
                                 <% } else { %>
                                     <li class="page-item">
-                                        <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= req.params.idPegawai %>?page=<%= totalPage %>">Last</a>
+                                        <a class="page-link" href="<%= baseUrl %>/admin/pegawai/daftar?page=<%= totalPage %>">Last</a>
                                     </li>
                                 <% } %>
                             </ul>

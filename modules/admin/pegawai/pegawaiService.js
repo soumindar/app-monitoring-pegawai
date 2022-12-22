@@ -51,7 +51,7 @@ const dataPegawai = async (req, res) => {
   }
 };
 
-// ambil data pegawai berdasarkan id
+// ambil data pegawai berdasarkan id di params
 const dataPegawaiId = async (req, res) => {
   try {
     const { id } = req.params;

@@ -43,24 +43,24 @@
               <form method="post" action="<%= baseUrl %>/admin/pegawai/tambah" enctype="multipart/form-data">
                 <div class="form-group mb-4">
                   <label class="text-dark">NIP</label>
-                  <input type="text" name="nip" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.nip : '' %>">
+                  <input required type="text" name="nip" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.nip : '' %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Nama</label>
-                  <input type="text" name="nama" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.nama : '' %>">
+                  <input required type="text" name="nama" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.nama : '' %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Tanggal Lahir</label>
-                  <input type="date" name="tglLahir" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.tglLahir : '' %>">
+                  <input required type="date" name="tglLahir" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.tglLahir : '' %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Jabatan</label>
                   <br>
-                  <select class="js-example-basic-single form-control" name="idJabatan">
+                  <select required class="js-example-basic-single form-control" name="idJabatan">
                     <% if (!req.session.oldPegawai) { %>
-                      <option selected>Pilih Jabatan...</option>
+                      <option value="" selected>Pilih Jabatan...</option>
                     <% } else if (req.session.oldPegawai.idJabatan == 'Pilih Jabatan...') { %>
-                      <option selected>Pilih Jabatan...</option>
+                      <option value="" selected>Pilih Jabatan...</option>
                     <% } %>
                     <% jabatan.forEach(jabatan => { %>
                       <% if (req.session.oldPegawai) { %>
@@ -78,7 +78,7 @@
                 <div class="form-group mb-4">
                   <label class="text-dark">Divisi</label>
                   <h6>Pilih '-' untuk pegawai yang tidak berada dalam suatu divisi</h6>
-                  <select class="js-example-basic-single form-control" name="idDivisi">
+                  <select required class="js-example-basic-single form-control" name="idDivisi">
                     <% if (!req.session.oldPegawai) { %>
                       <option selected>Pilih Divisi...</option>
                     <% } else if (req.session.oldPegawai.idDivisi == 'Pilih Divisi...') { %>
@@ -97,26 +97,25 @@
                     <% }) %>
                   </select>
                 </div>
-                <div class="form-group mb-4">
+                <!-- <div class="form-group mb-4">
                   <label class="text-dark">Foto Pegawai (.jpg, .jpeg, atau .png)</label>
                   <input type="file" name="foto" class="form-control" id="formFile" onchange="preview()">
-                  <div>INI NANTI PEGAWAI YANG INPUT</div>
                 </div>
                 <div class="container col-md-6">
                   <img id="frame" src="" class="img-fluid" />
                 </div>
-                <br>
+                <br> -->
                 <div class="form-group mb-4">
                   <label class="text-dark">Username</label>
-                  <input type="text" name="username" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.username : '' %>">
+                  <input required type="text" name="username" class="form-control" value="<%= (req.session.oldPegawai) ? req.session.oldPegawai.username : '' %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Password</label>
-                  <input type="password" name="password" class="form-control">
+                  <input required type="password" name="password" class="form-control">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Konfirmasi Password</label>
-                  <input type="password" name="passwordConfirm" class="form-control">
+                  <input required type="password" name="passwordConfirm" class="form-control">
                 </div>
                 <br>
                 <a href="<%= baseUrl %>/admin/pegawai/tambah" class="btn btn-danger">Batal</a>

@@ -86,6 +86,7 @@ model Pekerjaan {
 }
 
 model AktivitasPegawai {
+  id            String     @id @default(uuid())
   idPegawai     String
   idPekerjaan   String
   tglMulai      DateTime    @db.Date
@@ -96,6 +97,4 @@ model AktivitasPegawai {
   deleted       DateTime?
   pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
   pekerjaan     Pekerjaan @relation(fields: [idPekerjaan], references: [id])
-
-  @@id([idPegawai, idPekerjaan])
 }

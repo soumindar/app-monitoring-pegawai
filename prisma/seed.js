@@ -32,7 +32,7 @@ const bcrypt = require('bcrypt');
         { divisi: 'Keuangan', keterangan: '-' },
         { divisi: 'HRD', keterangan: '-' },
         { divisi: 'Umum', keterangan: '-' },
-        { divisi: '-', keterangan: '-' }
+        { divisi: '-', keterangan: 'Untuk pegawai yang tidak berada dalam suatu divisi' }
       ]
     });
 
