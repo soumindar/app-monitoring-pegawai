@@ -31,7 +31,6 @@
               <form method="post" action="<%= baseUrl %>/admin/pekerjaan/tambah">
                 <div class="form-group mb-4">
                   <label class="text-dark">Divisi</label>
-                  <br>
                   <select class="js-example-basic-single form-control" name="idDivisi">
                     <% if (!req.session.oldPekerjaan) { %>
                       <option selected>Pilih Divisi...</option>
