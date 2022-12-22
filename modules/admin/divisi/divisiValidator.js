@@ -20,6 +20,27 @@ const tambahDivisi = [
   }
 ];
 
+// validator ubah divisi
+const ubahDivisi = [
+  check('divisi').notEmpty().withMessage('Divisi tidak boleh kosong!'),
+  check('keterangan').notEmpty().withMessage('Keterangan tidak boleh kosong!'),
+  (req, res, next) => {
+    let errors = validationResult(req).array();
+    
+    if (errors.length > 0) {
+      const baseUrl = getBaseUrl(req);
+      const { id } = req.params;
+      const { divisi, keterangan } = req.body;
+      req.session.oldDivisi = { divisi, keterangan };
+      req.session.error = errors;
+      return res.redirect(`${baseUrl}/admin/divisi/ubah/${id}?old_input=true`);
+    }
+
+    next();
+  }
+];
+
 module.exports = {
   tambahDivisi,
+  ubahDivisi,
 };

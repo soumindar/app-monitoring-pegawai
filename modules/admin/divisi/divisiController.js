@@ -103,7 +103,7 @@ router.get('/ubah/:id', async (req, res) => {
 });
 
 // ubah data divisi
-router.post('/ubah/:id', divisiValidator.tambahDivisi, async (req, res) => {
+router.post('/ubah/:id', divisiValidator.ubahDivisi, async (req, res) => {
   try {
     const { id } = req.params;
     const baseUrl = getBaseUrl(req);

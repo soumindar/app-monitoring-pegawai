@@ -103,7 +103,7 @@ router.get('/ubah/:id', async (req, res) => {
 });
 
 // ubah data jabatan
-router.post('/ubah/:id', jabatanValidator.tambahJabatan, async (req, res) => {
+router.post('/ubah/:id', jabatanValidator.ubahJabatan, async (req, res) => {
   try {
     const { id } = req.params;
     const baseUrl = getBaseUrl(req);
