@@ -349,6 +349,44 @@ const ubahAktivitas = async (req, res) => {
   }
 };
 
+// hapus aktivitas
+const hapusAktivitas = async (req, res) => {
+  try {
+    const { idAktivitas } = req.params;
+
+    const aktivitasExist = await prisma.aktivitasPegawai.findFirst({
+      select: { idPegawai: true },
+      where: {
+        id: idAktivitas,
+        deleted: null,
+      }
+    });
+    if (!aktivitasExist) {
+      req.session.error = [{msg: 'ID aktivitas tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+
+    await prisma.aktivitasPegawai.delete({
+      where: { id: idAktivitas },
+    });
+
+    req.session.alert = [{msg: 'Berhasil menghapus aktivitas'}];
+    
+    return {
+      statusCode: 200,
+      idPegawai: aktivitasExist.idPegawai,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataLengkap,
   dataIdPegawai,
@@ -356,4 +394,5 @@ module.exports = {
   tambahAktivitas,
   tambahRealisasi,
   ubahAktivitas,
+  hapusAktivitas,
 };

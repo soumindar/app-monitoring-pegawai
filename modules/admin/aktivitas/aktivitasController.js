@@ -248,4 +248,24 @@ router.post('/pegawai/ubah/:idAktivitas', aktivitasValidator.ubahAktivitas, asyn
   }
 });
 
+// hapus aktivitas
+router.get('/pegawai/hapus/:idAktivitas', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+
+    const hapusAktivitas = await aktivitasService.hapusAktivitas(req, res);
+    if (hapusAktivitas.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
+    }
+
+    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${hapusAktivitas.idPegawai}`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;
