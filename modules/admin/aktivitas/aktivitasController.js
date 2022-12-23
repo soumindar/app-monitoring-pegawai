@@ -18,7 +18,7 @@ const sessionVerify = require('../auth/sessionVerify');
 router.get('/pegawai', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
-    const pegawai = await pegawaiService.aktivitasPegawai(req, res);
+    const pegawai = await pegawaiService.dataPegawai(req, res);
     const jabatan = await jabatanService.dataLengkap(req, res);
     const divisi = await divisiService.dataLengkap(req, res);
 
@@ -32,6 +32,7 @@ router.get('/pegawai', async (req, res) => {
       divisi: divisi.data,
     });
   } catch (error) {
+    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
