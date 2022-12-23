@@ -21,6 +21,26 @@ const tambahAktivitas = [
   }
 ];
 
+// validator tambah realisasi
+const tambahRealisasi = [
+  check('idAktivitas').notEmpty().withMessage('ID aktivitas tidak boleh kosong!'),
+  check('realisasi').notEmpty().withMessage('Realisasi tidak boleh kosong!'),
+  check('realisasi').isNumeric().withMessage('Realisasi harus berupa bilangan!'),
+  (req, res, next) => {
+    let errors = validationResult(req).array();
+    
+    if (errors.length > 0) {
+      const { idAktivitas } = req.params;
+      const baseUrl = getBaseUrl(req);
+      req.session.error = errors;
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/realisasi/${idAktivitas}`);
+    }
+
+    next();
+  }
+];
+
 module.exports = {
   tambahAktivitas,
+  tambahRealisasi,
 };

@@ -85,9 +85,10 @@ const dataIdPegawai = async (req, res) => {
       },
       skip: offset,
       take: limit,
-      orderBy: {
-        tglMulai: 'asc',
-      },
+      orderBy: [
+        { tglSelesai: 'asc' },
+        { tglMulai: 'asc' },
+      ],
     });
     data.forEach(data => {
       data.tglMulai = data.tglMulai.getFullYear() + "-" + ("0"+(data.tglMulai.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglMulai.getDate()).slice(-2);
@@ -109,7 +110,44 @@ const dataIdPegawai = async (req, res) => {
       totalPage,
     };
   } catch (error) {
-    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
+// ambil data aktivitas berdasarkan id aktivitas
+const dataIdAktivitas = async (req, res) => {
+  try {
+    const { idAktivitas } = req.params;
+    let data = await prisma.aktivitasPegawai.findFirst({
+      select: {
+        id: true,
+        idPegawai: true,
+        pekerjaan: true,
+        tglMulai: true,
+        tglSelesai: true,
+      },
+      where: { id: idAktivitas },
+    });
+    
+    if (!data) {
+      req.session.error = [{msg: 'ID aktivitas tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+    
+    data.tglMulai = data.tglMulai.getFullYear() + "-" + ("0"+(data.tglMulai.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglMulai.getDate()).slice(-2);
+    data.tglSelesai = data.tglSelesai.getFullYear() + "-" + ("0"+(data.tglSelesai.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglSelesai.getDate()).slice(-2);
+
+    return {
+      statusCode: 200,
+      data,
+    };
+  } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -126,10 +164,8 @@ const tambahAktivitas = async (req, res) => {
     let { tglMulai, tglSelesai } = req.body;
     tglMulai = new Date(new Date(tglMulai).setHours(0, 0, 0, 0));
     tglSelesai = new Date(new Date(tglSelesai).setHours(23, 59, 59, 999));
-    console.log(tglMulai);
-    console.log(tglSelesai);
+    
     const today = new Date(new Date().setHours(0, 0, 0, 0));
-    console.log(tglMulai < today);
     if (tglMulai < today) {
       req.session.error = [{msg: 'Tanggal mulai tidak boleh di tanggal yang sudah terlewati!'}];
       return {
@@ -186,8 +222,60 @@ const tambahAktivitas = async (req, res) => {
   }
 };
 
+// tambah realisasi
+const tambahRealisasi = async (req, res) => {
+  try {
+    const { idAktivitas } = req.params;
+    let { realisasi } = req.body;
+    realisasi = Number(realisasi);
+
+    const aktivitasExist = await prisma.aktivitasPegawai.findFirst({
+      select: {
+        id: true,
+        idPegawai: true,
+        tglSelesai: true,
+      },
+      where: { id: idAktivitas },
+    });
+    if (!aktivitasExist) {
+      req.session.error = [{msg: 'ID aktivitas tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      }
+    }
+
+    const today = new Date(new Date().setHours(0, 0, 0, 0));
+    if (aktivitasExist.tglSelesai > today) {
+      req.session.error = [{msg: 'Aktivitas belum selesai!'}];
+      return {
+        statusCode: 400,
+        idPegawai: aktivitasExist.idPegawai,
+      }
+    }
+
+    await prisma.aktivitasPegawai.update({
+      data: { realisasi },
+      where: { id: idAktivitas },
+    });
+
+    return {
+      statusCode: 200,
+      idPegawai: aktivitasExist.idPegawai,
+    };
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataLengkap,
   dataIdPegawai,
+  dataIdAktivitas,
   tambahAktivitas,
+  tambahRealisasi,
 };

@@ -147,4 +147,52 @@ router.post('/pegawai/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, as
   }
 });
 
+// page tambah realisasi
+router.get('/pegawai/realisasi/:idAktivitas', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    console.log('ok1');
+    const aktivitas = await aktivitasService.dataIdAktivitas(req, res);
+    if (aktivitas.statusCode == 404) {
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
+    }
+    
+    return res.render('admin/aktivitas/tambahRealisasi', {
+      baseUrl,
+      req,
+      aktivitas: aktivitas.data,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// tambah realisasi
+router.post('/pegawai/realisasi/:idAktivitas', aktivitasValidator.tambahRealisasi, async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const tambahRealisasi = await aktivitasService.tambahRealisasi(req, res);
+    if (tambahRealisasi.statusCode == 404) {
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
+    }
+    if (tambahRealisasi.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${tambahRealisasi.idPegawai}`);
+    }
+
+    req.session.alert =[{msg: 'Isi realisasi berhasil'}];
+
+    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${tambahRealisasi.idPegawai}`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;

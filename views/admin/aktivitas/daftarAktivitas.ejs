@@ -34,17 +34,18 @@
                 Daftar Aktivitas aktivitas
             </h1>
             <div class="card">
-                <div class="card-body">                   
-
+                <div class="card-body">
+                    <a href="<%= baseUrl %>/admin/aktivitas/pegawai" class="btn btn-primary btn-sm mb-3"><i class="fa fa-arrow-left"></i><strong> Kembali</strong></a>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th width="2%">No.</th>
                                     <th>Pekerjaan</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Selesai</th>
-                                    <th width="15%">Isi Realisasi</th>
+                                    <th width="15%">Tanggal Mulai</th>
+                                    <th width="15%">Tanggal Selesai</th>
+                                    <th width="10%">Isi Realisasi</th>
+                                    <th width="10%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,7 +57,11 @@
                                         <td><%= aktivitas.tglMulai %></td>
                                         <td><%= aktivitas.tglSelesai %></td>
                                         <td>
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Isi Realisasi" class="btn btn-primary btn-sm"><i class="fa fa-arrow-right"></i></a>
+                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/realisasi/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Isi Realisasi" class="btn btn-primary btn-sm"><i class="fa fa-arrow-right"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="" data-toggle="tooltip" data-placement="top" title="Ubah Aktivitas" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
+                                            <a href="" data-toggle="tooltip" data-placement="top" title="Ubah Aktivitas" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
                                         </td>
                                     </tr>
                                 <% }) %>
