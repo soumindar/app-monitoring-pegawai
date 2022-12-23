@@ -106,8 +106,6 @@ router.get('/pegawai/tambah/:idPegawai', async (req, res) => {
       },
     });
 
-    console.log(pekerjaan);
-
     return res.render('admin/aktivitas/tambahAktivitas', {
       baseUrl,
       req,
@@ -130,8 +128,11 @@ router.post('/pegawai/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, as
     const baseUrl = getBaseUrl(req);
     const { idPegawai } = req.params;
     const tambahAktivitas = await aktivitasService.tambahAktivitas(req, res);
-    if (tambahAktivitas.statusCode > 200) {
+    if (tambahAktivitas.statusCode == 404) {
       return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
+    }
+    if (tambahAktivitas.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/tambah/${idPegawai}`);
     }
 
     req.session.alert = [{msg: 'Berhasil menambah aktivitas'}];

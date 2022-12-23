@@ -9,7 +9,7 @@ const tambahAktivitas = [
   check('tglSelesai').notEmpty().withMessage('Tanggal selesai tidak boleh kosong!'),
   (req, res, next) => {
     let errors = validationResult(req).array();
-    console.log(req.body)
+    
     if (errors.length > 0) {
       const { idPegawai } = req.params;
       const baseUrl = getBaseUrl(req);

@@ -78,6 +78,7 @@ const dataIdPegawai = async (req, res) => {
         tglMulai: true,
         tglSelesai: true,
         realisasi: true,
+        pekerjaan: true,
       },
       where: {
         idPegawai
@@ -121,8 +122,21 @@ const dataIdPegawai = async (req, res) => {
 const tambahAktivitas = async (req, res) => {
   try {
     const { idPegawai } = req.params;
-    const { idPekerjaan, tglMulai, tglSelesai } = req.body;
-    
+    const { idPekerjaan } = req.body;
+    let { tglMulai, tglSelesai } = req.body;
+    tglMulai = new Date(new Date(tglMulai).setHours(0, 0, 0, 0));
+    tglSelesai = new Date(new Date(tglSelesai).setHours(23, 59, 59, 999));
+    console.log(tglMulai);
+    console.log(tglSelesai);
+    const today = new Date(new Date().setHours(0, 0, 0, 0));
+    console.log(tglMulai < today);
+    if (tglMulai < today) {
+      req.session.error = [{msg: 'Tanggal mulai tidak boleh di tanggal yang sudah terlewati!'}];
+      return {
+        statusCode: 422,
+      };
+    }
+
     const pegawaiExist = await prisma.pegawai.findFirst({
       select: { id: true },
       where: { 
@@ -151,14 +165,12 @@ const tambahAktivitas = async (req, res) => {
       };
     }
 
-    const objTglMulai = new Date(tglMulai);
-    const objTglSelesai = new Date(tglSelesai);
     await prisma.aktivitasPegawai.create({
       data: {
         idPegawai,
         idPekerjaan,
-        tglMulai: objTglMulai,
-        tglSelesai: objTglSelesai,
+        tglMulai,
+        tglSelesai,
       }
     });
 
