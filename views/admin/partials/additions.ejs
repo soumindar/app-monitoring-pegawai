@@ -88,7 +88,7 @@
     $('.tgl-mulai').hide();
     $('.tgl-selesai').hide();
     $('#pekerjaan').change(function() {
-        if (this.value != 'Pilih Pekerjaan...') {
+        if (this.value) {
             $('.level').show();
             const level = $(this).find(':selected').data('level');
             $('#level').val(level);
@@ -126,17 +126,46 @@
     });
 </script>
 
-<!-- show tanggal selesai -->
+<!-- show and count tanggal selesai -->
 <script>
     $('.tgl-selesai').hide();
     $('#tgl-mulai').change(function() {
         const durasi = Number($('#durasi').val());
         if (durasi) {
             $('.tgl-selesai').show();
-            const tglMulai = new Date(new Date(this.value).setHours(23, 59, 59, 999));
-            let tglSelesai = new Date(tglMulai.setDate(tglMulai.getDate() + durasi));
+            const tglMulai = new Date(this.value);
+            let tglSelesai = new Date(new Date(tglMulai.setDate(tglMulai.getDate() + durasi)));
             tglSelesai = tglSelesai.getFullYear() + '-' + ("0"+(tglSelesai.getMonth()+1)).slice(-2) + '-' + ("0" + tglSelesai.getDate()).slice(-2);
             $('#tgl-selesai').val(tglSelesai);
         }
+    });
+</script>
+
+<!-- count tanggal selesai on update aktivitas-->
+<script>
+    const tglSelesaiAwal = new Date($('#ubah-tgl-selesai').val());
+    const today = new Date(new Date());
+    $('#realisasi-alert').hide();
+    if (tglSelesaiAwal > today) {
+        $('#realisasi').val("");
+        $('#realisasi').hide();
+        $('#realisasi-alert').show();
+    }
+    const realisasiValue = $('#realisasi').val();
+    $('#ubah-tgl-mulai').change(function() {
+        const durasi = Number($('#durasi').val());
+        const tglMulai = new Date(this.value);
+        let tglSelesai = new Date(new Date(new Date(this.value).setDate(tglMulai.getDate() + durasi)));
+        if (tglSelesai > today) {
+            $('#realisasi').val("");
+            $('#realisasi').hide();
+            $('#realisasi-alert').show();
+        } else {
+            $('#realisasi').show();
+            $('#realisasi').val(realisasiValue);
+            $('#realisasi-alert').hide();
+        }
+        tglSelesai = tglSelesai.getFullYear() + '-' + ("0"+(tglSelesai.getMonth()+1)).slice(-2) + '-' + ("0" + tglSelesai.getDate()).slice(-2);
+        $('#ubah-tgl-selesai').val(tglSelesai);
     });
 </script>

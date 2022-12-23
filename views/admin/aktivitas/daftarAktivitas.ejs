@@ -42,10 +42,12 @@
                                 <tr>
                                     <th width="2%">No.</th>
                                     <th>Pekerjaan</th>
-                                    <th width="15%">Tanggal Mulai</th>
-                                    <th width="15%">Tanggal Selesai</th>
-                                    <th width="10%">Isi Realisasi</th>
-                                    <th width="10%">Aksi</th>
+                                    <th width="12%">Tanggal Mulai</th>
+                                    <th width="13%">Tanggal Selesai</th>
+                                    <th width="5%">Target</th>
+                                    <th width="12%">Satuan Target</th>
+                                    <th width="5%">Realisasi</th>
+                                    <th width="8%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,12 +58,16 @@
                                         <td><%= aktivitas.pekerjaan.pekerjaan %></td>
                                         <td><%= aktivitas.tglMulai %></td>
                                         <td><%= aktivitas.tglSelesai %></td>
+                                        <td><%= aktivitas.pekerjaan.target %></td>
+                                        <td><%= aktivitas.pekerjaan.satuanTarget %></td>
+                                        <% if (aktivitas.realisasi) { %>
+                                            <td><%= aktivitas.realisasi %></td>
+                                        <% } else { %>
+                                            <td>-</td>
+                                        <% } %>
                                         <td>
-                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/realisasi/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Isi Realisasi" class="btn btn-primary btn-sm"><i class="fa fa-arrow-right"></i></a>
-                                        </td>
-                                        <td>
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Ubah Aktivitas" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Ubah Aktivitas" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
+                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/ubah/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Ubah Aktivitas" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
+                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/hapus/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Hapus Aktivitas" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
                                         </td>
                                     </tr>
                                 <% }) %>
@@ -78,7 +84,7 @@
                                     </li>
                                 <% } else {%>
                                     <li class="page-item">
-                                        <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= req.params.idPegawai %>?page=1">First</a>
+                                        <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/daftar/<%= req.params.idPegawai %>?page=1">First</a>
                                     </li>
                                 <% } %>
                                 <% let i = (currentPage > 5) ? currentPage - 4 : 1 %>
@@ -94,7 +100,7 @@
                                         </li>
                                     <% } else { %>
                                         <li class="page-item">
-                                            <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= req.params.idPegawai %>?page=<%= i%>"><%= i %></a>
+                                            <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/daftar/<%= req.params.idPegawai %>?page=<%= i%>"><%= i %></a>
                                         </li>
                                     <% } %>
                                     <% if ((i == currentPage + 4) && (i < totalPage)) { %>
@@ -109,7 +115,7 @@
                                     </li>
                                 <% } else { %>
                                     <li class="page-item">
-                                        <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= req.params.idPegawai %>?page=<%= totalPage %>">Last</a>
+                                        <a class="page-link" href="<%= baseUrl %>/admin/aktivitas/pegawai/daftar/<%= req.params.idPegawai %>?page=<%= totalPage %>">Last</a>
                                     </li>
                                 <% } %>
                             </ul>

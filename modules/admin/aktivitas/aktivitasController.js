@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const momentTz = require('moment-timezone');
+const userTimezone = require('../../../config/timezone.config');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -16,7 +18,7 @@ const sessionVerify = require('../auth/sessionVerify');
 router.get('/pegawai', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
-    const pegawai = await pegawaiService.dataPegawai(req, res);
+    const pegawai = await pegawaiService.aktivitasPegawai(req, res);
     const jabatan = await jabatanService.dataLengkap(req, res);
     const divisi = await divisiService.dataLengkap(req, res);
 
@@ -39,7 +41,7 @@ router.get('/pegawai', async (req, res) => {
 });
 
 // page daftar aktivitas
-router.get('/pegawai/:idPegawai', async (req, res) => {
+router.get('/pegawai/daftar/:idPegawai', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
     const aktivitas = await aktivitasService.dataIdPegawai(req, res);
@@ -151,7 +153,7 @@ router.post('/pegawai/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, as
 router.get('/pegawai/realisasi/:idAktivitas', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
-    console.log('ok1');
+
     const aktivitas = await aktivitasService.dataIdAktivitas(req, res);
     if (aktivitas.statusCode == 404) {
       return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
@@ -186,6 +188,57 @@ router.post('/pegawai/realisasi/:idAktivitas', aktivitasValidator.tambahRealisas
     req.session.alert =[{msg: 'Isi realisasi berhasil'}];
 
     return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${tambahRealisasi.idPegawai}`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// page ubah aktivitas
+router.get('/pegawai/ubah/:idAktivitas', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const { idAktivitas } = req.params;
+    const { old_input } = req.query;
+    if (!old_input) {
+      delete req.session.oldAktivitas;
+    }
+
+    const aktivitas = await aktivitasService.dataIdAktivitas(req, res);
+    if (aktivitas.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`)
+    }
+
+    return res.render('admin/aktivitas/ubahAktivitas', {
+      baseUrl,
+      req,
+      aktivitas: aktivitas.data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// ubah aktivitas
+router.post('/pegawai/ubah/:idAktivitas', aktivitasValidator.ubahAktivitas, async (req, res) => {
+  try{
+    const baseUrl = getBaseUrl(req);
+    const ubahAktivitas = await aktivitasService.ubahAktivitas(req, res);
+    if (ubahAktivitas > 200) {
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
+    }
+
+    req.session.alert = [{msg: 'Data aktivitas berhasil diubah'}];
+
+    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${ubahAktivitas.idPegawai}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {

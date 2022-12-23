@@ -1,5 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const momentTz = require('moment-timezone');
+const userTimezone = require('../../../config/timezone.config');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 
 // ambil selururuh data aktivitas dengan pagination
@@ -28,8 +30,14 @@ const dataLengkap = async (req, res) => {
       }
     });
     
+    data.forEach(aktivitas => {
+      aktivitas.tglMulai = aktivitas.tglMulai.getFullYear() + "-" + ("0"+(aktivitas.tglMulai.getMonth()+1)).slice(-2) + "-" + ("0" + aktivitas.tglMulai.getDate()).slice(-2);
+      aktivitas.tglSelesai = aktivitas.tglSelesai.getFullYear() + "-" + ("0"+(aktivitas.tglSelesai.getMonth()+1)).slice(-2) + "-" + ("0" + aktivitas.tglSelesai.getDate()).slice(-2);
+    });
+
     const countAktivitas = await prisma.aktivitasPegawai.aggregate({
       _count: { idPegawai: true },
+      where: { deleted: null },
     });
     const totalData = Number(countAktivitas._count.id);
     const totalPage = Math.ceil(totalData / limit);
@@ -61,7 +69,10 @@ const dataIdPegawai = async (req, res) => {
 
     const pegawaiExist = await prisma.pegawai.findFirst({
       select: { id: true },
-      where: { id: idPegawai }
+      where: {
+        id: idPegawai,
+        deleted: null,
+      }
     });
     if (!pegawaiExist) {
       req.session.error = [{msg: 'Pegawai tidak ditemukan'}];
@@ -81,7 +92,8 @@ const dataIdPegawai = async (req, res) => {
         pekerjaan: true,
       },
       where: {
-        idPegawai
+        idPegawai,
+        deleted: null,
       },
       skip: offset,
       take: limit,
@@ -90,14 +102,17 @@ const dataIdPegawai = async (req, res) => {
         { tglMulai: 'asc' },
       ],
     });
-    data.forEach(data => {
-      data.tglMulai = data.tglMulai.getFullYear() + "-" + ("0"+(data.tglMulai.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglMulai.getDate()).slice(-2);
-      data.tglSelesai = data.tglSelesai.getFullYear() + "-" + ("0"+(data.tglSelesai.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglSelesai.getDate()).slice(-2);
+    data.forEach(aktivitas => {
+      aktivitas.tglMulai = aktivitas.tglMulai.getFullYear() + "-" + ("0"+(aktivitas.tglMulai.getMonth()+1)).slice(-2) + "-" + ("0" + aktivitas.tglMulai.getDate()).slice(-2);
+      aktivitas.tglSelesai = aktivitas.tglSelesai.getFullYear() + "-" + ("0"+(aktivitas.tglSelesai.getMonth()+1)).slice(-2) + "-" + ("0" + aktivitas.tglSelesai.getDate()).slice(-2);
     });
 
     const countAktivitas = await prisma.aktivitasPegawai.aggregate({
       _count: { id: true },
-      where: { idPegawai },
+      where: {
+        idPegawai,
+        deleted: null,
+      },
     });
     const totalData = Number(countAktivitas._count.id);
     const totalPage = Math.ceil(totalData / limit);
@@ -126,11 +141,16 @@ const dataIdAktivitas = async (req, res) => {
       select: {
         id: true,
         idPegawai: true,
-        pekerjaan: true,
+        idPekerjaan: true,
         tglMulai: true,
         tglSelesai: true,
+        realisasi: true,
+        pekerjaan: true,
       },
-      where: { id: idAktivitas },
+      where: {
+        id: idAktivitas,
+        deleted: null,
+      },
     });
     
     if (!data) {
@@ -139,7 +159,7 @@ const dataIdAktivitas = async (req, res) => {
         statusCode: 404,
       };
     }
-    
+
     data.tglMulai = data.tglMulai.getFullYear() + "-" + ("0"+(data.tglMulai.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglMulai.getDate()).slice(-2);
     data.tglSelesai = data.tglSelesai.getFullYear() + "-" + ("0"+(data.tglSelesai.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglSelesai.getDate()).slice(-2);
 
@@ -148,6 +168,7 @@ const dataIdAktivitas = async (req, res) => {
       data,
     };
   } catch (error) {
+    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -162,16 +183,11 @@ const tambahAktivitas = async (req, res) => {
     const { idPegawai } = req.params;
     const { idPekerjaan } = req.body;
     let { tglMulai, tglSelesai } = req.body;
-    tglMulai = new Date(new Date(tglMulai).setHours(0, 0, 0, 0));
-    tglSelesai = new Date(new Date(tglSelesai).setHours(23, 59, 59, 999));
-    
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
-    if (tglMulai < today) {
-      req.session.error = [{msg: 'Tanggal mulai tidak boleh di tanggal yang sudah terlewati!'}];
-      return {
-        statusCode: 422,
-      };
-    }
+
+    const tglMulaiWib = momentTz(tglMulai).tz(userTimezone).format();
+    const tglSelesaiWib = momentTz(tglSelesai).tz(userTimezone).format();
+    tglMulai = new Date(tglMulaiWib.substring(0, 10));
+    tglSelesai = new Date(tglSelesaiWib.substring(0, 10));
 
     const pegawaiExist = await prisma.pegawai.findFirst({
       select: { id: true },
@@ -235,7 +251,10 @@ const tambahRealisasi = async (req, res) => {
         idPegawai: true,
         tglSelesai: true,
       },
-      where: { id: idAktivitas },
+      where: {
+        id: idAktivitas,
+        deleted: null,
+      },
     });
     if (!aktivitasExist) {
       req.session.error = [{msg: 'ID aktivitas tidak ditemukan'}];
@@ -272,10 +291,69 @@ const tambahRealisasi = async (req, res) => {
   }
 };
 
+// ubah aktivitas
+const ubahAktivitas = async (req, res) => {
+ try{
+  const { idAktivitas } = req.params;
+  let { tglMulai, tglSelesai, realisasi } = req.body;
+
+  const tglMulaiWib = momentTz(tglMulai).tz(userTimezone).format();
+  const tglSelesaiWib = momentTz(tglSelesai).tz(userTimezone).format();
+  tglMulai = new Date(tglMulaiWib.substring(0, 10));
+  tglSelesai = new Date(tglSelesaiWib.substring(0, 10));
+
+  realisasi = Number(realisasi);
+
+  const aktivitasExist = await prisma.aktivitasPegawai.findFirst({
+    select: {
+      id: true,
+      idPegawai: true,
+    },
+    where: {
+      id: idAktivitas,
+      deleted: null,
+    },
+  });
+  if (!aktivitasExist) {
+    req.session.error = [{msg: 'ID aktivitas tidak ditemukan'}];
+    return {
+      statusCode: 404,
+    };
+  }
+
+  const today = new Date(new Date().setHours(0, 0, 0, 0));
+  if (tglSelesai > today) {
+    realisasi = null;
+  }
+
+  await prisma.aktivitasPegawai.update({
+    data: {
+      tglMulai,
+      tglSelesai,
+      realisasi,
+    },
+    where: { id: idAktivitas },
+  });
+
+  return {
+    statusCode: 200,
+    idPegawai: aktivitasExist.idPegawai,
+  };
+ } catch (error) {
+    console.log(error.message);
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataLengkap,
   dataIdPegawai,
   dataIdAktivitas,
   tambahAktivitas,
   tambahRealisasi,
+  ubahAktivitas,
 };

@@ -61,7 +61,7 @@
                 </fieldset>
                 <div class="form-group">
                   <label class="text-dark">Realisasi</label>
-                  <input required type="number" class="form-control" name="realisasi">
+                  <input required type="number" class="form-control" name="realisasi" value="<%= (aktivitas.realisasi) ? aktivitas.realisasi : '' %>">
                 </div>
                 <br>
                 <a href="<%= baseUrl %>/admin/aktivitas/pegawai/<%= aktivitas.idPegawai %>" class="btn btn-danger">Batal</a>
