@@ -38,7 +38,7 @@
                 </fieldset>
                 <div class="form-group mb-4">
                   <label class="text-dark">Faktor Pengali</label>
-                  <input type="number" name="pengali" class="form-control" value="<%= (req.session.oldLevel) ? req.session.oldLevel.pengali : level.pengali %>">
+                  <input required type="number" name="pengali" class="form-control" value="<%= (req.session.oldLevel) ? req.session.oldLevel.pengali : level.pengali %>">
                 </div>
                 <br>
                 <a href="<%= baseUrl %>/admin/level/daftar" class="btn btn-danger">Batal</a>

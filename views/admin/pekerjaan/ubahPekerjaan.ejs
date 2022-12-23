@@ -32,7 +32,7 @@
                 <div class="form-group mb-4">
                   <label class="text-dark">Divisi</label>
                   <br>
-                  <select class="js-example-basic-single form-control" name="idDivisi">
+                  <select required class="js-example-basic-single form-control" name="idDivisi">
                     <% divisi.forEach(divisi => { %>
                       <% if (req.session.oldPekerjaan) { %>
                         <% if (req.session.oldPekerjaan.idDivisi == divisi.id) { %>
@@ -52,35 +52,28 @@
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Pekerjaan</label>
-                  <input type="text" name="pekerjaan" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.pekerjaan : pekerjaan.pekerjaan %>">
+                  <input required type="text" name="pekerjaan" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.pekerjaan : pekerjaan.pekerjaan %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Durasi (hari)</label>
-                  <input type="number" name="durasi" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.durasi : pekerjaan.durasi %>">
+                  <input required type="number" name="durasi" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.durasi : pekerjaan.durasi %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Target</label>
-                  <input type="number" name="target" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.target : pekerjaan.target %>">
+                  <input required type="number" name="target" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.target : pekerjaan.target %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Satuan Target</label>
-                  <input type="text" name="satuanTarget" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.satuanTarget : pekerjaan.satuanTarget %>">
+                  <input required type="text" name="satuanTarget" class="form-control" value="<%= (req.session.oldPekerjaan) ? req.session.oldPekerjaan.satuanTarget : pekerjaan.satuanTarget %>">
                 </div>
                 <div class="form-group mb-4">
                   <label class="text-dark">Level</label>
                   <br>
-                  <select class="js-example-basic-single form-control" name="idLevel">
-                    <% if (!req.session.oldPekerjaan) { %>
-                      <option selected>Pilih Level...</option>
-                    <% } else if (req.session.oldPekerjaan.idDivisi == 'Pilih Divisi...') { %>
-                      <option selected>Pilih Level...</option>
-                    <% } %>
-                    <% let selected = false; %>
+                  <select required class="js-example-basic-single form-control" name="idLevel">
                     <% level.forEach(level => { %>
                       <% if (req.session.oldPekerjaan) { %>
                         <% if (req.session.oldPekerjaan.idLevel == level.id) { %>
                           <option selected value="<%= level.id %>"><%= level.level %></option>
-                          <% selected = true; %>
                         <% } else { %>
                           <option value="<%= level.id %>"><%= level.level %></option>
                         <% } %>

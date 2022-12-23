@@ -59,11 +59,11 @@
 
                                     <form class="user" action="<%= baseUrl%>/admin/auth/login" method="post">
                                         <div class="form-group">
-                                            <input name="username" type="text" class="form-control form-control-user"
+                                            <input required  name="username" type="text" class="form-control form-control-user"
                                                 placeholder="Username" value="<%= (req.session.old) ? req.session.old.username : '' %>">
                                         </div>
                                         <div class="form-group">
-                                            <input name="password" type="password" class="form-control form-control-user"
+                                            <input required  name="password" type="password" class="form-control form-control-user"
                                                 placeholder="Password">
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
