@@ -41,7 +41,7 @@
                             <thead>
                                 <tr>
                                     <th width="2%">No.</th>
-                                    <th>idPekerjaan</th>
+                                    <th>Pekerjaan</th>
                                     <th>Tanggal Mulai</th>
                                     <th>Tanggal Selesai</th>
                                     <th width="15%">Isi Realisasi</th>
@@ -52,7 +52,7 @@
                                 <% data.forEach(aktivitas => { %>
                                     <tr>
                                         <td><%= i++ %></td>
-                                        <td><%= aktivitas.idPekerjaan %></td>
+                                        <td><%= aktivitas.pekerjaan.pekerjaan %></td>
                                         <td><%= aktivitas.tglMulai %></td>
                                         <td><%= aktivitas.tglSelesai %></td>
                                         <td>
