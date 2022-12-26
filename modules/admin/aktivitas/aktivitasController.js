@@ -140,7 +140,7 @@ router.post('/pegawai/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, as
 
     req.session.alert = [{msg: 'Berhasil menambah aktivitas'}];
 
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${idPegawai}`);
+    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${idPegawai}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
