@@ -8,7 +8,7 @@ const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const userExist = await prisma.pegawai.findFirst({
+    const pegawaiExist = await prisma.pegawai.findFirst({
       select: {
         id: true,
         password: true,
@@ -19,14 +19,14 @@ const login = async (req, res) => {
       },
     });
     
-    if (!userExist) {
+    if (!pegawaiExist) {
       req.session.error = [{ msg: 'Username tidak ditemukan' }];
       return {
         statusCode: 404,
       };
     }
 
-    const passwordMatch = bcrypt.compareSync(password, userExist.password);
+    const passwordMatch = bcrypt.compareSync(password, pegawaiExist.password);
 
     if (!passwordMatch) {
       req.session.error = [{ msg: 'Password salah!' }];
@@ -37,7 +37,7 @@ const login = async (req, res) => {
 
     return {
       statusCode: 200,
-      userId: userExist.id,
+      idPegawai: userExist.id,
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
