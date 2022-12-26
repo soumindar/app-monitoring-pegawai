@@ -5,12 +5,12 @@ const bcrypt = require('bcrypt');
 (async () => {
   try {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('admin-sou123', salt);
+    const hashedPassword = await bcrypt.hash('adminSou123', salt);
 
     await prisma.admin.create({
       data: {
         nama: 'Soumindar Qolby',
-        username: 'admin-sou',
+        username: 'adminSou',
         password: hashedPassword,
       }
     });
