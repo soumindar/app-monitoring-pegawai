@@ -36,16 +36,14 @@ const login = async (req, res) => {
     }
 
     return {
-      message: 'Login berhasil',
       statusCode: 200,
       adminId: adminExist.id,
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
+    req.session.error = [{msg: 'Maaf terjadi kesalahan sistem'}];
+
+    return res.redirect(`${baseUrl}/admin/auth/login`);
   }
 };
 

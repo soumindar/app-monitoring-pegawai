@@ -10,11 +10,13 @@ const login = [
   check('password').isLength({min: 6}).withMessage('Password minimal terdiri dari 6 karakter!'),
   (req, res, next) => {
     const errors = validationResult(req).array();
-    const { username } = req.body;
-    const baseUrl = getBaseUrl(req);
+    
     if (errors.length > 0) {
-      req.session.old = { username };
+      const { username } = req.body;
+      const baseUrl = getBaseUrl(req);
+      req.session.oldAuth = { username };
       req.session.error = errors;
+      
       return res.redirect(`${baseUrl}/admin/auth/login`);
     }
 

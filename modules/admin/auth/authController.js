@@ -10,8 +10,8 @@ router.get('/login', (req, res) => {
   const baseUrl = getBaseUrl(req);
 
   return res.render('admin/auth/login', {
-    baseUrl: baseUrl,
-    req: req,
+    baseUrl,
+    req,
   });
 });
 
@@ -20,7 +20,8 @@ router.post('/login', authValidator.login, async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
     const auth = await authService.login(req);
-
+    const a  = 5;
+    a = 1;
     if (auth.statusCode > 200) {
       req.session.error = auth.message;
       return res.redirect(`${baseUrl}/auth/admin/login`);
@@ -30,19 +31,17 @@ router.post('/login', authValidator.login, async (req, res) => {
     return res.redirect(`${baseUrl}/admin/`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
+    req.session.error = [{msg: 'Maaf terjadi kesalahan sistem'}];
+
+    return res.redirect(`${baseUrl}/admin/auth/login`);
   }
 });
 
 // logout
 router.get('/logout', sessionVerify, async (req, res) => {
-  req.session.destroy();
-  console.log(req.session);
-
   const baseUrl = getBaseUrl(req);
+  req.session.destroy();
+  
   return res.redirect(`${baseUrl}/auth/admin/login`);
 });
 
