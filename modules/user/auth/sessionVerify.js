@@ -10,7 +10,7 @@ const sessionVerify = async (req, res, next) => {
       return res.redirect(`${baseUrl}/user/auth/login`);
     }
 
-    const userIdMatch = await prisma.user.findFirst({
+    const userIdMatch = await prisma.pegawai.findFirst({
       select: {
         id: true,
       },
