@@ -2,8 +2,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const bcrypt = require('bcrypt');
-const momentTz = require('moment-timezone');
-const userTimezone = require('../../../config/timezone.config');
+const toDateObj = require('../../../utils/toDateObj');
+const toDateHtml = require('../../../utils/toDateHtml');
 
 // ambil data pegawai berdasarkan id di params
 const dataPegawaiId = async (req, res) => {
@@ -38,7 +38,7 @@ const dataPegawaiId = async (req, res) => {
       },
       where: { id },
     });
-    data.tglLahir = data.tglLahir.getFullYear() + "-" + ("0"+(data.tglLahir.getMonth()+1)).slice(-2) + "-" + ("0" + data.tglLahir.getDate()).slice(-2);
+    data.tglLahir = toDateHtml(data.tglLahir);
     
     return {
       statusCode: 200,
@@ -106,8 +106,7 @@ const ubahPegawai = async (req, res) => {
       };
     }
 
-    const tglLahirWib = momentTz(tglLahir).tz(userTimezone).format();
-    tglLahir = new Date(tglLahirWib.substring(0, 10));
+    tglLahir = toDateObj(tglLahir);
 
     await prisma.pegawai.update({
       data: {
@@ -138,7 +137,7 @@ const ubahPegawai = async (req, res) => {
 const ubahPassword = async (req, res) => {
   try {
     const { id } = req.params;
-    const { oldPassword, newPassword, passwordConfirm } = req.body;
+    const { oldPassword, newPassword } = req.body;
 
     const idExist = await prisma.pegawai.findFirst({
       select: {

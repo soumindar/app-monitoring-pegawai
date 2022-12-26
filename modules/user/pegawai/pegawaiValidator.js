@@ -45,7 +45,7 @@ const ubahPassword = [
       req.session.error = errors;
       const baseUrl = getBaseUrl(req);
       const { id } = req.params;
-      return res.redirect(`${baseUrl}/admin/pegawai/ubah-password/${id}`);
+      return res.redirect(`${baseUrl}/user/pegawai/ubah-password/${id}`);
     }
 
     next();
