@@ -20,8 +20,7 @@ router.post('/login', authValidator.login, async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
     const auth = await authService.login(req);
-    const a  = 5;
-    a = 1;
+    
     if (auth.statusCode > 200) {
       req.session.error = auth.message;
       return res.redirect(`${baseUrl}/auth/admin/login`);
