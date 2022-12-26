@@ -13,6 +13,7 @@ const dataBeranda = async (req, res) => {
         nip: true,
         nama: true,
         tglLahir: true,
+        foto: true,
         jabatan: true,
         divisi: true,
       },
@@ -26,8 +27,10 @@ const dataBeranda = async (req, res) => {
       };
     }
 
+    const baseUrl = getBaseUrl(req);
     pegawai.tglLahir = pegawai.tglLahir.getFullYear() + "-" + ("0"+(pegawai.tglLahir.getMonth()+1)).slice(-2) + "-" + ("0" + pegawai.tglLahir.getDate()).slice(-2);
-    
+    pegawai.foto = (!pegawai.foto) ? `${baseUrl}/img/user/no_avatar.jpeg` : `${baseUrl}/img/user/${idPegawai}/${pegawai.foto}`;
+
     return {
       statusCode: 200,
       data: pegawai,

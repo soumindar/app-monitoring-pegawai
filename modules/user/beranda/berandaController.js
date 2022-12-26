@@ -8,14 +8,23 @@ router.use(sessionVerify);
 
 // home page user
 router.get('/', async (req, res) => {
-  const baseUrl = getBaseUrl(req);
-  const pegawai = await berandaService.dataBeranda(req, res);
-  
-  return res.render('user/beranda/beranda', {
-    baseUrl,
-    req,
-    data: pegawai.data,
-  });
+  try {
+    const baseUrl = getBaseUrl(req);
+    const pegawai = await berandaService.dataBeranda(req, res);
+    
+    return res.render('user/beranda/beranda', {
+      baseUrl,
+      req,
+      data: pegawai.data,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('user/error', {
+      baseUrl,
+      req,
+      statusCode: 500,
+    });
+  }
 });
 
 module.exports = router;
