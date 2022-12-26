@@ -20,8 +20,8 @@ const login = async (req, res) => {
     });
 
     if (!adminExist) {
+      req.session.error = [{ msg: 'Username tidak ditemukan'}];
       return {
-        message: 'Username tidak ditemukan',
         statusCode: 404,
       };
     }
@@ -29,8 +29,8 @@ const login = async (req, res) => {
     const passwordMatch = bcrypt.compareSync(password, adminExist.password);
 
     if (!passwordMatch) {
+      req.session.error = [{ msg: 'Password salah!'}];
       return {
-        message: 'Password salah!',
         statusCode: 401,
       };
     }
@@ -41,7 +41,7 @@ const login = async (req, res) => {
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    req.session.error = [{msg: 'Maaf terjadi kesalahan sistem'}];
+    req.session.error = [{ msg: 'Maaf terjadi kesalahan sistem' }];
 
     return res.redirect(`${baseUrl}/admin/auth/login`);
   }

@@ -22,8 +22,7 @@ router.post('/login', authValidator.login, async (req, res) => {
     const auth = await authService.login(req);
     
     if (auth.statusCode > 200) {
-      req.session.error = auth.message;
-      return res.redirect(`${baseUrl}/auth/admin/login`);
+      return res.redirect(`${baseUrl}/admin/auth/login`);
     }
 
     req.session.adminId = auth.adminId;
@@ -41,7 +40,7 @@ router.get('/logout', sessionVerify, async (req, res) => {
   const baseUrl = getBaseUrl(req);
   req.session.destroy();
   
-  return res.redirect(`${baseUrl}/auth/admin/login`);
+  return res.redirect(`${baseUrl}/admin/auth/login`);
 });
 
 module.exports = router;
