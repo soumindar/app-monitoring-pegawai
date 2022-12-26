@@ -127,9 +127,14 @@
         <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-            <h1>
-                Pegawai
-            </h1>
+                <h1 class="mb-4 text-gray-800">
+                    Pegawai
+                </h1>
+                <div class="mb-2 text-gray-800">NIP: <%= data.nip %></div>
+                <div class="mb-2 text-gray-800">Nama: <%= data.nama %></div>
+                <div class="mb-2 text-gray-800">Tanggal Lahir: <%= data.tglLahir %></div>
+                <div class="mb-2 text-gray-800">Jabatan: <%= data.jabatan.jabatan %></div>
+                <div class="mb-2 text-gray-800">Divisi: <%= data.divisi.divisi %></div>
             </div>
         </div>
         </div>
