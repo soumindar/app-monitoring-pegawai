@@ -5,7 +5,7 @@ const jabatanService = require('./jabatanService');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = require('../auth/sessionVerify');
 
-// router.use(sessionVerify);
+router.use(sessionVerify);
 
 // page daftar jabatan
 router.get('/daftar', async (req, res) => {

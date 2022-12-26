@@ -5,7 +5,7 @@ const adminService = require('./userAdminService');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = require('../auth/sessionVerify');
 
-// router.use(sessionVerify);
+router.use(sessionVerify);
 
 // page daftar admin
 router.get('/daftar', async (req, res) => {

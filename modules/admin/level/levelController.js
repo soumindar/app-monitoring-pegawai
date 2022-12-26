@@ -5,7 +5,7 @@ const levelService = require('./levelService');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = require('../auth/sessionVerify');
 
-// router.use(sessionVerify);
+router.use(sessionVerify);
 
 // page daftar level
 router.get('/daftar', async (req, res) => {

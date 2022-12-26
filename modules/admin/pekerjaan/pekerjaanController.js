@@ -7,7 +7,7 @@ const sessionVerify = require('../auth/sessionVerify');
 const divisiService = require('../divisi/divisiService');
 const levelService = require('../level/levelService');
 
-// router.use(sessionVerify);
+router.use(sessionVerify);
 
 // page daftar pekerjaan
 router.get('/daftar', async (req, res) => {

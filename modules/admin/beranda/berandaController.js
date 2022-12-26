@@ -3,7 +3,7 @@ const router = express.Router();
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = require('../auth/sessionVerify');
 
-// router.use(sessionVerify);
+router.use(sessionVerify);
 
 // home page admin
 router.get('/', (req, res) => {
