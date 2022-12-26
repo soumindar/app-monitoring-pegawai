@@ -27,6 +27,30 @@ const ubahPegawai = [
   }
 ];
 
+// validator ubah foto
+const ubahFoto = [
+  check('foto')
+    .custom((_value, { req }) => {
+      if (!req.files['foto']) {
+        return false;
+      }
+      return true;
+    })
+    .withMessage('Foto tidak boleh kosong'),
+  (req, res, next) => {
+    const errors = validationResult(req).array();
+
+    if (errors.length > 0) {
+      req.session.error = errors;
+      const baseUrl = getBaseUrl(req);
+      const { id } = req.params;
+      return res.redirect(`${baseUrl}/user/pegawai/ubah-foto/${id}`);
+    }
+
+    next();
+  }
+];
+
 // validator ubah password
 const ubahPassword = [
   check('oldPassword').notEmpty().withMessage('Pasword lama tidak boleh kosong!'),
@@ -54,5 +78,6 @@ const ubahPassword = [
 
 module.exports = {
   ubahPegawai,
+  ubahFoto,
   ubahPassword,
 };

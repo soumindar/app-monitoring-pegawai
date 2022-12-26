@@ -88,6 +88,49 @@ router.post('/ubah/:id', pegawaiValidator.ubahPegawai, async (req, res) => {
   }
 });
 
+// page ubah foto
+router.get('/ubah-foto/:id', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+
+    return res.render('user/pegawai/ubahFoto', {
+      baseUrl,
+      req,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('user/error', {
+      baseUrl,
+      req,
+      statusCode: 500,
+    });
+  }
+});
+
+// ubah foto
+router.post('/ubah-foto/:id', pegawaiValidator.ubahFoto, async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const ubahFoto = await pegawaiService.ubahFoto(req, res);
+    if (ubahFoto.statusCode == 404) {
+      return res.redirect(`${baseUrl}/user`);
+    }
+    if (ubahFoto.statusCode > 200) {
+      const { id } = req.params;
+      return res.redirect(`${baseUrl}/user/pegawai/ubah-foto/${id}`);
+    }
+
+    return res.redirect(`${baseUrl}/user`);
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('user/error', {
+      baseUrl,
+      req,
+      statusCode: 500,
+    });
+  }
+});
+
 // page ubah password
 router.get('/ubah-password/:id', async (req, res) => {
   try {

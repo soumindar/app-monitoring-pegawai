@@ -4,6 +4,9 @@ const getBaseUrl = require('../../../utils/getBaseUrl');
 const bcrypt = require('bcrypt');
 const toDateObj = require('../../../utils/toDateObj');
 const toDateHtml = require('../../../utils/toDateHtml');
+const getExtention = require('../../../utils/getExtention');
+const fs = require('fs');
+const sharp = require('sharp');
 
 // ambil data pegawai berdasarkan id di params
 const dataPegawaiId = async (req, res) => {
@@ -123,7 +126,6 @@ const ubahPegawai = async (req, res) => {
       statusCode: 200,
     };
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('user/error', {
       baseUrl,
@@ -132,6 +134,76 @@ const ubahPegawai = async (req, res) => {
     });
   }
 };
+
+// ubah foto
+const ubahFoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const idExist = await prisma.pegawai.findFirst({
+      select: { id: true },
+      where: {
+        id,
+        deleted: null,
+      }
+    });
+    if (!idExist) {
+      req.session.error = [{msg: 'ID pegawai tidak ditemukan'}];
+      return {
+        statusCode: 404,
+      };
+    }
+    
+    const fileFoto = req.files.foto;
+    const allowExt = ['.jpg', '.jpeg', '.png'];
+    const extFoto = getExtention(fileFoto.name);
+    if (!allowExt.includes(extFoto)) {
+      req.session.error = [{ msg: 'Format foto tidak sesuai!' }];
+      return {
+        statusCode: 422,
+      };
+    }
+
+    let uploadPath = `${__basedir}/public/img/user/${id}`;
+    const fotoExist = await prisma.pegawai.findFirst({
+      select: { foto: true },
+      where: { id },
+    });
+    if (fotoExist.foto && fs.existsSync(`${uploadPath}/${fotoExist.foto}`)) {
+      fs.unlinkSync(`${uploadPath}/${fotoExist.foto}`);
+    }
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+
+    const compressConfig = {
+      lossless: true,
+      quality: 60,
+      alphaQuality: 80,
+    }
+    const compressedImg = sharp(fileFoto.data).toFormat('jpeg').jpeg(compressConfig).resize(1000, 1000);
+
+    const fileName =  Date.now() + extFoto;
+    uploadPath += `/${fileName}`;
+    await compressedImg.toFile(uploadPath);
+
+    await prisma.pegawai.update({
+      data: { foto: fileName },
+      where: { id },
+    });
+    
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('user/error', {
+      baseUrl,
+      req,
+      statusCode: 500,
+    });
+  }
+}
 
 // ubah password
 const ubahPassword = async (req, res) => {
@@ -188,5 +260,6 @@ const ubahPassword = async (req, res) => {
 module.exports = {
   dataPegawaiId,
   ubahPegawai,
+  ubahFoto,
   ubahPassword,
 };
