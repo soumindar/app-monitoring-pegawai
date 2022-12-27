@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const pekerjaanValidator = require('./pekerjaanValidator');
 const pekerjaanService = require('./pekerjaanService');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = require('../auth/sessionVerify');

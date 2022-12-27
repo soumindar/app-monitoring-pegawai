@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const getBaseUrl = require('../../../utils/getBaseUrl');
-const bcrypt = require('bcrypt');
 
 // ambil data pekerjaan berdasarkan divisi
 const dataPekerjaanDivisi = async (req, res) => {
