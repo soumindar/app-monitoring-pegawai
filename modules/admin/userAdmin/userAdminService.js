@@ -84,6 +84,44 @@ const dataAdminId = async (req, res) => {
   }
 }
 
+// ambil data admin berdasarkan id sebagai api
+const dataAdminIdApi = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await prisma.admin.findFirst({
+      select: {
+        id: true,
+        nama: true,
+        username: true,
+      },
+      where: {
+        id,
+        deleted: null,
+      },
+    });
+
+    console.log(data);
+
+    if (!data) {
+      return res.status(404).json({
+        message: 'User admin tidak ditemukan',
+        statusCode: 404,
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Berhasil',
+      statusCode: 200,
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Terjadi kesalahan sistem',
+      statusCode: 500,
+    });
+  }
+}
+
 // tambah admin 
 const tambahAdmin = async (req, res) => {
   try {
@@ -276,6 +314,7 @@ const hapusAdmin = async (req, res) => {
 module.exports = {
   dataAdmin,
   dataAdminId,
+  dataAdminIdApi,
   tambahAdmin,
   ubahAdmin,
   ubahPassword,

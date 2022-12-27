@@ -28,6 +28,9 @@ router.get('/daftar', async (req, res) => {
   }
 });
 
+// ambil data admin berdasarkan id
+router.get('/id/:id', adminService.dataAdminIdApi);
+
 // page tambah admin
 router.get('/tambah', (req, res) => {
   try {
