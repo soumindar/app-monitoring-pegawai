@@ -175,4 +175,7 @@ router.post('/ubah-password/:id', pegawaiValidator.ubahPassword, async (req, res
   }
 });
 
+// API untuk ambil data pegawai berdasarkan id
+router.get('/id/:id', pegawaiService.dataPegawaiIdApi);
+
 module.exports = router;

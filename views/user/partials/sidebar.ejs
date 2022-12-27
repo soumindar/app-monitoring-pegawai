@@ -1,4 +1,4 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <div class="mt-3 mb-3">
@@ -79,6 +79,17 @@
                 <a class="collapse-item" href="<%= baseUrl %>/user/aktivitas/tambah/<%= req.session.idPegawai %>">Tambah Aktivitas</a>
             </div>
         </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Nav Item  -->
+    <li class="nav-item">
+        <a class="nav-link" href="<%= baseUrl %>/admin/auth/logout">
+            <i class="fas fa-fw fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
     </li>
 
     <!-- Divider -->

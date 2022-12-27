@@ -257,9 +257,46 @@ const ubahPassword = async (req, res) => {
   }
 };
 
+// ambil data pegawai berdasarkan id di params sebagai API
+const dataPegawaiIdApi = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let data = await prisma.pegawai.findFirst({
+      select: {
+        id: true,
+        nama: true,
+        foto: true,
+      },
+      where: { id },
+    });
+    if (!data) {
+      return res.status(404).json({
+        message: 'ID pegawai tidak ditemukan',
+        statusCode: 404,
+      });
+    }
+
+    const baseUrl = getBaseUrl(req);
+    data.foto = (!data.foto) ? `${baseUrl}/img/user/no_avatar.jpeg` : `${baseUrl}/img/user/${id}/${data.foto}`;
+    
+    return res.status(200).json({
+      message: 'Berhasil',
+      statusCode: 200,
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Terjadi kesalahan sistem',
+      statusCode: 500,
+    });
+  }
+}
+
 module.exports = {
   dataPegawaiId,
   ubahPegawai,
   ubahFoto,
   ubahPassword,
+  dataPegawaiIdApi,
 };
