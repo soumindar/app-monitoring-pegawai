@@ -35,6 +35,31 @@ router.get('/daftar', async (req, res) => {
   }
 });
 
+// page detail pegawai
+router.get('/detail/:idPegawai', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await pegawaiService.detailPegawai(req, res);
+    
+    return res.render('admin/pegawai/detailPegawai', {
+      baseUrl,
+      req,
+      pegawai: data.pegawai,
+      aktivitasBulanIni: data.aktivitasBulanIni,
+      aktivitasTahunIni: data.aktivitasTahunIni,
+      progressCkp: data.progressCkp,
+      realisasiKosong: data.realisasiKosong,
+      ckpTahunLalu: data.ckpTahunLalu,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 // page tambah pegawai
 router.get('/tambah', async (req, res) => {
   try {

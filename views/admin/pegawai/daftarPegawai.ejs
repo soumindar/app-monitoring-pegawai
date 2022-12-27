@@ -66,7 +66,7 @@
                                             <% } %>
                                         <% }) %>
                                         <td>
-                                            <a href="" data-toggle="tooltip" data-placement="top" title="Lihat detail" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></a>
+                                            <a href="<%= baseUrl %>/admin/pegawai/detail/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Lihat detail" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></a>
                                             <a href="<%= baseUrl %>/admin/pegawai/ubah/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Ubah data" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
                                             <a href="<%= baseUrl %>/admin/pegawai/ubah-password/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Ubah password" class="btn btn-warning btn-sm"><i class="fa fa-lock"></i></a>
                                             <a href="<%= baseUrl %>/admin/pegawai/hapus/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Hapus data" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
