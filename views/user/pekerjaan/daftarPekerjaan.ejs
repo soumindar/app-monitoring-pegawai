@@ -1,0 +1,120 @@
+<%- include('../partials/topTemplate') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <% if (req.session.alert) { %>
+        <% req.session.alert.forEach(alert => { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= alert.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% if (req.session.error) { %>
+        <% req.session.error.forEach(error => { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= error.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% delete req.session.alert; %>
+    <% delete req.session.error; %>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="container-fluid">
+            <h1 class="h1 mb-3 text-gray-800">
+                Daftar Pekerjaan Divisi <%= data[0].divisi.divisi %>
+            </h1>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive mt-0">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="2%">No.</th>
+                                    <th>Pekerjaan</th>
+                                    <th width="10%">Durasi (hari)</th>
+                                    <th width="5%">Target</th>
+                                    <th width="12%">Satuan Target</th>
+                                    <th width="5%">Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% let i = 1 %>
+                                <% data.forEach(pekerjaan => { %>
+                                    <tr>
+                                        <td><%= i++ %></td>
+                                        <td><%= pekerjaan.pekerjaan %></td>
+                                        <td><%= pekerjaan.durasi %></td>
+                                        <td><%= pekerjaan.target %></td>
+                                        <td><%= pekerjaan.satuanTarget %></td>
+                                        <td><%= pekerjaan.level.level%></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <% if (totalPage > 0) { %>
+                            <ul class="pagination justify-content-center">
+                                <% if (currentPage == 1) { %>
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Awal</a>
+                                    </li>
+                                <% } else {%>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<%= baseUrl %>/user/pekerjaan/daftar/<%= req.params.id %>?page=1">Awal</a>
+                                    </li>
+                                <% } %>
+                                <% let i = (currentPage > 5) ? currentPage - 4 : 1 %>
+                                <% if (i != 1) { %>
+                                    <li class="page-item disabled">
+                                        <a class="page-link">...</a>
+                                    </li>
+                                <% } %>
+                                <% for (; (i <= currentPage + 4) && (i <= totalPage); i++) { %>
+                                    <% if (i == currentPage) { %>
+                                        <li class="page-item active">
+                                            <a class="page-link"><%= i %></a>
+                                        </li>
+                                    <% } else { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="<%= baseUrl %>/user/pekerjaan/daftar/<%= req.params.id %>?page=<%= i%>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+                                    <% if ((i == currentPage + 4) && (i < totalPage)) { %>
+                                        <li class="page-item disabled">
+                                            <a class="page-link">...</a>
+                                        </li>
+                                    <% } %>
+                                <% } %>
+                                <% if (currentPage == totalPage) { %>
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Akhir</a>
+                                    </li>
+                                <% } else { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<%= baseUrl %>/user/pekerjaan/daftar/<%= req.params.id %>?page=<%= totalPage %>">Akhir</a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<%- include('../partials/bottomTemplate') %>
