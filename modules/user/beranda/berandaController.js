@@ -10,12 +10,17 @@ router.use(sessionVerify);
 router.get('/', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
-    const pegawai = await berandaService.dataBeranda(req, res);
+    const data = await berandaService.dataBeranda(req, res);
     
     return res.render('user/beranda/beranda', {
       baseUrl,
       req,
-      data: pegawai.data,
+      pegawai: data.pegawai,
+      aktivitasBulanIni: data.aktivitasBulanIni,
+      aktivitasTahunIni: data.aktivitasTahunIni,
+      progressCkp: data.progressCkp,
+      realisasiKosong: data.realisasiKosong,
+      ckpTahunLalu: data.ckpTahunLalu,
     });
   } catch (error) {
     const baseUrl = getBaseUrl(req);
