@@ -5,7 +5,6 @@ const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = async (req, res, next) => {
   try {
     const baseUrl = getBaseUrl(req);
-
     req.session.idPegawai = 'dc558f7f-1088-42f9-8203-9d54425b2ba3';
 
     if (!req.session.idPegawai) {

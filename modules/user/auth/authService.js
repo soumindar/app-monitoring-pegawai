@@ -37,7 +37,7 @@ const login = async (req, res) => {
 
     return {
       statusCode: 200,
-      idPegawai: userExist.id,
+      idPegawai: pegawaiExist.id,
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
