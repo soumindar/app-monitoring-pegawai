@@ -28,7 +28,7 @@ router.get('/daftar', async (req, res) => {
   }
 });
 
-// ambil data admin berdasarkan id
+// API untuk ambil data admin berdasarkan id
 router.get('/id/:id', adminService.dataAdminIdApi);
 
 // page tambah admin

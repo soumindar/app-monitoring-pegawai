@@ -84,7 +84,7 @@ const dataAdminId = async (req, res) => {
   }
 }
 
-// ambil data admin berdasarkan id sebagai api
+// ambil data admin berdasarkan id untuk API
 const dataAdminIdApi = async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,8 +99,6 @@ const dataAdminIdApi = async (req, res) => {
         deleted: null,
       },
     });
-
-    console.log(data);
 
     if (!data) {
       return res.status(404).json({
