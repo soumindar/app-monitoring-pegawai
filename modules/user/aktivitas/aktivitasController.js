@@ -122,119 +122,47 @@ router.post('/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, async (req
 });
 
 // page tambah realisasi
-router.get('/pegawai/realisasi/:idAktivitas', async (req, res) => {
+router.get('/realisasi/:idAktivitas', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
 
     const aktivitas = await aktivitasService.dataIdAktivitas(req, res);
     if (aktivitas.statusCode == 404) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
+      return res.redirect(`${baseUrl}/user/aktivitas/daftar/${req.session.idPegawai}`);
     }
     
-    return res.render('admin/aktivitas/tambahRealisasi', {
+    return res.render('user/aktivitas/tambahRealisasi', {
       baseUrl,
       req,
       aktivitas: aktivitas.data,
     });
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
+    return res.render('user/error', {
       baseUrl,
+      req,
       statusCode: 500,
     });
   }
 });
 
 // tambah realisasi
-router.post('/pegawai/realisasi/:idAktivitas', aktivitasValidator.tambahRealisasi, async (req, res) => {
+router.post('/realisasi/:idAktivitas', aktivitasValidator.tambahRealisasi, async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
     const tambahRealisasi = await aktivitasService.tambahRealisasi(req, res);
-    if (tambahRealisasi.statusCode == 404) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
-    }
     if (tambahRealisasi.statusCode > 200) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${tambahRealisasi.idPegawai}`);
+      return res.redirect(`${baseUrl}/user/aktivitas/daftar/${req.session.idPegawai}`);
     }
 
     req.session.alert =[{msg: 'Isi realisasi berhasil'}];
 
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${tambahRealisasi.idPegawai}`);
+    return res.redirect(`${baseUrl}/user/aktivitas/daftar/${req.session.idPegawai}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// page ubah aktivitas
-router.get('/pegawai/ubah/:idAktivitas', async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-    const { idAktivitas } = req.params;
-    const { old_input } = req.query;
-    if (!old_input) {
-      delete req.session.oldAktivitas;
-    }
-
-    const aktivitas = await aktivitasService.dataIdAktivitas(req, res);
-    if (aktivitas.statusCode > 200) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`)
-    }
-
-    return res.render('admin/aktivitas/ubahAktivitas', {
+    return res.render('user/error', {
       baseUrl,
       req,
-      aktivitas: aktivitas.data,
-    });
-  } catch (error) {
-    console.log(error.message);
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// ubah aktivitas
-router.post('/pegawai/ubah/:idAktivitas', aktivitasValidator.ubahAktivitas, async (req, res) => {
-  try{
-    const baseUrl = getBaseUrl(req);
-    const ubahAktivitas = await aktivitasService.ubahAktivitas(req, res);
-    if (ubahAktivitas > 200) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
-    }
-
-    req.session.alert = [{msg: 'Data aktivitas berhasil diubah'}];
-
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${ubahAktivitas.idPegawai}`);
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// hapus aktivitas
-router.get('/pegawai/hapus/:idAktivitas', async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-
-    const hapusAktivitas = await aktivitasService.hapusAktivitas(req, res);
-    if (hapusAktivitas.statusCode > 200) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
-    }
-
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${hapusAktivitas.idPegawai}`);
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
       statusCode: 500,
     });
   }

@@ -33,7 +33,7 @@ const tambahRealisasi = [
       const { idAktivitas } = req.params;
       const baseUrl = getBaseUrl(req);
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/realisasi/${idAktivitas}`);
+      return res.redirect(`${baseUrl}/user/aktivitas/realisasi/${idAktivitas}`);
     }
 
     next();

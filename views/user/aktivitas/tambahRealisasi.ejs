@@ -1,0 +1,70 @@
+<%- include('../partials/topTemplate') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h1 mb-0 text-gray-800">Isi Realisasi Aktivitas</h1>
+  </div>
+
+  <% if (req.session.error) { %>
+    <% req.session.error.forEach(error => { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error.msg %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <% }) %>
+  <% } %>
+
+  <% delete req.session.error; %>
+  
+  <!-- Content Row -->
+  <div class="row">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <form method="post" action="<%= baseUrl %>/user/aktivitas/realisasi/<%= req.params.idAktivitas %>">
+                <div class="form-group">
+                  <label class="text-dark">Pekerjaan</label>
+                  <input readonly type="text" class="form-control" value="<%= aktivitas.pekerjaan.pekerjaan %>">
+                </div>
+                <div class="form-group">
+                  <label class="text-dark">Tanggal Mulai</label>
+                  <input readonly type="date" class="form-control" value="<%= aktivitas.tglMulai %>">
+                </div>
+                <div class="form-group">
+                  <label class="text-dark">Tanggal Selesai</label>
+                  <input readonly type="date" class="form-control" value="<%= aktivitas.tglSelesai %>">
+                </div>
+                <div class="form-group">
+                  <label class="text-dark">Target</label>
+                  <input readonly type="text" class="form-control" value="<%= aktivitas.pekerjaan.target %>">
+                </div>
+                <div class="form-group">
+                  <label class="text-dark">Satuan Target</label>
+                  <input readonly type="text" class="form-control" value="<%= aktivitas.pekerjaan.satuanTarget %>">
+                </div>
+                <div class="form-group">
+                  <label class="text-dark">Realisasi</label>
+                  <input required type="number" class="form-control" name="realisasi" value="<%= (aktivitas.realisasi) ? aktivitas.realisasi : '' %>">
+                </div>
+                <br>
+                <a href="<%= baseUrl %>/user/aktivitas/daftar/<%= aktivitas.idPegawai %>" class="btn btn-danger">Batal</a>
+                <button type="submit" class="btn btn-primary">Tambah</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<%- include('../partials/bottomTemplate') %>
