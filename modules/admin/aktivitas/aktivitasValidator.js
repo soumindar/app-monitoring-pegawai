@@ -44,17 +44,16 @@ const tambahRealisasi = [
 const ubahAktivitas = [
   check('tglMulai').notEmpty().withMessage('Tanggal mulai tidak boleh kosong!'),
   check('tglSelesai').notEmpty().withMessage('Tanggal selesai tidak boleh kosong!'),
-  check('realisasi').notEmpty().withMessage('Realisasi tidak boleh kosong!'),
-  check('realisasi').isNumeric().withMessage('Realisasi harus berupa bilangan!'),
   (req, res, next) => {
     let errors = validationResult(req).array();
     
     if (errors.length > 0) {
       const { idAktivitas } = req.params;
+      const { tglMulai, tglSelesai, realiasi } = req.body;
       const baseUrl = getBaseUrl(req);
       req.session.oldAktivitas = { tglMulai, tglSelesai, realiasi };
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/realisasi/${idAktivitas}?old_input=true`);
+      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/ubah/${idAktivitas}?old_input=true`);
     }
 
     next();
