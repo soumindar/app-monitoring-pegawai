@@ -75,7 +75,8 @@
         </a>
         <div id="collapsePages6" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="<%= baseUrl %>/admin/aktivitas/pegawai">Daftar Aktivitas</a>
+                <a class="collapse-item" href="<%= baseUrl %>/user/aktivitas/daftar/<%= req.session.idPegawai %>">Daftar Aktivitas</a>
+                <a class="collapse-item" href="<%= baseUrl %>/user/aktivitas/tambah/<%= req.session.idPegawai %>">Tambah Aktivitas</a>
             </div>
         </div>
     </li>
