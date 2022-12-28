@@ -89,7 +89,19 @@ const dataIdPegawai = async (req, res) => {
         tglMulai: true,
         tglSelesai: true,
         realisasi: true,
-        pekerjaan: true,
+        pekerjaan: {
+          select: {
+            id: true,
+            pekerjaan: true,
+            target: true,
+            satuanTarget: true,
+            level: {
+              select: {
+                level: true,
+              }
+            }
+          }
+        },
       },
       where: {
         idPegawai,
@@ -125,6 +137,8 @@ const dataIdPegawai = async (req, res) => {
       totalPage,
     };
   } catch (error) {
+    console.log('service');
+    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
