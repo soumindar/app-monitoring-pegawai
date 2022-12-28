@@ -92,8 +92,9 @@ router.post('/tambah', pekerjaanValidator.tambahPekerjaan, async (req, res) => {
     delete req.session.oldPekerjaan;
     req.session.alert = [{msg: 'Berhasil menambah pekerjaan'}];
 
-    return res.redirect(`${baseUrl}/admin/pekerjaan/daftar`);
+    return res.redirect(`${baseUrl}/admin/pekerjaan/daftar?idDivisi=${tambahPekerjaan.idDivisi}`);
   } catch (error) {
+    console.log('controller');
     console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {

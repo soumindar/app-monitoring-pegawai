@@ -155,9 +155,11 @@ const tambahPekerjaan = async (req, res) => {
       select: { pekerjaan: true },
       where: { 
         pekerjaan,
+        idDivisi,
         deleted: null,
       },
     });
+    console.log(pekerjaanExist);
     if (pekerjaanExist) {
       req.session.oldpekerjaan = { idDivisi, pekerjaan, durasi, target, satuanTarget, idLevel };
       req.session.error = [{msg: 'Pekerjaan sudah ada!'}];
@@ -179,8 +181,10 @@ const tambahPekerjaan = async (req, res) => {
 
     return {
       statusCode: 200,
+      idDivisi,
     };
   } catch (error) {
+    console.log('service');
     console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
