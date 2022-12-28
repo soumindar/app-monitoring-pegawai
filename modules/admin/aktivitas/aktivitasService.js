@@ -313,7 +313,11 @@ const ubahAktivitas = async (req, res) => {
   let { tglMulai, tglSelesai, realisasi } = req.body;
   tglMulai = toDateObj(tglMulai);
   tglSelesai = toDateObj(tglSelesai);
-  realisasi = Number(realisasi);
+  if (realisasi) {
+    realisasi = Number(realisasi);
+  } else {
+    realisasi = null;
+  }
 
   const aktivitasExist = await prisma.aktivitasPegawai.findFirst({
     select: {
@@ -351,7 +355,6 @@ const ubahAktivitas = async (req, res) => {
     idPegawai: aktivitasExist.idPegawai,
   };
  } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
