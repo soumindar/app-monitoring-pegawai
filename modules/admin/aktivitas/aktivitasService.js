@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const momentTz = require('moment-timezone');
 const userTimezone = require('../../../config/timezone.config');
 const getBaseUrl = require('../../../utils/getBaseUrl');
+const toDateObj = require('../../../utils/toDateObj');
 
 // ambil selururuh data aktivitas dengan pagination
 const dataLengkap = async (req, res) => {
@@ -310,12 +311,8 @@ const ubahAktivitas = async (req, res) => {
  try{
   const { idAktivitas } = req.params;
   let { tglMulai, tglSelesai, realisasi } = req.body;
-
-  const tglMulaiWib = momentTz(tglMulai).tz(userTimezone).format();
-  const tglSelesaiWib = momentTz(tglSelesai).tz(userTimezone).format();
-  tglMulai = new Date(tglMulaiWib.substring(0, 10));
-  tglSelesai = new Date(tglSelesaiWib.substring(0, 10));
-
+  tglMulai = toDateObj(tglMulai);
+  tglSelesai = toDateObj(tglSelesai);
   realisasi = Number(realisasi);
 
   const aktivitasExist = await prisma.aktivitasPegawai.findFirst({
@@ -335,7 +332,7 @@ const ubahAktivitas = async (req, res) => {
     };
   }
 
-  const today = new Date(new Date().setHours(0, 0, 0, 0));
+  const today = toDateObj(new Date());
   if (tglSelesai > today) {
     realisasi = null;
   }
