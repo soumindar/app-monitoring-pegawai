@@ -109,6 +109,7 @@ const dataBeranda = async (req, res) => {
         realisasiKosong++;
       }
     });
+    
     const progressCkp = Math.floor((totalCkp / maxCkp) * 100);
 
     const awalTahunLalu = toDateObj(new Date(today.getFullYear() - 1, 0, 1));
