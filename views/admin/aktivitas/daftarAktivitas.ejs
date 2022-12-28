@@ -44,6 +44,7 @@
                                     <th>Pekerjaan</th>
                                     <th width="12%">Tanggal Mulai</th>
                                     <th width="13%">Tanggal Selesai</th>
+                                    <th width="5%">Level</th>
                                     <th width="5%">Target</th>
                                     <th width="12%">Satuan Target</th>
                                     <th width="5%">Realisasi</th>
@@ -58,6 +59,7 @@
                                         <td><%= aktivitas.pekerjaan.pekerjaan %></td>
                                         <td><%= aktivitas.tglMulai %></td>
                                         <td><%= aktivitas.tglSelesai %></td>
+                                        <td><%= aktivitas.pekerjaan.level.level %></td>
                                         <td><%= aktivitas.pekerjaan.target %></td>
                                         <td><%= aktivitas.pekerjaan.satuanTarget %></td>
                                         <% if (aktivitas.realisasi) { %>
