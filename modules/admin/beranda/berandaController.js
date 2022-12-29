@@ -22,6 +22,7 @@ router.get('/', async (req, res) => {
     distribusiPegawai: JSON.stringify(data.distribusiPegawai),
     ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
     ckpDivisi: JSON.stringify(data.ckpDivisi),
+    pegawaiKosong: data.pegawaiKosong,
   });
 });
 

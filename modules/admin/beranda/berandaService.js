@@ -85,8 +85,12 @@ const dataBeranda = async (req, res) => {
     }
 
     // jumlah realisasi belum lengkap
-    const getRealisasiKosong = await prisma.aktivitasPegawai.aggregate({
-      _count: { id: true },
+    const pegawaiKosong = await prisma.aktivitasPegawai.findMany({
+      select: {
+        pegawai: {
+          select: { nama: true },
+        },
+      },
       where: {
         deleted: null,
         realisasi: null,
@@ -100,7 +104,8 @@ const dataBeranda = async (req, res) => {
         }
       }
     });
-    const realisasiKosong = getRealisasiKosong._count.id;
+    const realisasiKosong = pegawaiKosong.length;
+    console.log(pegawaiKosong);
 
     // data ckp keseluruhan
     const aktivitas = await prisma.aktivitasPegawai.findMany({
@@ -149,7 +154,7 @@ const dataBeranda = async (req, res) => {
       });
     }
 
-    let ckpBulanan = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let ckpBulanan = [null, null, null, null, null, null, null, null, null, null, null, null];
     for (let i = 0; i < 12; i++) {
       if (maxCkpBulanan[i] > 0) {
         ckpBulanan[i] = Math.floor((totalCkpBulanan[i] / maxCkpBulanan[i] * 100));
@@ -224,7 +229,8 @@ const dataBeranda = async (req, res) => {
       ckpDivisi: {
         data: progressCkpDivisi,
         label: labelDivisi,
-      }
+      },
+      pegawaiKosong,
     };
   } catch (error) {
     console.log(error.message);
