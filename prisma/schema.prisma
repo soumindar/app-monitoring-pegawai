@@ -108,7 +108,7 @@ model ckpTahunanPegawai {
   id            String     @id @default(uuid())
   idPegawai     String
   ckp           Float?
-  tahun         DateTime    @db.Date
+  tahun         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
@@ -119,7 +119,7 @@ model ckpBulananPegawai {
   id            String     @id @default(uuid())
   idPegawai     String
   ckp           Float?
-  bulan         DateTime    @db.Date
+  bulan         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
@@ -130,7 +130,7 @@ model ckpTahunanDivisi {
   id            String     @id @default(uuid())
   idDivisi      String
   ckp           Float?
-  tahun         DateTime    @db.Date
+  tahun         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
@@ -141,7 +141,7 @@ model ckpBulananDivisi {
   id            String     @id @default(uuid())
   idDivisi      String
   ckp           Float?
-  bulan         DateTime    @db.Date
+  bulan         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
@@ -151,7 +151,7 @@ model ckpBulananDivisi {
 model ckpTahunanKeseluruhan {
   id            String     @id @default(uuid())
   ckp           Float?
-  tahun         DateTime    @db.Date
+  tahun         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
@@ -160,7 +160,7 @@ model ckpTahunanKeseluruhan {
 model ckpBulananKeseluruhan {
   id            String     @id @default(uuid())
   ckp           Float?
-  bulan         DateTime    @db.Date
+  bulan         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
