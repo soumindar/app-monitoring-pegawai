@@ -30,23 +30,39 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <h1 class="h3 mb-0 text-gray-800">Dashboard Admin</h1>
     </div>
 
     <!-- Content Row -->
     <div class="row">
 
-        <!-- Earnings (Monthly) Card Example -->
+        <!-- Pegawai -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Earnings (Monthly)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                Jumlah Pegawai</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= jmlPegawai %></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aktivitas -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Jumlah Aktivitas Tahun Ini</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= jmlAktivitas %></div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -56,65 +72,47 @@
             </div>
         </div>
 
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Earnings (Annual)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Earnings (Monthly) Card Example -->
+        <!-- Progress CKP -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Progress CKP Tahun Ini
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><%= progressCkp %>%</div>
                                 </div>
                                 <div class="col">
                                     <div class="progress progress-sm mr-2">
                                         <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                            style="width: <%= progressCkp %>%" aria-valuenow="<%= progressCkp %>" aria-valuemin="0"
                                             aria-valuemax="100"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            <i class="fas fa-tasks fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pending Requests Card Example -->
+        <!-- Realisasi Belum Lengkap -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Requests</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                Realisasi Belum Lengkap</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= realisasiKosong %></div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                            <i class="fas fa-exclamation-circle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -123,19 +121,322 @@
     </div>
 
     <!-- Content Row -->
-    <div class="row">
-        <div class="container-fluid">
-        <div class="card">
-            <div class="card-body">
-            <h1>
-                Administrator
-            </h1>
+
+    <!-- Grafik CKP Keseluruhan -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <!-- Pilih Tampilan -->
+                    <div class="row mb-4">
+                        <div class="col-lg-5 ml-4 border rounded border-secondary">
+                            <form id="form-tampilan" class="mb-3 ml-3" method="get" action="">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="h6 text-gray-800 mt-3">Pilih tampilan:</div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tampilan" id="bulanan" value="bulanan" checked>
+                                            <label class="form-check-label text-gray-800" for="exampleRadios1">Bulanan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tampilan" id="tahunan" value="tahunan">
+                                            <label class="form-check-label text-gray-800" for="exampleRadios1">Tahunan</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div id="tahun-awal"class="h6 text-gray-800 mt-3">Dari tahun:</div>
+                                                <div class="form-group mb-4">
+                                                    <input required type="number" name="tahunAwal" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="h6 text-gray-800 mt-3 tahun-akhir">Sampai tahun:</div>
+                                                <div class="form-group mb-4 tahun-akhir">
+                                                    <input required id="input-tahun-akhir" type="number" name="tahunAkhir" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4"></div>
+                                    <div class="col-lg-8">
+                                        <button type="submit" class="btn btn-primary btn-sm pull-right">Tampilkan</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Grafik -->
+                    <div>
+                        <canvas id="ckp-keseluruhan" style="height: 25rem;"></canvas>
+                    </div>
+
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Grafik Distribusi Pegawai -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="distribusi-pegawai" style="height: 20rem;"></canvas>
+                </div>
+                <div class="h5 mb-3 text-gray-900 text-center">
+                    Total pegawai: <%= jmlPegawai %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grafik CKP Divisi -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body" >
+                    <canvas id="ckp-divisi" style="height: 20rem;"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
 <!-- /.container-fluid -->
+
+
+<script src="<%= baseUrl %>/vendor/jquery/jquery.min.js"></script>
+
+<script src="<%= baseUrl %>/vendor/chart.js/Chart.min.js"></script>
+
+<!-- pilih tampilan -->
+<script>
+    const tampilan = $("#form-tampilan input[name='tampilan']:checked").val();
+    if (tampilan == 'bulanan') {
+        $('.tahun-akhir').hide();
+        $('#tahun-awal').html('Pilih tahun:');
+        $('#input-tahun-akhir').prop('required', false);
+        $('#input-tahun-akhir').prop('name', '');
+    }
+
+    $("#form-tampilan input[name='tampilan']").on('change', function() {
+        if (this.value == 'bulanan') {
+            $('.tahun-akhir').hide();
+            $('#tahun-awal').html('Pilih tahun:');
+            $('#input-tahun-akhir').prop('required', false);
+            $('#input-tahun-akhir').prop('name', '');
+        } else {
+            $('.tahun-akhir').show();
+            $('#tahun-awal').html('Dari tahun:');
+            $('#input-tahun-akhir').prop('required', true);
+            $('#input-tahun-akhir').prop('name', 'tahunAkhir');
+        }
+    });
+</script>
+
+<!-- chartjs -->
+<script>
+    const tahunIni = new Date().getFullYear();
+    
+    const getCkpKeseluruhan = "<%= ckpKeseluruhan %>";
+    const ckpKeseluruhan = getCkpKeseluruhan.replace(/&#34;/g, '"');
+    const cData = JSON.parse(ckpKeseluruhan);
+
+    const getDistribusiPegawai = "<%= distribusiPegawai %>";
+    const distribusiPegawai = getDistribusiPegawai.replace(/&#34;/g, '"');
+    const cData2 = JSON.parse(distribusiPegawai);
+
+    const getCkpDivisi = "<%= ckpDivisi %>";
+    const ckpDivisi = getCkpDivisi.replace(/&#34;/g, '"');
+    const cData3 = JSON.parse(ckpDivisi);
+
+    const ctx = $('#ckp-keseluruhan');
+    const ctx2 = $('#distribusi-pegawai');
+    const ctx3 = $('#ckp-divisi');
+    
+    const data = {
+        labels: cData.label,
+        datasets: [{
+            data: cData.data,
+            // backgroundColor: ['#2364AA', '#3085C2','#3DA5D9', '#59C9BA', '#73BFB8', '#F0E3B4', '#A9DA5B', '#F0E356', '#FEC601','#F49D0C','#EA7317','#ED572D'],
+            fill: false,
+            borderColor: '#2364AA',
+            borderWidth: 3,
+        }],
+    };
+
+    const data2 = {
+        labels: cData2.label,
+        datasets: [{
+            label: "Distribusi Pegawai Per Divisi",
+            data: cData2.data,
+            backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
+            borderColor: '#ccc',
+            borderWidth: [0, 0, 0, 0, 0, 0]
+        }],
+    };
+
+
+    const data3 = {
+        labels: cData3.label,
+        datasets: [{
+            label: `Progress CKP Per Divisi Tahun ${tahunIni}`,
+            data: cData3.data,
+            backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
+            borderColor: '#ccc',
+            borderWidth: [0, 0, 0, 0, 0, 0]
+        }],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    suggestedMin: 0,
+                    beginAtZero: true,
+                }
+            }]
+        },
+        title: {
+            display: true,
+            position: "top",
+            text: `Capaian Kinerja Pegawai Keseluruhan Tahun ${tahunIni}  (%)`,
+            fontSize: 18,
+            fontColor: "#4C4C4C",
+        },
+        legend: {
+            display: false,
+        },
+        layout: {
+            padding: {
+                left: 10,
+                right: 25,
+                top: 0,
+                bottom: 0
+            }
+        },
+        tooltips: {
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+    };
+
+    const options2 = {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+            display: true,
+            position: "top",
+            text: "Distribusi Pegawai Per Divisi",
+            fontSize: 18,
+            fontColor: "#4C4C4C"
+        },
+        legend: {
+            display: true,
+            labels: {
+                boxWidth: 20,
+            }
+        },
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 0,
+                bottom: 0
+            }
+        },
+        tooltips: {
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+    };
+
+    const options3 = {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+            display: true,
+            position: "top",
+            text: `Progress CKP Per Divisi Tahun ${tahunIni}  (%)`,
+            fontSize: 18,
+            fontColor: "#4C4C4C"
+        },
+        legend: {
+            display: false,
+        },
+        layout: {
+            padding: {
+                left: 10,
+                right: 25,
+                top: 0,
+                bottom: 0
+            }
+        },
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    suggestedMin: 0,
+                    beginAtZero: true,
+                }
+            }]
+        },
+        tooltips: {
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+    };
+    
+    const chart1 = new Chart(ctx, {
+        type: "line",
+        data: data,
+        options: options,
+    });
+
+    const chart2 = new Chart(ctx2, {
+        type: "pie",
+        data: data2,
+        options: options2,
+    });
+
+    const chart3 = new Chart(ctx3, {
+        type: "bar",
+        data: data3,
+        options: options3,
+    });
+</script>
 
 <%- include('../partials/bottomTemplate') %>
