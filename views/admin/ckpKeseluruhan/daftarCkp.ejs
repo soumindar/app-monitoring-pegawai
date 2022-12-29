@@ -34,57 +34,86 @@
                 Capaian Kinerja Pegawai Keseluruhan
             </h1>
             <div class="card">
-                <div class="card-body">                   
-                  <div class="h5 mb-3 text-gray-800">
-                    Capaian Kinerja Pegawai Keseluruhan Tahunan:
-                  </div>
-                  <div class="table-responsive mb-5">
-                    <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th width="2%">No.</th>
-                            <th width="25%">Tahun</th>
-                            <th>CKP</th>
-                            <th width="15%">Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>1.</td>
-                            <td><%= tahun %></td>
-                            <td><%= ckpTahunan ?? 'Belum ada data' %></td>
-                            <td></td>
-                          </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-lg-6">
 
-                  <div class="h5 mb-3 text-gray-800">
-                    Capaian Kinerja Pegawai Keseluruhan Bulanan:
-                  </div>
-                  <div class="table-responsive">
-                      <table class="table table-bordered">
-                          <thead>
-                            <tr>
-                              <th width="2%">No.</th>
-                              <th width="25%">Bulan</th>
-                              <th>CKP</th>
-                              <th width="15%">Aksi</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                                <% let i = 1 %>
-                                <% ckpBulanan.forEach(ckp => { %>
-                                    <tr>
-                                        <td><%= i++ %></td>
-                                        <td><%= ckp.bulan %></td>
-                                        <td><%= ckp.ckp %></td>
-                                        <td>
-                                        </td>
-                                    </tr>
-                                <% }) %>
-                          </tbody>
-                      </table>
+
+                      <div class="text-dark">Tahun:</div>
+                      <div class="row">
+                        <div class="col-lg-9">
+                          <form method="get" action="">
+                            <div class="form-group">
+                              <input required type="number" name="tahun" class="form-control">
+                            </div>
+                          </form>
+                        </div>
+                        <div class="col-lg-3">
+                          <button type="submit" class="btn btn-primary">Tampilkan</button>
+                        </div>
+                      </div>
+
+                      <div class="h5 mt-5 mb-3 text-gray-800">
+                        Capaian Kinerja Pegawai Keseluruhan Tahunan:
+                      </div>
+                      <div class="table-responsive mb-5">
+                        <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th width="2%">No.</th>
+                                <th width="50%">Tahun</th>
+                                <th>CKP</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% if (dataTahunanExist) { %>
+                                <tr>
+                                  <td>1.</td>
+                                  <td><%= tahun %></td>
+                                  <td><%= ckpTahunan ?? '-' %></td>
+                                </tr>
+                              <% } else { %>
+                                <tr>
+                                  <td colspan="3" class="text-center">Tidak ada data</td>
+                                </tr>
+                              <% } %>
+                            </tbody>
+                        </table>
+                      </div>
+    
+                      <div class="h5 mb-3 text-gray-800">
+                        Capaian Kinerja Pegawai Keseluruhan Bulanan:
+                      </div>
+                      <div class="table-responsive">
+                          <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th width="2%">No.</th>
+                                  <th width="50%">Bulan</th>
+                                  <th>CKP</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% if (dataTahunanExist) { %>
+                                  <% let i = 1 %>
+                                  <% ckpBulanan.forEach(ckp => { %>
+                                      <tr>
+                                          <td><%= i++ %></td>
+                                          <td><%= ckp.bulan %></td>
+                                          <td><%= ckp.ckp  ?? '-' %></td>
+                                      </tr>
+                                  <% }) %>
+                                <% } else { %>
+                                  <tr>
+                                    <td colspan="3" class="text-center">Tidak ada data</td>
+                                  </tr>
+                                <% } %>
+                              </tbody>
+                          </table>
+                        </div>
+
+                        <a href="<%= baseUrl %>/admin/ckp-keseluruhan/tambah" class="btn btn-primary mt-4 ml-2">Tambah/Perbarui CKP</a>
+                    </div>
                   </div>
                 </div>
             </div>
