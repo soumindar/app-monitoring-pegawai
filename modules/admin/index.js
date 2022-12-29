@@ -11,6 +11,7 @@ const levelController = require('./level/levelController');
 const aktivitasController = require('./aktivitas/aktivitasController');
 const ckpKeseluruhanController = require('./ckpKeseluruhan/ckpController');
 const ckpDivisiController = require('./ckpDivisi/ckpController');
+const ckpPegawaiController = require('./ckpPegawai/ckpController');
 
 router.use('/auth', authController);
 router.use('/', berandaController);
@@ -23,5 +24,6 @@ router.use('/level', levelController);
 router.use('/aktivitas', aktivitasController);
 router.use('/ckp-keseluruhan', ckpKeseluruhanController);
 router.use('/ckp-divisi', ckpDivisiController);
+router.use('/ckp-pegawai', ckpPegawaiController);
 
 module.exports = router;
