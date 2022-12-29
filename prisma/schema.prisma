@@ -27,18 +27,20 @@ model Jabatan {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime?   @updatedAt
   deleted     DateTime?
-  pegawai    Pegawai[]
+  pegawai     Pegawai[]
 }
 
 model Divisi {
-  id          String     @id @default(uuid())
-  divisi      String
-  keterangan  String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime?   @updatedAt
-  deleted     DateTime?
-  pegawai     Pegawai[]
-  pekerjaan   Pekerjaan[]
+  id            String     @id @default(uuid())
+  divisi        String
+  keterangan    String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+  pegawai       Pegawai[]
+  pekerjaan     Pekerjaan[]
+  ckpTahunan    ckpTahunanDivisi[]
+  ckpBulanan    ckpBulananDivisi[]
 }
 
 model Pegawai {
@@ -57,6 +59,9 @@ model Pegawai {
   jabatan     Jabatan     @relation(fields: [idJabatan], references: [id])
   divisi      Divisi      @relation(fields: [idDivisi], references: [id])
   aktivitas   AktivitasPegawai[]
+  ckpTahunan  ckpTahunanPegawai[]
+  ckpBulanan  ckpBulananPegawai[]
+
 }
 
 model Level {
@@ -73,7 +78,7 @@ model Pekerjaan {
   id            String     @id @default(uuid())
   pekerjaan     String
   durasi        Int
-  target        Int
+  target        Float
   satuanTarget  String
   idLevel       String
   idDivisi      String
@@ -91,10 +96,72 @@ model AktivitasPegawai {
   idPekerjaan   String
   tglMulai      DateTime    @db.Date
   tglSelesai    DateTime    @db.Date
-  realisasi     Int?
+  realisasi     Float?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
   pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
   pekerjaan     Pekerjaan @relation(fields: [idPekerjaan], references: [id])
+}
+
+model ckpTahunanPegawai {
+  id            String     @id @default(uuid())
+  idPegawai     String
+  ckp           Float?
+  tahun         DateTime    @db.Date
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+  pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
+}
+
+model ckpBulananPegawai {
+  id            String     @id @default(uuid())
+  idPegawai     String
+  ckp           Float?
+  bulan         DateTime    @db.Date
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+  pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
+}
+
+model ckpTahunanDivisi {
+  id            String     @id @default(uuid())
+  idDivisi      String
+  ckp           Float?
+  tahun         DateTime    @db.Date
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+  Divisi        Divisi   @relation(fields: [idDivisi], references: [id])
+}
+
+model ckpBulananDivisi {
+  id            String     @id @default(uuid())
+  idDivisi      String
+  ckp           Float?
+  bulan         DateTime    @db.Date
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+  Divisi        Divisi   @relation(fields: [idDivisi], references: [id])
+}
+
+model ckpTahunanKeseluruhan {
+  id            String     @id @default(uuid())
+  ckp           Float?
+  tahun         DateTime    @db.Date
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
+}
+
+model ckpBulananKeseluruhan {
+  id            String     @id @default(uuid())
+  ckp           Float?
+  bulan         DateTime    @db.Date
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  deleted       DateTime?
 }

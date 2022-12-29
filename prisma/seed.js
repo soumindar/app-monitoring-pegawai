@@ -193,7 +193,7 @@ const bcrypt = require('bcrypt');
           idDivisi: keuangan.id,
         },
         {
-          pekerjaan: 'membuat laporan keuangan semesteran',
+          pekerjaan: 'Membuat laporan keuangan semesteran',
           durasi: 15,
           target: 1,
           satuanTarget: 'Dokumen',
@@ -286,7 +286,7 @@ const bcrypt = require('bcrypt');
           target: 100,
           satuanTarget: 'Persen',
           idLevel: high.id,
-          idDivisi: it.id,
+          idDivisi: umum.id,
         },
         {
           pekerjaan: 'Membuat surat perusahaan',
