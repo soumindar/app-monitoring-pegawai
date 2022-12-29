@@ -19,6 +19,12 @@ const dataPegawai = async (req, res) => {
         nama: true,
         idJabatan: true,
         idDivisi: true,
+        jabatan: {
+          select: { jabatan: true },
+        },
+        divisi: {
+          select: { divisi: true },
+        },
       },
       where: {
         deleted: null,
