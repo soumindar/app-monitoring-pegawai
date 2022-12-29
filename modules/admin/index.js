@@ -9,6 +9,7 @@ const divisiController = require('./divisi/divisiController');
 const pekerjaanController = require('./pekerjaan/pekerjaanController');
 const levelController = require('./level/levelController');
 const aktivitasController = require('./aktivitas/aktivitasController');
+const ckpKeseluruhanController = require('./ckpKeseluruhan/ckpController');
 
 router.use('/auth', authController);
 router.use('/', berandaController);
@@ -19,5 +20,6 @@ router.use('/divisi', divisiController);
 router.use('/pekerjaan', pekerjaanController);
 router.use('/level', levelController);
 router.use('/aktivitas', aktivitasController);
+router.use('/ckp-keseluruhan', ckpKeseluruhanController);
 
 module.exports = router;

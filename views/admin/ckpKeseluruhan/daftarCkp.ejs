@@ -1,0 +1,97 @@
+<%- include('../partials/topTemplate') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <% if (req.session.alert) { %>
+        <% req.session.alert.forEach(alert => { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= alert.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% if (req.session.error) { %>
+        <% req.session.error.forEach(error => { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= error.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% delete req.session.alert; %>
+    <% delete req.session.error; %>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="container-fluid">
+            <h1 class="h1 mb-3 text-gray-800">
+                Capaian Kinerja Pegawai Keseluruhan
+            </h1>
+            <div class="card">
+                <div class="card-body">                   
+                  <div class="h5 mb-3 text-gray-800">
+                    Capaian Kinerja Pegawai Keseluruhan Tahunan:
+                  </div>
+                  <div class="table-responsive mb-5">
+                    <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th width="2%">No.</th>
+                            <th width="25%">Tahun</th>
+                            <th>CKP</th>
+                            <th width="15%">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1.</td>
+                            <td><%= tahun %></td>
+                            <td><%= ckpTahunan ?? 'Belum ada data' %></td>
+                            <td></td>
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                  <div class="h5 mb-3 text-gray-800">
+                    Capaian Kinerja Pegawai Keseluruhan Bulanan:
+                  </div>
+                  <div class="table-responsive">
+                      <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th width="2%">No.</th>
+                              <th width="25%">Bulan</th>
+                              <th>CKP</th>
+                              <th width="15%">Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                                <% let i = 1 %>
+                                <% ckpBulanan.forEach(ckp => { %>
+                                    <tr>
+                                        <td><%= i++ %></td>
+                                        <td><%= ckp.bulan %></td>
+                                        <td><%= ckp.ckp %></td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                          </tbody>
+                      </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<%- include('../partials/bottomTemplate') %>
