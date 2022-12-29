@@ -108,44 +108,52 @@ model ckpTahunanPegawai {
   id            String     @id @default(uuid())
   idPegawai     String
   ckp           Float?
-  tahun         DateTime    @db.Date @unique
+  tahun         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
   pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
+
+  @@unique([idPegawai, tahun])
 }
 
 model ckpBulananPegawai {
   id            String     @id @default(uuid())
   idPegawai     String
   ckp           Float?
-  bulan         DateTime    @db.Date @unique
+  bulan         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
   pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
+
+  @@unique([idPegawai, bulan])
 }
 
 model ckpTahunanDivisi {
   id            String     @id @default(uuid())
   idDivisi      String
   ckp           Float?
-  tahun         DateTime    @db.Date @unique
+  tahun         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
   Divisi        Divisi   @relation(fields: [idDivisi], references: [id])
+
+  @@unique([idDivisi, tahun])
 }
 
 model ckpBulananDivisi {
   id            String     @id @default(uuid())
   idDivisi      String
   ckp           Float?
-  bulan         DateTime    @db.Date @unique
+  bulan         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
   Divisi        Divisi   @relation(fields: [idDivisi], references: [id])
+
+  @@unique([idDivisi, bulan])
 }
 
 model ckpTahunanKeseluruhan {
