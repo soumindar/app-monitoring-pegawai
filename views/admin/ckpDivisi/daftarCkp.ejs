@@ -1,0 +1,142 @@
+<%- include('../partials/topTemplate') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <% if (req.session.alert) { %>
+        <% req.session.alert.forEach(alert => { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= alert.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% if (req.session.error) { %>
+        <% req.session.error.forEach(error => { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= error.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <% delete req.session.alert; %>
+    <% delete req.session.error; %>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="container-fluid">
+            <h1 class="h1 mb-3 text-gray-800">
+                Capaian Kinerja Pegawai Keseluruhan
+            </h1>
+            <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-lg-6 border rounded">
+                      <form method="get" action="">
+                          <div class="row">
+                              <div class="col-lg-9">
+                                  <div class="text-gray-800 mt-2">Pilih Divisi:</div>
+                                  <select class="js-example-basic-single form-control" name="idDivisi">
+                                  <% if (!req.query.idDivisi) { %>
+                                      <option selected>Pilih Divisi...</option>
+                                  <% } %>
+                                  <% divisi.forEach(divisi => { %>
+                                      <% if (req.query.idDivisi == divisi.id) { %>
+                                          <option selected value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                                      <% } else { %>
+                                          <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                                      <% } %>
+                                  <% }) %>
+                                  </select>
+                              </div>
+                          </div>   
+                          <div class="text-gray-800 mt-3">Tahun:</div>
+                          <div class="row">
+                            <div class="col-lg-9">   
+                              <input required type="number" name="tahun" class="form-control" value="<%= req.query.tahun ?? '' %>">
+                            </div>
+                            <div class="col-lg-3 mb-3">
+                              <button type="submit" class="btn btn-primary">Tampilkan</button>
+                            </div>
+                          </div>                    
+                      </form>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="h5 mt-5 mb-3 text-gray-800">
+                        Capaian Kinerja Pegawai Keseluruhan Tahunan:
+                      </div>
+                      <div class="table-responsive mb-5">
+                        <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th width="2%">No.</th>
+                                <th width="50%">Tahun</th>
+                                <th>CKP</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% if (dataTahunanExist) { %>
+                                <tr>
+                                  <td>1.</td>
+                                  <td><%= tahun %></td>
+                                  <td><%= ckpTahunan ?? '-' %></td>
+                                </tr>
+                              <% } else { %>
+                                <tr>
+                                  <td colspan="3" class="text-center">Tidak ada data</td>
+                                </tr>
+                              <% } %>
+                            </tbody>
+                        </table>
+                      </div>
+    
+                      <div class="h5 mb-3 text-gray-800">
+                        Capaian Kinerja Pegawai Keseluruhan Bulanan:
+                      </div>
+                      <div class="table-responsive">
+                          <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th width="2%">No.</th>
+                                  <th width="50%">Bulan</th>
+                                  <th>CKP</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% if (dataTahunanExist) { %>
+                                  <% let i = 1 %>
+                                  <% ckpBulanan.forEach(ckp => { %>
+                                      <tr>
+                                          <td><%= i++ %></td>
+                                          <td><%= ckp.bulan %></td>
+                                          <td><%= ckp.ckp  ?? '-' %></td>
+                                      </tr>
+                                  <% }) %>
+                                <% } else { %>
+                                  <tr>
+                                    <td colspan="3" class="text-center">Tidak ada data</td>
+                                  </tr>
+                                <% } %>
+                              </tbody>
+                          </table>
+                      </div>
+    
+                      <a href="<%= baseUrl %>/admin/ckp-divisi/tambah" class="btn btn-primary mt-4 ml-2">Tambah/Perbarui CKP</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<%- include('../partials/bottomTemplate') %>
