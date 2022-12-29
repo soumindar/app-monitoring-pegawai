@@ -44,7 +44,7 @@
                         <div class="col-lg-9">
                           <form method="get" action="">
                             <div class="form-group">
-                              <input required type="number" name="tahun" class="form-control">
+                              <input required type="number" name="tahun" class="form-control" value="<%= req.query.tahun ?? '' %>">
                             </div>
                           </form>
                         </div>

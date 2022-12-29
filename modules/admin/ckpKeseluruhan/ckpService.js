@@ -10,6 +10,7 @@ const daftarCkp = async (req, res) => {
     const today = toDateObj(new Date());
     let { tahun } = req.query;
     tahun = tahun ?? today.getFullYear();
+    req.query.tahun = tahun;
     const awalTahun = toDateObj(new Date(`${tahun}-01-01`));
     const akhirTahun = toDateObj(new Date(`${tahun}-12-31`));
 
@@ -171,6 +172,8 @@ const tambahCkp = async (req, res) => {
         },
       });
     }
+    
+    req.session.alert = [{ msg: 'Data CKP berhasil ditambah/diperbarui'}];
     
     return {
       statusCode: 200,
