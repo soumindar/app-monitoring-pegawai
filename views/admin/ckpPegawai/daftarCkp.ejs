@@ -35,12 +35,16 @@
             </h1>
             <div class="card">
                 <div class="card-body">
-                  <a href="<%= baseUrl %>/admin/ckp-pegawai/pegawai" class="btn btn-primary btn-sm mb-3"><i class="fa fa-arrow-left"></i><strong> Kembali</strong></a>
                   <div class="row">
-                    <div class="col-lg-6 border rounded">
+                    <div class="col-lg-8 mx-auto">
+                      <a href="<%= baseUrl %>/admin/ckp-pegawai/pegawai" class="btn btn-primary btn-sm mb-3"><i class="fa fa-arrow-left"></i><strong> Kembali</strong></a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-8 mx-auto border rounded">
                       <form method="get" action="">
-                          <div class="text-gray-800 mt-3">Tahun:</div>
-                          <div class="row">
+                        <div class="text-gray-800 mt-3">Tahun:</div>
+                        <div class="row">
                             <div class="col-lg-9">   
                               <input required type="number" name="tahun" class="form-control" value="<%= req.query.tahun ?? '' %>">
                             </div>
@@ -52,7 +56,7 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-8 mx-auto">
                       <div class="h5 mt-5 mb-3 text-gray-800">
                         Capaian Kinerja Pegawai Tahunan:
                       </div>
