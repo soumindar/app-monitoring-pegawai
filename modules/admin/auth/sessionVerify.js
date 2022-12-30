@@ -6,8 +6,6 @@ const sessionVerify = async (req, res, next) => {
   try {
     const baseUrl = getBaseUrl(req);
 
-    req.session.adminId = '9ef3ecab-93c7-4b38-a5ab-a3026a718be5';
-
     if (!req.session.adminId) {
       req.session.error = [{ msg: 'Harap login terlebih dahulu!' }];
       return res.redirect(`${baseUrl}/admin/auth/login`);
