@@ -138,8 +138,6 @@ const dataIdPegawai = async (req, res) => {
       totalPage,
     };
   } catch (error) {
-    console.log('service');
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -183,7 +181,6 @@ const dataIdAktivitas = async (req, res) => {
       data,
     };
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -297,7 +294,6 @@ const tambahRealisasi = async (req, res) => {
       idPegawai: aktivitasExist.idPegawai,
     };
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

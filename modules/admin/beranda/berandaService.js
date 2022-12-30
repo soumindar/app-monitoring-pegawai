@@ -77,7 +77,8 @@ const dataBeranda = async (req, res) => {
     tampilanKsl = tampilanKsl ?? 'bulanan';
     tahunAwalKsl = tahunAwalKsl ?? today.getFullYear();
     tahunAkhirKsl = tahunAkhirKsl ?? today.getFullYear();
-    
+    req.query.tahunAwalKsl = tahunAwalKsl;
+
     let ckpKeseluruhan = [];
     let labelKeseluruhan = [];
     if (tampilanKsl == 'bulanan') {
@@ -130,56 +131,44 @@ const dataBeranda = async (req, res) => {
 
     }
 
-    // // data distribusi pegawai tiap divisi
-    // const divisi = await prisma.divisi.findMany({
-    //   select: {
-    //     id: true,
-    //     divisi: true,
-    //   },
-    //   where: { deleted: null }
-    // });
+    // data distribusi pegawai tiap divisi
+    const divisi = await prisma.divisi.findMany({
+      select: {
+        id: true,
+        divisi: true,
+      },
+      where: { deleted: null }
+    });
     
-    // const pegawai = await prisma.pegawai.findMany({
-    //   select: { idDivisi: true },
-    //   where: { deleted: null },
-    // });
+    const pegawai = await prisma.pegawai.findMany({
+      select: { idDivisi: true },
+      where: { deleted: null },
+    });
 
-    // let labelDivisi = [];
-    // let jmlPegawaiDivisi = [];
-    // divisi.forEach(divisi => {
-    //   labelDivisi.push(divisi.divisi);
-    //   jmlPegawaiDivisi.push(pegawai.filter(pegawai => pegawai.idDivisi == divisi.id).length);
-    // });
+    let labelDivisi = [];
+    let dataIdDivisi = [];
+    let jmlPegawaiDivisi = [];
+    divisi.forEach(divisi => {
+      labelDivisi.push(divisi.divisi);
+      dataIdDivisi.push(divisi.id);
+      jmlPegawaiDivisi.push(pegawai.filter(pegawai => pegawai.idDivisi == divisi.id).length);
+    });
 
-    // // progress ckp per divisi
-    // let totalCkpDivisi = [];
-    // let maxCkpDivisi = [];
-    // let progressCkpDivisi  = [];
-    // for (let i = 0; i < divisi.length; i++) {
-    //   totalCkpDivisi.push(0);
-    //   maxCkpDivisi.push(0);
-    //   progressCkpDivisi.push(0);
-    // }
+    // progress ckp per divisi
+    const getProgressCkpDivisi = await prisma.ckpBulananDivisi.findMany({
+      select: {
+        ckp: true,
+        idDivisi: true,
+      },
+      where: {
+        bulan: periodeTerakhir,
+      },
+    });
 
-    // let dataIdDivisi = [];
-    // divisi.forEach(divisi => {
-    //   dataIdDivisi.push(divisi.id);
-    // });
-
-    // if (aktivitasSelesai.length > 0) {
-    //   aktivitasSelesai.forEach(aktivitas => {
-    //     const nilaiAktivitas = (aktivitas.realisasi / aktivitas.pekerjaan.target) * aktivitas.pekerjaan.level.pengali;
-    //     const indexDivisi = dataIdDivisi.indexOf(aktivitas.pekerjaan.divisi.id);
-    //     totalCkpDivisi[indexDivisi] += nilaiAktivitas;
-    //     maxCkpDivisi[indexDivisi] += aktivitas.pekerjaan.level.pengali;
-    //   });
-    // }
-    
-    // for (let i = 0; i < divisi.length; i++) {
-    //   if (maxCkpDivisi[i] > 0) {
-    //     progressCkpDivisi[i] = Math.floor((totalCkpDivisi[i] / maxCkpDivisi[i]) * 100);
-    //   }
-    // }
+    let progressCkpDivisi = new Array(divisi.length).fill(null);
+    getProgressCkpDivisi.forEach(ckp => {
+      progressCkpDivisi[dataIdDivisi.indexOf(ckp.idDivisi)] = ckp.ckp;
+    });
 
     return {
       // divisi,
@@ -191,18 +180,17 @@ const dataBeranda = async (req, res) => {
         data: ckpKeseluruhan,
         label: labelKeseluruhan,
       },
-      // distribusiPegawai: {
-      //   data: jmlPegawaiDivisi,
-      //   label: labelDivisi,
-      // },
-      // ckpDivisi: {
-      //   data: progressCkpDivisi,
-      //   label: labelDivisi,
-      // },
+      distribusiPegawai: {
+        data: jmlPegawaiDivisi,
+        label: labelDivisi,
+      },
+      progressCkpDivisi: {
+        data: progressCkpDivisi,
+        label: labelDivisi,
+      },
       // pegawaiKosong,
     };
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

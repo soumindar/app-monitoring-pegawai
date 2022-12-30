@@ -149,13 +149,13 @@
                                             <div class="col-lg-6">
                                                 <div id="tahun-awal"class="h6 text-gray-800 mt-3">Dari tahun:</div>
                                                 <div class="form-group mb-4">
-                                                    <input required type="number" name="tahunAwalKsl" class="form-control form-control-sm">
+                                                    <input required type="number" name="tahunAwalKsl" class="form-control form-control-sm" value="<%= req.query.tahunAwalKsl ?? '' %>">
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="h6 text-gray-800 mt-3 tahun-akhir">Sampai tahun:</div>
                                                 <div class="form-group mb-4 tahun-akhir">
-                                                    <input required id="input-tahun-akhir" type="number" name="tahunAkhirKsl" class="form-control form-control-sm">
+                                                    <input required id="input-tahun-akhir" type="number" name="tahunAkhirKsl" class="form-control form-control-sm" value="<%= req.query.tahunAkhirKsl ?? '' %>">
                                                 </div>
                                             </div>
                                         </div>
@@ -189,7 +189,7 @@
                     <canvas id="distribusi-pegawai" style="height: 20rem;"></canvas>
                 </div>
                 <div class="h5 mb-3 text-gray-900 text-center">
-                    Total pegawai: <%= //jmlPegawai %>
+                    Total pegawai: <%= jmlPegawai %>
                 </div>
             </div>
         </div>
@@ -198,18 +198,7 @@
         <div class="col-lg-6">
             <div class="card h-100">
                 <div class="card-body" >
-                    <canvas id="ckp-divisi" style="height: 20rem;"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <!-- Pegawai Terbaik -->
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    pegawai terbaik
+                    <canvas id="progress-ckp-divisi" style="height: 20rem;"></canvas>
                 </div>
             </div>
         </div>
@@ -225,6 +214,13 @@
 
 <!-- pilih tampilan -->
 <script>
+    const tampilanKsl = "<%= req.query.tampilanKsl %>".replace(/&#34;/g, '"');
+    if (tampilanKsl == 'tahunan') {
+        $('#tahunan').prop('checked', true);
+    } else {
+        $('#bulanan').prop('checked', true);
+    }
+
     const tampilan = $("#form-tampilan input[name='tampilanKsl']:checked").val();
     if (tampilan == 'bulanan') {
         $('.tahun-akhir').hide();
@@ -252,7 +248,6 @@
 <script>
     const tahunIni = new Date().getFullYear();
 
-    const tampilanKsl = "<%= req.query.tampilanKsl %>".replace(/&#34;/g, '"');
     const tahunAwalKsl = "<%= req.query.tahunAwalKsl %>".replace(/&#34;/g, '"');
     let tahunKsl = tahunAwalKsl;
     if (tampilanKsl == 'tahunan') {
@@ -264,17 +259,17 @@
     const ckpKeseluruhan = getCkpKeseluruhan.replace(/&#34;/g, '"');
     const cData = JSON.parse(ckpKeseluruhan);
 
-    // const getDistribusiPegawai = "<%= //distribusiPegawai %>";
-    // const distribusiPegawai = getDistribusiPegawai.replace(/&#34;/g, '"');
-    // const cData2 = JSON.parse(distribusiPegawai);
+    const getDistribusiPegawai = "<%= distribusiPegawai %>";
+    const distribusiPegawai = getDistribusiPegawai.replace(/&#34;/g, '"');
+    const cData2 = JSON.parse(distribusiPegawai);
 
-    // const getCkpDivisi = "<%= //ckpDivisi %>";
-    // const ckpDivisi = getCkpDivisi.replace(/&#34;/g, '"');
-    // const cData3 = JSON.parse(ckpDivisi);
+    const getProgressCkpDivisi = "<%= progressCkpDivisi %>";
+    const progressCkpDivisi = getProgressCkpDivisi.replace(/&#34;/g, '"');
+    const cData3 = JSON.parse(progressCkpDivisi);
 
     const ctx = $('#ckp-keseluruhan');
     const ctx2 = $('#distribusi-pegawai');
-    const ctx3 = $('#ckp-divisi');
+    const ctx3 = $('#progress-ckp-divisi');
     
     const data = {
         labels: cData.label,
@@ -288,28 +283,28 @@
         }],
     };
     
-    // const data2 = {
-    //     labels: cData2.label,
-    //     datasets: [{
-    //         label: "Distribusi Pegawai Per Divisi",
-    //         data: cData2.data,
-    //         backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
-    //         borderColor: '#ccc',
-    //         borderWidth: [0, 0, 0, 0, 0, 0]
-    //     }],
-    // };
+    const data2 = {
+        labels: cData2.label,
+        datasets: [{
+            label: "Distribusi Pegawai Per Divisi",
+            data: cData2.data,
+            backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
+            borderColor: '#ccc',
+            borderWidth: [0, 0, 0, 0, 0, 0]
+        }],
+    };
 
 
-    // const data3 = {
-    //     labels: cData3.label,
-    //     datasets: [{
-    //         label: `Progress CKP Per Divisi Tahun ${tahunIni}`,
-    //         data: cData3.data,
-    //         backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
-    //         borderColor: '#ccc',
-    //         borderWidth: [0, 0, 0, 0, 0, 0]
-    //     }],
-    // };
+    const data3 = {
+        labels: cData3.label,
+        datasets: [{
+            label: `Progress CKP Per Divisi Tahun ${tahunIni}`,
+            data: cData3.data,
+            backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
+            borderColor: '#ccc',
+            borderWidth: [0, 0, 0, 0, 0, 0]
+        }],
+    };
 
     const options = {
         responsive: true,
@@ -449,17 +444,17 @@
         options: options,
     });
 
-    // const chart2 = new Chart(ctx2, {
-    //     type: "pie",
-    //     data: data2,
-    //     options: options2,
-    // });
+    const chart2 = new Chart(ctx2, {
+        type: "pie",
+        data: data2,
+        options: options2,
+    });
 
-    // const chart3 = new Chart(ctx3, {
-    //     type: "bar",
-    //     data: data3,
-    //     options: options3,
-    // });
+    const chart3 = new Chart(ctx3, {
+        type: "bar",
+        data: data3,
+        options: options3,
+    });
 </script>
 
 <%- include('../partials/bottomTemplate') %>

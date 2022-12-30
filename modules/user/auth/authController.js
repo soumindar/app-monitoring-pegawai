@@ -28,7 +28,6 @@ router.post('/login', authValidator.login, async (req, res) => {
     req.session.idPegawai = auth.idPegawai;
     return res.redirect(`${baseUrl}/user`);
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     req.session.error = [{msg: 'Maaf terjadi kesalahan sistem'}];
 

@@ -54,7 +54,6 @@ const daftarCkp = async (req, res) => {
       ckpBulanan,
     }
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -179,7 +178,6 @@ const tambahCkp = async (req, res) => {
       statusCode: 200,
     }
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

@@ -66,7 +66,6 @@ const dataPagination = async (req, res) => {
       totalPage,
     };
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

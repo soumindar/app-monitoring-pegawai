@@ -384,7 +384,6 @@ const ubahPegawai = async (req, res) => {
       },
     });
     if (usernameExist) {
-      console.log('username exist');
       req.session.oldPegawai = { nip, nama, tglLahir, idJabatan, idDivisi, username };
       req.session.error = [{msg: 'Username sudah digunakan oleh pegawai lain'}];
       return {

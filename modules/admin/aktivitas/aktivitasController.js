@@ -32,7 +32,6 @@ router.get('/pegawai', async (req, res) => {
       divisi: divisi.data,
     });
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -59,7 +58,6 @@ router.get('/pegawai/daftar/:idPegawai', async (req, res) => {
       totalPage: aktivitas.totalPage,
     });
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -219,7 +217,6 @@ router.get('/pegawai/ubah/:idAktivitas', async (req, res) => {
       aktivitas: aktivitas.data,
     });
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

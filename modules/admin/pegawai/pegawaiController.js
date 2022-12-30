@@ -177,7 +177,6 @@ router.get('/ubah-password/:id', (req, res) => {
       req,
     });
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -202,7 +201,6 @@ router.post('/ubah-password/:id', pegawaiValidator.ubahPassword, async (req, res
 
     return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -219,7 +217,6 @@ router.get('/hapus/:id', async (req, res) => {
 
     return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

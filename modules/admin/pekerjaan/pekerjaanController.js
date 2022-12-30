@@ -92,8 +92,6 @@ router.post('/tambah', pekerjaanValidator.tambahPekerjaan, async (req, res) => {
 
     return res.redirect(`${baseUrl}/admin/pekerjaan/daftar?idDivisi=${tambahPekerjaan.idDivisi}`);
   } catch (error) {
-    console.log('controller');
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -169,7 +167,6 @@ router.get('/hapus/:id', async (req, res) => {
 
     return res.redirect(`${baseUrl}/admin/pekerjaan/daftar?idDivisi=${hapusPekerjaan.idDivisi}`);
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

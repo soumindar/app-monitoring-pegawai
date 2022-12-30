@@ -20,8 +20,8 @@ router.get('/', async (req, res) => {
     progressCkp: data.progressCkp,
     realisasiKosong: data.realisasiKosong,
     ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
-    // distribusiPegawai: JSON.stringify(data.distribusiPegawai),
-    // ckpDivisi: JSON.stringify(data.ckpDivisi),
+    distribusiPegawai: JSON.stringify(data.distribusiPegawai),
+    progressCkpDivisi: JSON.stringify(data.progressCkpDivisi),
     // pegawaiKosong: data.pegawaiKosong,
   });
 });
