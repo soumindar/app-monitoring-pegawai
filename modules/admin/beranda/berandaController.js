@@ -14,15 +14,15 @@ router.get('/', async (req, res) => {
   return res.render('admin/beranda/beranda', {
     baseUrl,
     req,
-    divisi: data.divisi,
+    // divisi: data.divisi,
     jmlPegawai: data.jmlPegawai,
     jmlAktivitas: data.jmlAktivitas,
     progressCkp: data.progressCkp,
     realisasiKosong: data.realisasiKosong,
-    distribusiPegawai: JSON.stringify(data.distribusiPegawai),
     ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
-    ckpDivisi: JSON.stringify(data.ckpDivisi),
-    pegawaiKosong: data.pegawaiKosong,
+    // distribusiPegawai: JSON.stringify(data.distribusiPegawai),
+    // ckpDivisi: JSON.stringify(data.ckpDivisi),
+    // pegawaiKosong: data.pegawaiKosong,
   });
 });
 
