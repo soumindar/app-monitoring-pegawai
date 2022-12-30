@@ -53,7 +53,7 @@ app.use(session({
   })
 );
 
-app.use(cors(corsOption()));
+// app.use(cors(corsOption()));
 app.use(fileUpload());
 
 app.use('/', indexRouter);
