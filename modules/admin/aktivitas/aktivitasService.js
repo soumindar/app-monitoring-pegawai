@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const toDateObj = require('../../../utils/toDateObj');
+const toDateHtml = require('../../../utils/toDateHtml');
 const ckpKeseluruhanService = require('../ckpKeseluruhan/ckpService');
 const ckpDivisiService = require('../ckpDivisi/ckpService');
 const ckpPegawaiService = require('../ckpPegawai/ckpService');
@@ -65,6 +66,14 @@ const dataIdPegawai = async (req, res) => {
   try {
     const { idPegawai } = req.params;
     const { page } = req.query;
+    let { tahun } = req.query;
+
+    const today = toDateObj(new Date());
+    tahun = tahun ?? today.getFullYear();
+    req.query.tahun = tahun;
+    const awalTahun = toDateObj(new Date(`${tahun}-01-01`));
+    const akhirTahun = toDateObj(new Date(`${tahun}-12-31`));
+
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
@@ -108,6 +117,14 @@ const dataIdPegawai = async (req, res) => {
       where: {
         idPegawai,
         deleted: null,
+        tglMulai: {
+          gte: awalTahun,
+          lte: akhirTahun,
+        },
+        tglSelesai: {
+          gte: awalTahun,
+          lte: akhirTahun,
+        },
       },
       skip: offset,
       take: limit,
@@ -117,18 +134,11 @@ const dataIdPegawai = async (req, res) => {
       ],
     });
     data.forEach(aktivitas => {
-      aktivitas.tglMulai = aktivitas.tglMulai.getFullYear() + "-" + ("0"+(aktivitas.tglMulai.getMonth()+1)).slice(-2) + "-" + ("0" + aktivitas.tglMulai.getDate()).slice(-2);
-      aktivitas.tglSelesai = aktivitas.tglSelesai.getFullYear() + "-" + ("0"+(aktivitas.tglSelesai.getMonth()+1)).slice(-2) + "-" + ("0" + aktivitas.tglSelesai.getDate()).slice(-2);
+      aktivitas.tglMulai = toDateHtml(aktivitas.tglMulai);
+      aktivitas.tglSelesai = toDateHtml(aktivitas.tglSelesai);
     });
 
-    const countAktivitas = await prisma.aktivitasPegawai.aggregate({
-      _count: { id: true },
-      where: {
-        idPegawai,
-        deleted: null,
-      },
-    });
-    const totalData = Number(countAktivitas._count.id);
+    const totalData = data.length;
     const totalPage = Math.ceil(totalData / limit);
 
     return {

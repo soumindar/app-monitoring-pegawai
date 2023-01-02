@@ -35,7 +35,23 @@
             </h1>
             <div class="card">
                 <div class="card-body">
-                    <a href="<%= baseUrl %>/admin/aktivitas/pegawai" class="btn btn-primary btn-sm mb-3"><i class="fa fa-arrow-left"></i><strong> Kembali</strong></a>
+                    
+                    <a href="<%= baseUrl %>/admin/aktivitas/pegawai" class="btn btn-primary btn-sm mb-4"><i class="fa fa-arrow-left"></i><strong> Kembali</strong></a>
+                    
+                    <div class="text-dark">Pilih tahun:</div>
+                      <div class="row">
+                        <div class="col-lg-3 mb-3">
+                          <form method="get" action="">
+                            <div class="form-group">
+                              <input required type="number" name="tahun" class="form-control" value="<%= req.query.tahun ?? '' %>">
+                            </div>
+                          </form>
+                        </div>
+                        <div class="col-lg-3">
+                          <button type="submit" class="btn btn-primary">Tampilkan</button>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
@@ -52,27 +68,33 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% let i = 1 %>
-                                <% data.forEach(aktivitas => { %>
+                                <% if (data.length > 0) { %>
+                                    <% let i = 1 %>
+                                    <% data.forEach(aktivitas => { %>
+                                        <tr>
+                                            <td><%= i++ %></td>
+                                            <td><%= aktivitas.pekerjaan.pekerjaan %></td>
+                                            <td><%= aktivitas.tglMulai %></td>
+                                            <td><%= aktivitas.tglSelesai %></td>
+                                            <td><%= aktivitas.pekerjaan.level.level %></td>
+                                            <td><%= aktivitas.pekerjaan.target %></td>
+                                            <td><%= aktivitas.pekerjaan.satuanTarget %></td>
+                                            <% if (aktivitas.realisasi) { %>
+                                                <td><%= aktivitas.realisasi %></td>
+                                            <% } else { %>
+                                                <td>-</td>
+                                            <% } %>
+                                            <td>
+                                                <a href="<%= baseUrl %>/admin/aktivitas/pegawai/ubah/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Ubah Aktivitas" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
+                                                <a href="<%= baseUrl %>/admin/aktivitas/pegawai/hapus/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Hapus Aktivitas" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
                                     <tr>
-                                        <td><%= i++ %></td>
-                                        <td><%= aktivitas.pekerjaan.pekerjaan %></td>
-                                        <td><%= aktivitas.tglMulai %></td>
-                                        <td><%= aktivitas.tglSelesai %></td>
-                                        <td><%= aktivitas.pekerjaan.level.level %></td>
-                                        <td><%= aktivitas.pekerjaan.target %></td>
-                                        <td><%= aktivitas.pekerjaan.satuanTarget %></td>
-                                        <% if (aktivitas.realisasi) { %>
-                                            <td><%= aktivitas.realisasi %></td>
-                                        <% } else { %>
-                                            <td>-</td>
-                                        <% } %>
-                                        <td>
-                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/ubah/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Ubah Aktivitas" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></a>
-                                            <a href="<%= baseUrl %>/admin/aktivitas/pegawai/hapus/<%= aktivitas.id %>" data-toggle="tooltip" data-placement="top" title="Hapus Aktivitas" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i></a>
-                                        </td>
+                                        <td colspan="9" class="text-center">Tidak ada data</td>
                                     </tr>
-                                <% }) %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
