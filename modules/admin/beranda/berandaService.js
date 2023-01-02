@@ -120,7 +120,8 @@ const dataBeranda = async (req, res) => {
         orderBy: { tahun: 'asc' },
       });
 
-      for (let i = 0; i < 3; i++) {
+      const jmlTahun = akhirTahunKsl.getFullYear() - awalTahunKsl.getFullYear() + 1;
+      for (let i = 0; i < jmlTahun; i++) {
         ckpKeseluruhan.push(null);
         labelKeseluruhan.push(Number(tahunAwalKsl) + i);
       }
