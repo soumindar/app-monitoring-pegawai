@@ -129,7 +129,7 @@ router.post('/pegawai/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, as
     const baseUrl = getBaseUrl(req);
     const { idPegawai } = req.params;
     const tambahAktivitas = await aktivitasService.tambahAktivitas(req, res);
-    if (tambahAktivitas.statusCode == 404) {
+    if (tambahAktivitas.statusCode == 404 || tambahAktivitas.statusCode == 500) {
       return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
     }
     if (tambahAktivitas.statusCode > 200) {
@@ -139,54 +139,6 @@ router.post('/pegawai/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, as
     req.session.alert = [{msg: 'Berhasil menambah aktivitas'}];
 
     return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${idPegawai}`);
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// page tambah realisasi
-router.get('/pegawai/realisasi/:idAktivitas', async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-
-    const aktivitas = await aktivitasService.dataIdAktivitas(req, res);
-    if (aktivitas.statusCode == 404) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
-    }
-    
-    return res.render('admin/aktivitas/tambahRealisasi', {
-      baseUrl,
-      req,
-      aktivitas: aktivitas.data,
-    });
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// tambah realisasi
-router.post('/pegawai/realisasi/:idAktivitas', aktivitasValidator.tambahRealisasi, async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-    const tambahRealisasi = await aktivitasService.tambahRealisasi(req, res);
-    if (tambahRealisasi.statusCode == 404) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
-    }
-    if (tambahRealisasi.statusCode > 200) {
-      return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${tambahRealisasi.idPegawai}`);
-    }
-
-    req.session.alert =[{msg: 'Isi realisasi berhasil'}];
-
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/${tambahRealisasi.idPegawai}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {

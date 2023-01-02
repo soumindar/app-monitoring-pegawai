@@ -1,9 +1,10 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const momentTz = require('moment-timezone');
-const userTimezone = require('../../../config/timezone.config');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const toDateObj = require('../../../utils/toDateObj');
+const ckpKeseluruhanService = require('../ckpKeseluruhan/ckpService');
+const ckpDivisiService = require('../ckpDivisi/ckpService');
+const ckpPegawaiService = require('../ckpPegawai/ckpService');
 
 // ambil selururuh data aktivitas dengan pagination
 const dataLengkap = async (req, res) => {
@@ -196,13 +197,14 @@ const tambahAktivitas = async (req, res) => {
     const { idPekerjaan } = req.body;
     let { tglMulai, tglSelesai } = req.body;
 
-    const tglMulaiWib = momentTz(tglMulai).tz(userTimezone).format();
-    const tglSelesaiWib = momentTz(tglSelesai).tz(userTimezone).format();
-    tglMulai = new Date(tglMulaiWib.substring(0, 10));
-    tglSelesai = new Date(tglSelesaiWib.substring(0, 10));
+    tglMulai = toDateObj(tglMulai);
+    tglSelesai = toDateObj(tglSelesai);
 
     const pegawaiExist = await prisma.pegawai.findFirst({
-      select: { id: true },
+      select: {
+        id: true,
+        idDivisi: true,
+      },
       where: { 
         id: idPegawai,
         deleted: null,
@@ -238,60 +240,35 @@ const tambahAktivitas = async (req, res) => {
       }
     });
 
-    return {
-      statusCode: 200,
-    };
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-};
-
-// tambah realisasi
-const tambahRealisasi = async (req, res) => {
-  try {
-    const { idAktivitas } = req.params;
-    let { realisasi } = req.body;
-    realisasi = Number(realisasi);
-
-    const aktivitasExist = await prisma.aktivitasPegawai.findFirst({
-      select: {
-        id: true,
-        idPegawai: true,
-        tglSelesai: true,
-      },
-      where: {
-        id: idAktivitas,
-        deleted: null,
-      },
-    });
-    if (!aktivitasExist) {
-      req.session.error = [{msg: 'ID aktivitas tidak ditemukan'}];
+    req.body.tahun = tglSelesai.getFullYear();
+    const updateCkpKeseluruhan = ckpKeseluruhanService.tambahCkp(req, res);
+    if (updateCkpKeseluruhan.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP keseluruhan'}];
       return {
-        statusCode: 404,
-      }
+        statusCode: 500,
+      };
     }
 
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
-    if (aktivitasExist.tglSelesai > today) {
-      req.session.error = [{msg: 'Aktivitas belum selesai!'}];
+    req.body.idDivisi = pegawaiExist.idDivisi;
+    const updateCkpDivisi = ckpDivisiService.tambahCkp(req, res);
+    if (updateCkpDivisi.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP divisi'}];
       return {
-        statusCode: 400,
-        idPegawai: aktivitasExist.idPegawai,
-      }
+        statusCode: 500,
+      };
     }
 
-    await prisma.aktivitasPegawai.update({
-      data: { realisasi },
-      where: { id: idAktivitas },
-    });
+    req.params.idPegawai = pegawaiExist.id;
+    const updateCkpPegawai = ckpPegawaiService.tambahCkp(req, res);
+    if (updateCkpPegawai.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP'}];
+      return {
+        statusCode: 500,
+      };
+    }
 
     return {
       statusCode: 200,
-      idPegawai: aktivitasExist.idPegawai,
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
@@ -319,6 +296,11 @@ const ubahAktivitas = async (req, res) => {
     select: {
       id: true,
       idPegawai: true,
+      pegawai: {
+        select: {
+          idDivisi: true,
+        }
+      }
     },
     where: {
       id: idAktivitas,
@@ -331,7 +313,7 @@ const ubahAktivitas = async (req, res) => {
       statusCode: 404,
     };
   }
-
+  
   const today = toDateObj(new Date());
   if (tglSelesai > today) {
     realisasi = null;
@@ -346,11 +328,40 @@ const ubahAktivitas = async (req, res) => {
     where: { id: idAktivitas },
   });
 
+  req.body.tahun = tglSelesai.getFullYear();
+  const updateCkpKeseluruhan = ckpKeseluruhanService.tambahCkp(req, res);
+  if (updateCkpKeseluruhan.statusCode > 200) {
+    req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP keseluruhan'}];
+    return {
+      statusCode: 500,
+    };
+  }
+
+  req.body.idDivisi = aktivitasExist.pegawai.idDivisi;
+  const updateCkpDivisi = ckpDivisiService.tambahCkp(req, res);
+  if (updateCkpDivisi.statusCode > 200) {
+    req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP divisi'}];
+    return {
+      statusCode: 500,
+    };
+  }
+
+  req.params.idPegawai = aktivitasExist.idPegawai;
+  const updateCkpPegawai = ckpPegawaiService.tambahCkp(req, res);
+  if (updateCkpPegawai.statusCode > 200) {
+    req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP'}];
+    return {
+      statusCode: 500,
+    };
+  }
+
+  req.session.alert = [{ msg: 'Data aktivitas berhasil diubah' }];
+
   return {
     statusCode: 200,
     idPegawai: aktivitasExist.idPegawai,
   };
- } catch (error) {
+  } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
@@ -365,7 +376,19 @@ const hapusAktivitas = async (req, res) => {
     const { idAktivitas } = req.params;
 
     const aktivitasExist = await prisma.aktivitasPegawai.findFirst({
-      select: { idPegawai: true },
+      select: {
+        idPegawai: true,
+        tglSelesai: true,
+        pegawai: {
+          select: {
+            divisi: {
+              select: {
+                id: true,
+              }
+            }
+          }
+        }
+      },
       where: {
         id: idAktivitas,
         deleted: null,
@@ -381,6 +404,33 @@ const hapusAktivitas = async (req, res) => {
     await prisma.aktivitasPegawai.delete({
       where: { id: idAktivitas },
     });
+
+    req.body.tahun = aktivitasExist.tglSelesai.getFullYear();
+    const updateCkpKeseluruhan = ckpKeseluruhanService.tambahCkp(req, res);
+    if (updateCkpKeseluruhan.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP keseluruhan'}];
+      return {
+        statusCode: 500,
+      };
+    }
+
+    req.body.idDivisi = aktivitasExist.pegawai.divisi.id;
+    const updateCkpDivisi = ckpDivisiService.tambahCkp(req, res);
+    if (updateCkpDivisi.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP divisi'}];
+      return {
+        statusCode: 500,
+      };
+    }
+
+    req.params.idPegawai = aktivitasExist.idPegawai;
+    const updateCkpPegawai = ckpPegawaiService.tambahCkp(req, res);
+    if (updateCkpPegawai.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP'}];
+      return {
+        statusCode: 500,
+      };
+    }
 
     req.session.alert = [{msg: 'Berhasil menghapus aktivitas'}];
     
@@ -402,7 +452,6 @@ module.exports = {
   dataIdPegawai,
   dataIdAktivitas,
   tambahAktivitas,
-  tambahRealisasi,
   ubahAktivitas,
   hapusAktivitas,
 };
