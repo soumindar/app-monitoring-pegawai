@@ -161,7 +161,7 @@ const tambahCkp = async (req, res) => {
     });
     
     let ckpBulanan = [null, null, null, null];
-    for (let i = 0; i < maxPeriode; i++) {
+    for (let i = 0; i < 4; i++) {
       if (maxCkpBulanan[i] > 0) {
         ckpBulanan[i] = Math.round(((totalCkpBulanan[i] / maxCkpBulanan[i]) * 100) * 100) / 100;
       }
