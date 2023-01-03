@@ -133,62 +133,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-
-                    <!-- Pilih Tampilan -->
-                    <div class="row mb-4">
-                        <div class="col-lg-5 ml-4 border rounded border-secondary">
-                            <form id="form-tampilan" class="mb-3 ml-3" method="get"
-                                action=
-                                "<% if (req.query) { %>
-                                    <% let query = '?'; %>
-                                <% } else { %>
-                                    <%= baseUrl %>/admin/ %>
-                                <% } %>">
-
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="h6 text-gray-800 mt-3">Pilih tampilan:</div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="tampilanKsl" id="bulanan" value="bulanan" checked>
-                                            <label class="form-check-label text-gray-800" for="exampleRadios1">Bulanan</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="tampilanKsl" id="tahunan" value="tahunan">
-                                            <label class="form-check-label text-gray-800" for="exampleRadios1">Tahunan</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div id="tahun-awal"class="h6 text-gray-800 mt-3">Dari tahun:</div>
-                                                <div class="form-group mb-4">
-                                                    <input required type="number" name="tahunAwalKsl" class="form-control form-control-sm" value="<%= req.query.tahunAwalKsl ?? '' %>">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="h6 text-gray-800 mt-3 tahun-akhir">Sampai tahun:</div>
-                                                <div class="form-group mb-4 tahun-akhir">
-                                                    <input required id="input-tahun-akhir" type="number" name="tahunAkhirKsl" class="form-control form-control-sm" value="<%= req.query.tahunAkhirKsl ?? '' %>">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4"></div>
-                                    <div class="col-lg-8">
-                                        <button type="submit" class="btn btn-primary btn-sm pull-right">Tampilkan</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Grafik -->
-                    <div>
-                        <canvas id="ckp-keseluruhan" style="height: 25rem;"></canvas>
-                    </div>
-
+                    <iframe src="<%= baseUrl %>/admin/grafik-ckp-keseluruhan" class="embed-responsive-item" style="width: 100%;height: 75vh;position: relative;" frameborder="0"></iframe>
                 </div>
             </div>
         </div>

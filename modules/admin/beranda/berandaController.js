@@ -27,25 +27,25 @@ router.get('/', async (req, res) => {
   });
 });
 
-// // grafik ckp keseluruhan
-// router.get('/ckp-keseluruhan', async (req, res) => {
-//   try {
-//     const baseUrl = getBaseUrl(req);
-//     const data = await berandaService.ckpKeseluruhan(req, res);
-
-//     return res.render('admin/beranda/grafikCkpKeseluruhan', {
-//       baseUrl,
-//       req,
-//       ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
-//     });
-//   } catch (error) {
-//     const baseUrl = getBaseUrl(req);
-//     return res.render('admin/error', {
-//       baseUrl,
-//       statusCode: 500,
-//     });
-//   }
-// });
+// grafik ckp keseluruhan
+router.get('/grafik-ckp-keseluruhan', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await berandaService.ckpKeseluruhan(req, res);
+    console.log(data);
+    return res.render('admin/beranda/grafikCkpKeseluruhan', {
+      baseUrl,
+      req,
+      ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
 
 // grafik ckp per divisi
 router.get('/ckp-per-divisi', async (req, res) => {

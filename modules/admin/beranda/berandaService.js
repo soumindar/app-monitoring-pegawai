@@ -200,6 +200,86 @@ const dataBeranda = async (req, res) => {
   }
 };
 
+// data ckp keseluruhan
+const ckpKeseluruhan = async (req, res) => {
+  try {
+    let { tampilan, tahunAwal, tahunAkhir } = req.query;
+
+    const today = toDateObj(new Date());
+    tampilan = tampilan ?? 'bulanan';
+    tahunAwal = tahunAwal ?? today.getFullYear();
+    tahunAkhir = tahunAkhir ?? today.getFullYear();
+    req.query.tahunAwal = tahunAwal;
+    req.query.tahunAkhir = tahunAkhir;
+
+    let ckpKeseluruhan = [];
+    let labelKeseluruhan = [];
+    if (tampilan == 'bulanan') {
+      const awalTahun = toDateObj(new Date(tahunAwal, 0, 1));
+      const akhirTahun = toDateObj(new Date(tahunAwal, 11, 31));
+      const getCkpKeseluruhan = await prisma.ckpBulananKeseluruhan.findMany({
+        select: {
+          ckp: true,
+          bulan: true,
+        },
+        where: {
+          bulan: {
+            gte: awalTahun,
+            lte: akhirTahun,
+          }
+        },
+        orderBy: { bulan: 'asc' },
+      });
+
+      getCkpKeseluruhan.forEach(ckp => {
+        ckpKeseluruhan.push(ckp.ckp);
+      });
+
+      labelKeseluruhan = ['Maret', 'Juni', 'September', 'Desember'];
+    } else {
+      const awalTahun = toDateObj(new Date(tahunAwal, 0, 1));
+      const akhirTahun = toDateObj(new Date(tahunAkhir, 11, 31));
+      const getCkpKeseluruhan = await prisma.ckpTahunanKeseluruhan.findMany({
+        select: {
+          ckp: true,
+          tahun: true,
+        },
+        where: {
+          tahun: {
+            gte: awalTahun,
+            lte: akhirTahun,
+          }
+        },
+        orderBy: { tahun: 'asc' },
+      });
+
+      const jmlTahun = akhirTahun.getFullYear() - awalTahun.getFullYear() + 1;
+      for (let i = 0; i < jmlTahun; i++) {
+        ckpKeseluruhan.push(null);
+        labelKeseluruhan.push(Number(tahunAwal) + i);
+      }
+
+      getCkpKeseluruhan.forEach(ckp => {
+        ckpKeseluruhan[labelKeseluruhan.indexOf(Number(ckp.tahun.getFullYear()))] = ckp.ckp;
+      });
+
+    }
+
+    return {
+      ckpKeseluruhan: {
+        data: ckpKeseluruhan,
+        label: labelKeseluruhan,
+      },
+    }
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 // data ckp per divisi
 const ckpPerDivisi = async (req, res) => {
   try {
@@ -256,5 +336,6 @@ const ckpPerDivisi = async (req, res) => {
 
 module.exports = {
   dataBeranda,
+  ckpKeseluruhan,
   ckpPerDivisi,
 };
