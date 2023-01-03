@@ -1,10 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const momentTz = require('moment-timezone');
-const userTimezone = require('../../../config/timezone.config');
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const toDateHtml = require('../../../utils/toDateHtml');
 const toDateObj = require('../../../utils/toDateObj');
+const ckpService = require('../ckp/ckpService');
 
 // ambil data aktivitas berdasarkan id pegawai
 const dataIdPegawai = async (req, res) => {
@@ -180,6 +179,15 @@ const tambahAktivitas = async (req, res) => {
       }
     });
 
+    req.body.tahun = tglSelesai.getFullYear();
+    const updateCkp = ckpService.tambahCkp(req, res);
+    if (updateCkp.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP'}];
+      return {
+        statusCode: 500,
+      };
+    }
+
     return {
       statusCode: 200,
     };
@@ -231,6 +239,15 @@ const tambahRealisasi = async (req, res) => {
       data: { realisasi },
       where: { id: idAktivitas },
     });
+
+    req.body.tahun = aktivitasExist.tglSelesai.getFullYear();
+    const updateCkp = ckpService.tambahCkp(req, res);
+    if (updateCkp.statusCode > 200) {
+      req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP' }];
+      return {
+        statusCode: 500,
+      };
+    }
 
     return {
       statusCode: 200,

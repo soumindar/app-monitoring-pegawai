@@ -133,39 +133,17 @@
         const durasi = Number($('#durasi').val());
         if (durasi) {
             $('.tgl-selesai').show();
-            const tglMulai = new Date(this.value);
-            let tglSelesai = new Date(new Date(tglMulai.setDate(tglMulai.getDate() + durasi)));
+
+            let tglSelesai = new Date(this.value);
+            const d = tglSelesai.getDate();
+            tglSelesai.setMonth(tglSelesai.getMonth() + durasi);
+            if (tglSelesai.getDate() != d) {
+                tglSelesai.setDate(0);
+            }
+            tglSelesai.setDate(tglSelesai.getDate() - 1);
+
             tglSelesai = tglSelesai.getFullYear() + '-' + ("0"+(tglSelesai.getMonth()+1)).slice(-2) + '-' + ("0" + tglSelesai.getDate()).slice(-2);
             $('#tgl-selesai').val(tglSelesai);
         }
-    });
-</script>
-
-<!-- count tanggal selesai on update aktivitas-->
-<script>
-    const tglSelesaiAwal = new Date($('#ubah-tgl-selesai').val());
-    const today = new Date(new Date());
-    $('#realisasi-alert').hide();
-    if (tglSelesaiAwal > today) {
-        $('#realisasi').val("");
-        $('#realisasi').hide();
-        $('#realisasi-alert').show();
-    }
-    const realisasiValue = $('#realisasi').val();
-    $('#ubah-tgl-mulai').change(function() {
-        const durasi = Number($('#durasi').val());
-        const tglMulai = new Date(this.value);
-        let tglSelesai = new Date(new Date(new Date(this.value).setDate(tglMulai.getDate() + durasi)));
-        if (tglSelesai > today) {
-            $('#realisasi').val("");
-            $('#realisasi').hide();
-            $('#realisasi-alert').show();
-        } else {
-            $('#realisasi').show();
-            $('#realisasi').val(realisasiValue);
-            $('#realisasi-alert').hide();
-        }
-        tglSelesai = tglSelesai.getFullYear() + '-' + ("0"+(tglSelesai.getMonth()+1)).slice(-2) + '-' + ("0" + tglSelesai.getDate()).slice(-2);
-        $('#ubah-tgl-selesai').val(tglSelesai);
     });
 </script>

@@ -24,8 +24,9 @@ router.get('/daftar', async (req, res) => {
     });
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
+    return res.render('user/error', {
       baseUrl,
+      req,
       statusCode: 500,
     });
   }

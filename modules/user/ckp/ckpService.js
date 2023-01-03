@@ -60,8 +60,9 @@ const daftarCkp = async (req, res) => {
     }
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
+    return res.render('user/error', {
       baseUrl,
+      req,
       statusCode: 500,
     });
   }
@@ -70,7 +71,7 @@ const daftarCkp = async (req, res) => {
 // tambah ckp
 const tambahCkp = async (req, res) => {
   try {
-    const { idPegawai } = req.params;
+    const idPegawai = req.session.idPegawai;
     const { tahun } = req.body;
     const today = toDateObj(new Date());
     const awalTahun = toDateObj(new Date(`${tahun}-01-01`));
@@ -195,8 +196,9 @@ const tambahCkp = async (req, res) => {
     }
   } catch (error) {
     const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
+    return res.render('user/error', {
       baseUrl,
+      req,
       statusCode: 500,
     });
   }
