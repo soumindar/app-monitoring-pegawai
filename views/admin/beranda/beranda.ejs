@@ -181,96 +181,20 @@
 
 <script src="<%= baseUrl %>/vendor/chart.js/Chart.min.js"></script>
 
-<!-- pilih tampilan -->
-<script>
-    const tampilanKsl = "<%= req.query.tampilanKsl %>".replace(/&#34;/g, '"');
-    if (tampilanKsl == 'tahunan') {
-        $('#tahunan').prop('checked', true);
-    } else {
-        $('#bulanan').prop('checked', true);
-    }
-
-    const tampilan = $("#form-tampilan input[name='tampilanKsl']:checked").val();
-    if (tampilan == 'bulanan') {
-        $('.tahun-akhir').hide();
-        $('#tahun-awal').html('Pilih tahun:');
-        $('#input-tahun-akhir').prop('required', false);
-        $('#input-tahun-akhir').prop('name', '');
-    }
-
-    $("#form-tampilan input[name='tampilanKsl']").on('change', function() {
-        if (this.value == 'bulanan') {
-            $('.tahun-akhir').hide();
-            $('#tahun-awal').html('Pilih tahun:');
-            $('#input-tahun-akhir').prop('required', false);
-            $('#input-tahun-akhir').prop('name', '');
-        } else {
-            $('.tahun-akhir').show();
-            $('#tahun-awal').html('Dari tahun:');
-            $('#input-tahun-akhir').prop('required', true);
-            $('#input-tahun-akhir').prop('name', 'tahunAkhirKsl');
-        }
-    });
-</script>
-
 <!-- chartjs -->
 <script>
-    const tahunIni = new Date().getFullYear();
-
-    const tahunAwalKsl = "<%= req.query.tahunAwalKsl %>".replace(/&#34;/g, '"');
-    let tahunKsl = tahunAwalKsl;
-    if (tampilanKsl == 'tahunan') {
-        const tahunAkhirKsl = "<%= req.query.tahunAkhirKsl %>".replace(/&#34;/g, '"');
-        tahunKsl = `${tahunAwalKsl}-${tahunAkhirKsl}`;
-    }
-
-    const tahunPerDivisi = "<%= req.query.tahunPerDivisi %>".replace(/&#34;/g, '"');
-
-    const getCkpKeseluruhan = "<%= ckpKeseluruhan %>";
-    const ckpKeseluruhan = getCkpKeseluruhan.replace(/&#34;/g, '"');
-    const cData = JSON.parse(ckpKeseluruhan);
 
     const getDistribusiPegawai = "<%= distribusiPegawai %>";
     const distribusiPegawai = getDistribusiPegawai.replace(/&#34;/g, '"');
-    const cData2 = JSON.parse(distribusiPegawai);
+    const cData = JSON.parse(distribusiPegawai);
 
-    const getProgressCkpDivisi = "<%= progressCkpDivisi %>";
-    const progressCkpDivisi = getProgressCkpDivisi.replace(/&#34;/g, '"');
-    const cData3 = JSON.parse(progressCkpDivisi);
-
-    const ctx = $('#ckp-keseluruhan');
-    const ctx2 = $('#distribusi-pegawai');
-    const ctx3 = $('#progress-ckp-divisi');
+    const ctx = $('#distribusi-pegawai');
     
     const data = {
         labels: cData.label,
         datasets: [{
-            data: cData.data,
-            // backgroundColor: ['#2364AA', '#3085C2','#3DA5D9', '#59C9BA', '#73BFB8', '#F0E3B4', '#A9DA5B', '#F0E356', '#FEC601','#F49D0C','#EA7317','#ED572D'],
-            fill: false,
-            borderColor: '#2364AA',
-            borderWidth: 3,
-            tension: 0.1,
-        }],
-    };
-    
-    const data2 = {
-        labels: cData2.label,
-        datasets: [{
             label: "Distribusi Pegawai Per Divisi",
-            data: cData2.data,
-            backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
-            borderColor: '#ccc',
-            borderWidth: [0, 0, 0, 0, 0, 0]
-        }],
-    };
-
-
-    const data3 = {
-        labels: cData3.label,
-        datasets: [{
-            label: `Progress CKP Per Divisi Tahun ${tahunIni}`,
-            data: cData3.data,
+            data: cData.data,
             backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
             borderColor: '#ccc',
             borderWidth: [0, 0, 0, 0, 0, 0]
@@ -278,54 +202,6 @@
     };
 
     const options = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            yAxes: [{
-                display: true,
-                ticks: {
-                    suggestedMin: 0,
-                    beginAtZero: true,
-                    steps: 10,
-                    stepValue: 5,
-                    max: 100
-                }
-            }]
-        },
-        title: {
-            display: true,
-            position: "top",
-            text: `Capaian Kinerja Pegawai Keseluruhan Tahun ${tahunKsl}  (%)`,
-            fontSize: 18,
-            fontColor: "#4C4C4C",
-        },
-        legend: {
-            display: false,
-        },
-        layout: {
-            padding: {
-                left: 10,
-                right: 25,
-                top: 0,
-                bottom: 0
-            }
-        },
-        tooltips: {
-            titleMarginBottom: 10,
-            titleFontColor: '#6e707e',
-            titleFontSize: 14,
-            backgroundColor: "rgb(255,255,255)",
-            bodyFontColor: "#858796",
-            borderColor: '#dddfeb',
-            borderWidth: 1,
-            xPadding: 15,
-            yPadding: 15,
-            displayColors: false,
-            caretPadding: 10,
-        },
-    };
-
-    const options2 = {
         responsive: true,
         maintainAspectRatio: false,
         title: {
@@ -364,79 +240,10 @@
         },
     };
 
-    const options3 = {
-        responsive: true,
-        maintainAspectRatio: false,
-        title: {
-            display: true,
-            position: "top",
-            text: `Progress CKP Per Divisi Tahun ${tahunPerDivisi}  (%)`,
-            fontSize: 18,
-            fontColor: "#4C4C4C"
-        },
-        scales: {
-            yAxes: [{
-                display: true,
-                ticks: {
-                    suggestedMin: 0,
-                    beginAtZero: true,
-                    steps: 10,
-                    stepValue: 5,
-                    max: 100
-                }
-            }]
-        },
-        legend: {
-            display: false,
-        },
-        layout: {
-            padding: {
-                left: 10,
-                right: 25,
-                top: 0,
-                bottom: 0
-            }
-        },
-        scales: {
-            yAxes: [{
-                display: true,
-                ticks: {
-                    suggestedMin: 0,
-                    beginAtZero: true,
-                }
-            }]
-        },
-        tooltips: {
-            titleMarginBottom: 10,
-            titleFontColor: '#6e707e',
-            titleFontSize: 14,
-            backgroundColor: "rgb(255,255,255)",
-            bodyFontColor: "#858796",
-            borderColor: '#dddfeb',
-            borderWidth: 1,
-            xPadding: 15,
-            yPadding: 15,
-            displayColors: false,
-            caretPadding: 10,
-        },
-    };
-    
-    const chart1 = new Chart(ctx, {
-        type: "line",
+    const chart = new Chart(ctx, {
+        type: "pie",
         data: data,
         options: options,
-    });
-
-    const chart2 = new Chart(ctx2, {
-        type: "pie",
-        data: data2,
-        options: options2,
-    });
-
-    const chart3 = new Chart(ctx3, {
-        type: "bar",
-        data: data3,
-        options: options3,
     });
 </script>
 
