@@ -11,8 +11,9 @@ const tambahCkp = [
     
     if (errors.length > 0) {
       const baseUrl = getBaseUrl(req);
+      const { idPegawai } = req.params
       req.session.error = errors;
-      return res.redirect(`${baseUrl}/admin/ckp-keseluruhan/tambah`);
+      return res.redirect(`${baseUrl}/admin/ckp-pegawai/tambah/${idPegawai}`);
     }
 
     next();
