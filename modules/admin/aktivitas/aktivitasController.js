@@ -138,7 +138,7 @@ router.post('/pegawai/tambah/:idPegawai', aktivitasValidator.tambahAktivitas, as
 
     req.session.alert = [{msg: 'Berhasil menambah aktivitas'}];
 
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${idPegawai}`);
+    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${idPegawai}?tahun=${tambahAktivitas.tahun}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
@@ -188,7 +188,7 @@ router.post('/pegawai/ubah/:idAktivitas', aktivitasValidator.ubahAktivitas, asyn
 
     req.session.alert = [{msg: 'Data aktivitas berhasil diubah'}];
 
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${ubahAktivitas.idPegawai}`);
+    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${ubahAktivitas.idPegawai}?tahun=${ubahAktivitas.tahun}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
@@ -208,7 +208,7 @@ router.get('/pegawai/hapus/:idAktivitas', async (req, res) => {
       return res.redirect(`${baseUrl}/admin/aktivitas/pegawai`);
     }
 
-    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${hapusAktivitas.idPegawai}`);
+    return res.redirect(`${baseUrl}/admin/aktivitas/pegawai/daftar/${hapusAktivitas.idPegawai}?tahun=${hapusAktivitas.tahun}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {

@@ -279,6 +279,7 @@ const tambahAktivitas = async (req, res) => {
 
     return {
       statusCode: 200,
+      tahun: tglMulai.getFullYear(),
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
@@ -306,6 +307,8 @@ const ubahAktivitas = async (req, res) => {
     select: {
       id: true,
       idPegawai: true,
+      idPekerjaan: true,
+      tglSelesai: true,
       pegawai: {
         select: {
           idDivisi: true,
@@ -329,15 +332,55 @@ const ubahAktivitas = async (req, res) => {
     realisasi = null;
   }
 
-  await prisma.aktivitasPegawai.update({
+  // hapus aktivitas lama
+  const hapusAktivitasLama = await hapusAktivitas(req, res);
+  if (hapusAktivitasLama.statusCode > 200) {
+    req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui aktivitas'}];
+    return {
+      statusCode: 500,
+    };
+  }
+
+  // update ckp lama
+  req.body.tahun = aktivitasExist.tglSelesai.getFullYear();
+  const updateCkpKeseluruhanLama = ckpKeseluruhanService.tambahCkp(req, res);
+  if (updateCkpKeseluruhanLama.statusCode > 200) {
+    req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP keseluruhan'}];
+    return {
+      statusCode: 500,
+    };
+  }
+
+  req.body.idDivisi = aktivitasExist.pegawai.idDivisi;
+  const updateCkpDivisiLama = ckpDivisiService.tambahCkp(req, res);
+  if (updateCkpDivisiLama.statusCode > 200) {
+    req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP divisi'}];
+    return {
+      statusCode: 500,
+    };
+  }
+
+  req.params.idPegawai = aktivitasExist.idPegawai;
+  const updateCkpPegawaiLama = ckpPegawaiService.tambahCkp(req, res);
+  if (updateCkpPegawaiLama.statusCode > 200) {
+    req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP'}];
+    return {
+      statusCode: 500,
+    };
+  }
+
+  // buat aktivitas baru
+  await prisma.aktivitasPegawai.create({
     data: {
+      idPegawai: aktivitasExist.idPegawai,
+      idPekerjaan: aktivitasExist.idPekerjaan,
       tglMulai,
       tglSelesai,
       realisasi,
-    },
-    where: { id: idAktivitas },
+    }
   });
 
+  // update ckp baru
   req.body.tahun = tglSelesai.getFullYear();
   const updateCkpKeseluruhan = ckpKeseluruhanService.tambahCkp(req, res);
   if (updateCkpKeseluruhan.statusCode > 200) {
@@ -347,7 +390,6 @@ const ubahAktivitas = async (req, res) => {
     };
   }
 
-  req.body.idDivisi = aktivitasExist.pegawai.idDivisi;
   const updateCkpDivisi = ckpDivisiService.tambahCkp(req, res);
   if (updateCkpDivisi.statusCode > 200) {
     req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP divisi'}];
@@ -356,7 +398,6 @@ const ubahAktivitas = async (req, res) => {
     };
   }
 
-  req.params.idPegawai = aktivitasExist.idPegawai;
   const updateCkpPegawai = ckpPegawaiService.tambahCkp(req, res);
   if (updateCkpPegawai.statusCode > 200) {
     req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP'}];
@@ -370,6 +411,7 @@ const ubahAktivitas = async (req, res) => {
   return {
     statusCode: 200,
     idPegawai: aktivitasExist.idPegawai,
+    tahun: tglMulai.getFullYear(),
   };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
@@ -447,6 +489,7 @@ const hapusAktivitas = async (req, res) => {
     return {
       statusCode: 200,
       idPegawai: aktivitasExist.idPegawai,
+      tahun: aktivitasExist.tglSelesai.getFullYear(),
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
