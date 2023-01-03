@@ -21,6 +21,28 @@ router.get('/', async (req, res) => {
       progressCkp: data.progressCkp,
       realisasiKosong: data.realisasiKosong,
       ckpTahunLalu: data.ckpTahunLalu,
+      tahunLalu: data.tahunLalu,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('user/error', {
+      baseUrl,
+      req,
+      statusCode: 500,
+    });
+  }
+});
+
+// grafik ckp
+router.get('/grafik-ckp', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await berandaService.dataCkp(req, res);
+
+    return res.render('user/beranda/grafikCkp', {
+      baseUrl,
+      req,
+      ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
     });
   } catch (error) {
     const baseUrl = getBaseUrl(req);
