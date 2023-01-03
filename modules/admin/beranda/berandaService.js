@@ -334,8 +334,109 @@ const ckpPerDivisi = async (req, res) => {
   }
 };
 
+// data ckp divisi
+const ckpDivisi = async (req, res) => {
+  try {
+    let { tampilan, tahunAwal, tahunAkhir, idDivisi } = req.query;
+    let namaDivisi = '';
+    if (idDivisi) {
+      const divisiExist = await prisma.divisi.findFirst({
+        select: { divisi: true },
+        where: {
+          id: idDivisi,
+          deleted: null,
+        },
+      });
+      if (!divisiExist) {
+        req.session.error = [{ msg: 'ID divisi tidak ditemukan' }];
+        return {
+          statusCode: 404,
+        };
+      }
+      namaDivisi = divisiExist.divisi;
+    }
+
+    const today = toDateObj(new Date());
+    tampilan = tampilan ?? 'bulanan';
+    tahunAwal = tahunAwal ?? today.getFullYear();
+    tahunAkhir = tahunAkhir ?? today.getFullYear();
+    req.query.tahunAwal = tahunAwal;
+    req.query.tahunAkhir = tahunAkhir;
+
+    let ckpDivisi = [];
+    let label = [];
+    if (tampilan == 'bulanan') {
+      const awalTahun = toDateObj(new Date(tahunAwal, 0, 1));
+      const akhirTahun = toDateObj(new Date(tahunAwal, 11, 31));
+      const getCkpDivisi = await prisma.ckpBulananDivisi.findMany({
+        select: {
+          ckp: true,
+          bulan: true,
+        },
+        where: {
+          idDivisi,
+          bulan: {
+            gte: awalTahun,
+            lte: akhirTahun,
+          }
+        },
+        orderBy: { bulan: 'asc' },
+      });
+
+      getCkpDivisi.forEach(ckp => {
+        ckpDivisi.push(ckp.ckp);
+      });
+
+      label = ['Maret', 'Juni', 'September', 'Desember'];
+    } else {
+      const awalTahun = toDateObj(new Date(tahunAwal, 0, 1));
+      const akhirTahun = toDateObj(new Date(tahunAkhir, 11, 31));
+      const getCkpDivisi = await prisma.ckpTahunanDivisi.findMany({
+        select: {
+          ckp: true,
+          tahun: true,
+        },
+        where: {
+          idDivisi,
+          tahun: {
+            gte: awalTahun,
+            lte: akhirTahun,
+          }
+        },
+        orderBy: { tahun: 'asc' },
+      });
+
+      const jmlTahun = akhirTahun.getFullYear() - awalTahun.getFullYear() + 1;
+      for (let i = 0; i < jmlTahun; i++) {
+        ckpDivisi.push(null);
+        label.push(Number(tahunAwal) + i);
+      }
+
+      getCkpDivisi.forEach(ckp => {
+        ckpDivisi[label.indexOf(Number(ckp.tahun.getFullYear()))] = ckp.ckp;
+      });
+
+    }
+
+    return {
+      namaDivisi,
+      ckpDivisi: {
+        data: ckpDivisi,
+        label,
+      },
+    }
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataBeranda,
   ckpKeseluruhan,
   ckpPerDivisi,
+  ckpDivisi,
 };

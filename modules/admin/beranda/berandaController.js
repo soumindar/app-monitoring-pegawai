@@ -1,3 +1,5 @@
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 const express = require('express');
 const router = express.Router();
 const getBaseUrl = require('../../../utils/getBaseUrl');
@@ -48,7 +50,7 @@ router.get('/grafik-ckp-keseluruhan', async (req, res) => {
 });
 
 // grafik ckp per divisi
-router.get('/ckp-per-divisi', async (req, res) => {
+router.get('/grafik-ckp-per-divisi', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
     const data = await berandaService.ckpPerDivisi(req, res);
@@ -57,6 +59,37 @@ router.get('/ckp-per-divisi', async (req, res) => {
       baseUrl,
       req,
       ckpPerDivisi: JSON.stringify(data.ckpPerDivisi),
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// grafik ckp divisi
+router.get('/grafik-ckp-divisi', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    
+    const divisi = await prisma.divisi.findMany({
+      select: {
+        id: true,
+        divisi: true,
+      },
+      where: { deleted: null },
+    });
+
+    const data = await berandaService.ckpDivisi(req, res);
+
+    return res.render('admin/beranda/grafikCkpDivisi', {
+      baseUrl,
+      req,
+      divisi,
+      namaDivisi: data.namaDivisi,
+      ckpDivisi: JSON.stringify(data.ckpDivisi),
     });
   } catch (error) {
     const baseUrl = getBaseUrl(req);
