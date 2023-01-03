@@ -34,7 +34,7 @@ router.get('/grafik-ckp-keseluruhan', async (req, res) => {
   try {
     const baseUrl = getBaseUrl(req);
     const data = await berandaService.ckpKeseluruhan(req, res);
-    console.log(data);
+    
     return res.render('admin/beranda/grafikCkpKeseluruhan', {
       baseUrl,
       req,

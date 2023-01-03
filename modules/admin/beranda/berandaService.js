@@ -50,7 +50,7 @@ const dataBeranda = async (req, res) => {
     let progressCkp = null;
     if (getProgressCkp) progressCkp = getProgressCkp.ckp;
 
-    // jumlah realisasi belum lengkap
+    // jumlah realisasi kosong tahun ini
     const getRealisasiKosong = await prisma.aktivitasPegawai.findMany({
       select: {
         pegawai: {
@@ -71,66 +71,6 @@ const dataBeranda = async (req, res) => {
       }
     });
     const realisasiKosong = getRealisasiKosong.length;
-
-    // data ckp keseluruhan
-    let { tampilanKsl, tahunAwalKsl, tahunAkhirKsl } = req.query;
-    tampilanKsl = tampilanKsl ?? 'bulanan';
-    tahunAwalKsl = tahunAwalKsl ?? today.getFullYear();
-    tahunAkhirKsl = tahunAkhirKsl ?? today.getFullYear();
-    req.query.tahunAwalKsl = tahunAwalKsl;
-
-    let ckpKeseluruhan = [];
-    let labelKeseluruhan = [];
-    if (tampilanKsl == 'bulanan') {
-      const awalTahunKsl = toDateObj(new Date(tahunAwalKsl, 0, 1));
-      const akhirTahunKsl = toDateObj(new Date(tahunAwalKsl, 11, 31));
-      const getCkpKeseluruhan = await prisma.ckpBulananKeseluruhan.findMany({
-        select: {
-          ckp: true,
-          bulan: true,
-        },
-        where: {
-          bulan: {
-            gte: awalTahunKsl,
-            lte: akhirTahunKsl,
-          }
-        },
-        orderBy: { bulan: 'asc' },
-      });
-
-      getCkpKeseluruhan.forEach(ckp => {
-        ckpKeseluruhan.push(ckp.ckp);
-      });
-
-      labelKeseluruhan = ['Maret', 'Juni', 'September', 'Desember'];
-    } else {
-      const awalTahunKsl = toDateObj(new Date(tahunAwalKsl, 0, 1));
-      const akhirTahunKsl = toDateObj(new Date(tahunAkhirKsl, 11, 31));
-      const getCkpKeseluruhan = await prisma.ckpTahunanKeseluruhan.findMany({
-        select: {
-          ckp: true,
-          tahun: true,
-        },
-        where: {
-          tahun: {
-            gte: awalTahunKsl,
-            lte: akhirTahunKsl,
-          }
-        },
-        orderBy: { tahun: 'asc' },
-      });
-
-      const jmlTahun = akhirTahunKsl.getFullYear() - awalTahunKsl.getFullYear() + 1;
-      for (let i = 0; i < jmlTahun; i++) {
-        ckpKeseluruhan.push(null);
-        labelKeseluruhan.push(Number(tahunAwalKsl) + i);
-      }
-
-      getCkpKeseluruhan.forEach(ckp => {
-        ckpKeseluruhan[labelKeseluruhan.indexOf(Number(ckp.tahun.getFullYear()))] = ckp.ckp;
-      });
-
-    }
 
     // data distribusi pegawai tiap divisi
     const divisi = await prisma.divisi.findMany({
@@ -155,41 +95,15 @@ const dataBeranda = async (req, res) => {
       jmlPegawaiDivisi.push(pegawai.filter(pegawai => pegawai.idDivisi == divisi.id).length);
     });
 
-    // progress ckp per divisi
-    const getProgressCkpDivisi = await prisma.ckpBulananDivisi.findMany({
-      select: {
-        ckp: true,
-        idDivisi: true,
-      },
-      where: {
-        bulan: periodeTerakhir,
-      },
-    });
-
-    let progressCkpDivisi = new Array(divisi.length).fill(null);
-    getProgressCkpDivisi.forEach(ckp => {
-      progressCkpDivisi[dataIdDivisi.indexOf(ckp.idDivisi)] = ckp.ckp;
-    });
-
     return {
-      // divisi,
       jmlPegawai,
       jmlAktivitas,
       progressCkp,
       realisasiKosong,
-      ckpKeseluruhan: {
-        data: ckpKeseluruhan,
-        label: labelKeseluruhan,
-      },
       distribusiPegawai: {
         data: jmlPegawaiDivisi,
         label: labelDivisi,
       },
-      progressCkpDivisi: {
-        data: progressCkpDivisi,
-        label: labelDivisi,
-      },
-      // pegawaiKosong,
     };
   } catch (error) {
     const baseUrl = getBaseUrl(req);
