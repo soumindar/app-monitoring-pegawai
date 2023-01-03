@@ -200,6 +200,61 @@ const dataBeranda = async (req, res) => {
   }
 };
 
+// data ckp per divisi
+const ckpPerDivisi = async (req, res) => {
+  try {
+    let { tahun } = req.query;
+    const today = toDateObj(new Date());
+    tahun = tahun ?? today.getFullYear();
+    req.query.tahun = tahun;
+    const awalTahun = toDateObj(new Date(`${tahun}-01-01`));
+
+    const getCkpPerDivisi = await prisma.ckpTahunanDivisi.findMany({
+      select: {
+        ckp: true,
+        idDivisi: true,
+      },
+      where: {
+        tahun: awalTahun,
+      },
+    });
+
+    const divisi = await prisma.divisi.findMany({
+      select: {
+        id: true,
+        divisi: true,
+      },
+      where: { deleted: null },
+    });
+    
+    let labelDivisi = [];
+    let dataIdDivisi = [];
+    divisi.forEach(divisi => {
+      labelDivisi.push(divisi.divisi);
+      dataIdDivisi.push(divisi.id);
+    });
+
+    let ckpPerDivisi = new Array(divisi.length).fill(null);
+    getCkpPerDivisi.forEach(ckp => {
+      ckpPerDivisi[dataIdDivisi.indexOf(ckp.idDivisi)] = ckp.ckp;
+    });
+
+    return {
+      ckpPerDivisi: {
+        data: ckpPerDivisi,
+        label: labelDivisi,
+      },
+    }
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataBeranda,
+  ckpPerDivisi,
 };

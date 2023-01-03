@@ -9,6 +9,7 @@ router.use(sessionVerify);
 // home page admin
 router.get('/', async (req, res) => {
   const baseUrl = getBaseUrl(req);
+  console.log(req.query);
   const data = await berandaService.dataBeranda(req, res);
 
   return res.render('admin/beranda/beranda', {
@@ -24,6 +25,46 @@ router.get('/', async (req, res) => {
     progressCkpDivisi: JSON.stringify(data.progressCkpDivisi),
     // pegawaiKosong: data.pegawaiKosong,
   });
+});
+
+// // grafik ckp keseluruhan
+// router.get('/ckp-keseluruhan', async (req, res) => {
+//   try {
+//     const baseUrl = getBaseUrl(req);
+//     const data = await berandaService.ckpKeseluruhan(req, res);
+
+//     return res.render('admin/beranda/grafikCkpKeseluruhan', {
+//       baseUrl,
+//       req,
+//       ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
+//     });
+//   } catch (error) {
+//     const baseUrl = getBaseUrl(req);
+//     return res.render('admin/error', {
+//       baseUrl,
+//       statusCode: 500,
+//     });
+//   }
+// });
+
+// grafik ckp per divisi
+router.get('/ckp-per-divisi', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await berandaService.ckpPerDivisi(req, res);
+    
+    return res.render('admin/beranda/grafikCkpPerDivisi', {
+      baseUrl,
+      req,
+      ckpPerDivisi: JSON.stringify(data.ckpPerDivisi),
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
 });
 
 module.exports = router;

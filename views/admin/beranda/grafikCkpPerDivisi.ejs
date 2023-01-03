@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Monitoring Pegawai</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="<%= baseUrl %>/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="<%= baseUrl %>/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <div class="h6 text-dark">Pilih tahun:</div>
+    <div class="row">
+        <div class="col-lg-2">
+            <form method="get" action="">
+                <div class="form-group">
+                    <input required type="number" name="tahun" class="form-control form-control-sm" value="<%= req.query.tahun ?? '' %>">
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-3">
+            <button type="submit" class="btn btn-primary btn-sm">Tampilkan</button>
+        </div>
+    </div>
+        
+    <div class="row">
+        <div class="col-lg-6">
+            <canvas id="ckp-per-divisi" style="height: 20rem;"></canvas>
+        </div>
+    </div>
+
+</body>
+
+<script src="<%= baseUrl %>/vendor/jquery/jquery.min.js"></script>
+
+<script src="<%= baseUrl %>/vendor/chart.js/Chart.min.js"></script>
+
+<!-- chartjs -->
+<script>
+    const tahunPerDivisi = "<%= req.query.tahun %>".replace(/&#34;/g, '"');
+
+    const getCkpPerDivisi = "<%= ckpPerDivisi %>";
+    const ckpPerDivisi = getCkpPerDivisi.replace(/&#34;/g, '"');
+    const cData = JSON.parse(ckpPerDivisi);
+    
+    const ctx = $('#ckp-per-divisi');
+
+    const data = {
+        labels: cData.label,
+        datasets: [{
+            label: `CKP`,
+            data: cData.data,
+            backgroundColor: ['#2364AA', '#3DA5D9','#73BFB8','#F0E3B4','#FEC601', '#EA7317'],
+            borderColor: '#ccc',
+            borderWidth: [0, 0, 0, 0, 0, 0]
+        }],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+            display: true,
+            position: "top",
+            text: `CKP Per Divisi Tahun ${tahunPerDivisi}  (%)`,
+            fontSize: 18,
+            fontColor: "#4C4C4C"
+        },
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    suggestedMin: 0,
+                    beginAtZero: true,
+                    max: 100
+                }
+            }]
+        },
+        legend: {
+            display: false,
+        },
+        layout: {
+            padding: {
+                left: 10,
+                right: 25,
+                top: 0,
+                bottom: 0
+            }
+        },
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    suggestedMin: 0,
+                    beginAtZero: true,
+                }
+            }]
+        },
+        tooltips: {
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+    };
+
+    const chart = new Chart(ctx, {
+        type: "bar",
+        data: data,
+        options: options,
+    });
+</script>
+
+</html>

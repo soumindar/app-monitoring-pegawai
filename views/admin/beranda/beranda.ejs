@@ -137,7 +137,14 @@
                     <!-- Pilih Tampilan -->
                     <div class="row mb-4">
                         <div class="col-lg-5 ml-4 border rounded border-secondary">
-                            <form id="form-tampilan" class="mb-3 ml-3" method="get" action="">
+                            <form id="form-tampilan" class="mb-3 ml-3" method="get"
+                                action=
+                                "<% if (req.query) { %>
+                                    <% let query = '?'; %>
+                                <% } else { %>
+                                    <%= baseUrl %>/admin/ %>
+                                <% } %>">
+
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="h6 text-gray-800 mt-3">Pilih tampilan:</div>
@@ -190,7 +197,7 @@
     <div class="row mb-4">
         <!-- Grafik Distribusi Pegawai -->
         <div class="col-lg-6">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-body">
                     <canvas id="distribusi-pegawai" style="height: 20rem;"></canvas>
                 </div>
@@ -200,14 +207,13 @@
             </div>
         </div>
 
-        <!-- Grafik CKP Divisi -->
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-body" >
-                    <canvas id="progress-ckp-divisi" style="height: 20rem;"></canvas>
+            <div class="card">
+                <div class="card-body">
+                    <iframe src="<%= baseUrl %>/admin/ckp-per-divisi" class="embed-responsive-item" style="width: 100%;height: 55vh;position: relative;" frameborder="0"></iframe>
                 </div>
             </div>
-        </div>
+        </div>   
     </div>
 
 </div>
@@ -260,6 +266,8 @@
         const tahunAkhirKsl = "<%= req.query.tahunAkhirKsl %>".replace(/&#34;/g, '"');
         tahunKsl = `${tahunAwalKsl}-${tahunAkhirKsl}`;
     }
+
+    const tahunPerDivisi = "<%= req.query.tahunPerDivisi %>".replace(/&#34;/g, '"');
 
     const getCkpKeseluruhan = "<%= ckpKeseluruhan %>";
     const ckpKeseluruhan = getCkpKeseluruhan.replace(/&#34;/g, '"');
@@ -405,9 +413,21 @@
         title: {
             display: true,
             position: "top",
-            text: `Progress CKP Per Divisi Tahun ${tahunIni}  (%)`,
+            text: `Progress CKP Per Divisi Tahun ${tahunPerDivisi}  (%)`,
             fontSize: 18,
             fontColor: "#4C4C4C"
+        },
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    suggestedMin: 0,
+                    beginAtZero: true,
+                    steps: 10,
+                    stepValue: 5,
+                    max: 100
+                }
+            }]
         },
         legend: {
             display: false,
