@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const getBaseUrl = require('../../../utils/getBaseUrl');
-const ckpValidator = require('./ckpValidator');
 const ckpService = require('./ckpService');
 const pegawaiService = require('../pegawai/pegawaiService');
 const sessionVerify = require('../auth/sessionVerify');
@@ -58,40 +57,6 @@ router.get('/daftar/:idPegawai', async (req, res) => {
       ckpTahunan: data.ckpTahunan,
       ckpBulanan: data.ckpBulanan,
     });
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// page tambah ckp
-router.get('/tambah/:idPegawai', async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-
-    return res.render('admin/ckpPegawai/tambahCkp', {
-      baseUrl,
-      req,
-    });
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
-// tambah ckp
-router.post('/tambah/:idPegawai', ckpValidator.tambahCkp, async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-    await ckpService.tambahCkp(req, res);
-
-    return res.redirect(`${baseUrl}/admin/ckp-pegawai/daftar/${req.params.idPegawai}?tahun=${req.body.tahun}`);
   } catch (error) {
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {

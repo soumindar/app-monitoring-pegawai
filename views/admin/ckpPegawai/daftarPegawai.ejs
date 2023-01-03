@@ -45,7 +45,7 @@
                                     <th>Nama</th>
                                     <th width="15%">Jabatan</th>
                                     <th width="15%">Divisi</th>
-                                    <th width="17%">CKP Pegawai</th>
+                                    <th width="12%">CKP Pegawai</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,7 +59,6 @@
                                         <td><%= pegawai.divisi.divisi %></td>
                                         <td>
                                             <a href="<%= baseUrl %>/admin/ckp-pegawai/daftar/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Lihat CKP Pegawai" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></a>
-                                            <a href="<%= baseUrl %>/admin/ckp-pegawai/tambah/<%= pegawai.id %>" data-toggle="tooltip" data-placement="top" title="Tambah CKP Pegawai" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></a>
                                         </td>
                                     </tr>
                                 <% }) %>
