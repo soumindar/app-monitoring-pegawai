@@ -35,31 +35,6 @@ router.get('/daftar', async (req, res) => {
   }
 });
 
-// page detail pegawai
-router.get('/detail/:idPegawai', async (req, res) => {
-  try {
-    const baseUrl = getBaseUrl(req);
-    const data = await pegawaiService.detailPegawai(req, res);
-    
-    return res.render('admin/pegawai/detailPegawai', {
-      baseUrl,
-      req,
-      pegawai: data.pegawai,
-      aktivitasBulanIni: data.aktivitasBulanIni,
-      aktivitasTahunIni: data.aktivitasTahunIni,
-      progressCkp: data.progressCkp,
-      realisasiKosong: data.realisasiKosong,
-      ckpTahunLalu: data.ckpTahunLalu,
-    });
-  } catch (error) {
-    const baseUrl = getBaseUrl(req);
-    return res.render('admin/error', {
-      baseUrl,
-      statusCode: 500,
-    });
-  }
-});
-
 // page tambah pegawai
 router.get('/tambah', async (req, res) => {
   try {
@@ -217,6 +192,75 @@ router.get('/hapus/:id', async (req, res) => {
 
     return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
   } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// detail pegawai
+router.get('/detail/:idPegawai', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await pegawaiService.detailPegawai(req, res);
+    
+    return res.render('admin/pegawai/detailPegawai', {
+      baseUrl,
+      req,
+      pegawai: data.pegawai,
+      aktivitasBulanIni: data.aktivitasBulanIni,
+      aktivitasTahunIni: data.aktivitasTahunIni,
+      progressCkp: data.progressCkp,
+      realisasiKosong: data.realisasiKosong,
+      ckpTahunLalu: data.ckpTahunLalu,
+      tahunLalu: data.tahunLalu,
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// grafik ckp
+router.get('/grafik-ckp/:idPegawai', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await pegawaiService.dataCkp(req, res);
+
+    return res.render('admin/pegawai/grafikCkp', {
+      baseUrl,
+      req,
+      ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// tabel realisasi kosong
+router.get('/realisasi-kosong/:idPegawai', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await pegawaiService.realisasiKosong(req, res);
+
+    return res.render('admin/pegawai/realisasiKosong', {
+      baseUrl,
+      req,
+      data: data.aktivitas,
+      currentPage: data.currentPage,
+      totalPage: data.totalPage,
+    })
+  } catch (error) {
+    console.log(error.message)
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

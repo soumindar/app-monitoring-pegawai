@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Monitoring Kinerja Pegawai</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="<%= baseUrl %>/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="<%= baseUrl %>/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <!-- Pilih Tampilan -->
+    <div class="row mb-4">
+        <div class="col-lg-5 ml-4 border rounded border-secondary">
+            <form id="form-tampilan" class="mb-3 ml-3" method="get" action="">
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="h6 text-gray-800 mt-3">Pilih tampilan:</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tampilan" id="bulanan" value="bulanan" checked>
+                            <label class="form-check-label text-gray-800" for="exampleRadios1">Bulanan</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tampilan" id="tahunan" value="tahunan">
+                            <label class="form-check-label text-gray-800" for="exampleRadios1">Tahunan</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div id="tahun-awal"class="h6 text-gray-800 mt-3">Dari tahun:</div>
+                                <div class="form-group mb-4">
+                                    <input required type="number" name="tahunAwal" class="form-control form-control-sm" value="<%= req.query.tahunAwal ?? '' %>">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="h6 text-gray-800 mt-3 tahun-akhir">Sampai tahun:</div>
+                                <div class="form-group mb-4 tahun-akhir">
+                                    <input required id="input-tahun-akhir" type="number" name="tahunAkhir" class="form-control form-control-sm" value="<%= req.query.tahunAkhir ?? '' %>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-8">
+                        <button type="submit" class="btn btn-primary btn-sm pull-right">Tampilkan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Grafik -->
+    <div>
+        <canvas id="ckp-keseluruhan" style="height: 25rem;"></canvas>
+    </div>
+
+</body>
+
+<script src="<%= baseUrl %>/vendor/jquery/jquery.min.js"></script>
+
+<script src="<%= baseUrl %>/vendor/chart.js/Chart.min.js"></script>
+
+<!-- pilih tampilan -->
+<script>
+    const tampilanQuery = "<%= req.query.tampilan %>".replace(/&#34;/g, '"');
+    if (tampilanQuery == 'tahunan') {
+        $('#tahunan').prop('checked', true);
+    } else {
+        $('#bulanan').prop('checked', true);
+    }
+
+    const tampilan = $("#form-tampilan input[name='tampilan']:checked").val();
+    if (tampilan == 'bulanan') {
+        $('.tahun-akhir').hide();
+        $('#tahun-awal').html('Pilih tahun:');
+        $('#input-tahun-akhir').prop('required', false);
+        $('#input-tahun-akhir').prop('name', '');
+    }
+
+    $("#form-tampilan input[name='tampilan']").on('change', function() {
+        if (this.value == 'bulanan') {
+            $('.tahun-akhir').hide();
+            $('#tahun-awal').html('Pilih tahun:');
+            $('#input-tahun-akhir').prop('required', false);
+            $('#input-tahun-akhir').prop('name', '');
+        } else {
+            $('.tahun-akhir').show();
+            $('#tahun-awal').html('Dari tahun:');
+            $('#input-tahun-akhir').prop('required', true);
+            $('#input-tahun-akhir').prop('name', 'tahunAkhir');
+        }
+    });
+</script>
+
+<!-- chartjs -->
+<script>
+    const tahunIni = new Date().getFullYear();
+
+    const tahunAwal = "<%= req.query.tahunAwal %>".replace(/&#34;/g, '"');
+    let tahun = tahunAwal;
+    if (tampilan == 'tahunan') {
+        const tahunAkhir = "<%= req.query.tahunAkhir %>".replace(/&#34;/g, '"');
+        tahun = `${tahunAwal}-${tahunAkhir}`;
+    }
+
+    const getCkpKeseluruhan = "<%= ckpKeseluruhan %>";
+    const ckpKeseluruhan = getCkpKeseluruhan.replace(/&#34;/g, '"');
+    const cData = JSON.parse(ckpKeseluruhan);
+    
+    const ctx = $('#ckp-keseluruhan');
+
+    const data = {
+        labels: cData.label,
+        datasets: [{
+            label: `CKP`,
+            data: cData.data,
+            // backgroundColor: ['#2364AA', '#3085C2','#3DA5D9', '#59C9BA', '#73BFB8', '#F0E3B4', '#A9DA5B', '#F0E356', '#FEC601','#F49D0C','#EA7317','#ED572D'],
+            fill: false,
+            borderColor: '#2364AA',
+            borderWidth: 3,
+            tension: 0.1,
+        }],
+    };
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    suggestedMin: 0,
+                    beginAtZero: true,
+                    steps: 10,
+                    stepValue: 5,
+                    max: 100
+                }
+            }]
+        },
+        title: {
+            display: true,
+            position: "top",
+            text: `Capaian Kinerja Pegawai Tahun ${tahun}  (%)`,
+            fontSize: 18,
+            fontColor: "#4C4C4C",
+        },
+        legend: {
+            display: false,
+        },
+        layout: {
+            padding: {
+                left: 10,
+                right: 25,
+                top: 0,
+                bottom: 0
+            }
+        },
+        tooltips: {
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+    };
+
+    const chart = new Chart(ctx, {
+        type: "line",
+        data: data,
+        options: options,
+    });
+</script>
+
+</html>
