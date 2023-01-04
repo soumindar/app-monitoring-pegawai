@@ -35,31 +35,48 @@
             </h1>
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-gray-800">Pilih Divisi:</h6>
-                    <form method="get" action="">
-                        <div class="row">
-                            <div class="col-lg-10">
-                                <select class="js-example-basic-single form-control" name="idDivisi">
-                                <% if (!req.query.idDivisi) { %>
-                                    <option selected>Pilih Divisi...</option>
-                                <% } %>
-                                <% divisi.forEach(divisi => { %>
-                                    <% if (req.query.idDivisi == divisi.id) { %>
-                                        <option selected value="<%= divisi.id %>"><%= divisi.divisi %></option>
-                                    <% } else { %>
-                                        <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
-                                    <% } %>
-                                <% }) %>
-                                </select>
-                            </div>
-                            <div class="col-lg-2">
-                                <button type="submit" class="btn btn-primary btn-sm">
-                                    <i class="fa fa-filter"></i>
-                                    Filter
-                                </button>
-                            </div>
-                        </div>                       
-                    </form>
+                    
+                    <div class="row mb-4">
+                        <div class="col-lg-12">
+                            <form method="get" action="">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <div class="text-gray-800">Cari pekerjaan:</div>
+                                            <input type="text" name="search" class="form-control" value="<%= req.query.search ?? '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2">
+                                        <div class="text-gray-800">Pilih divisi:</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <select class="js-example-basic-single form-control form-control-sm" name="idDivisi">
+                                                <option selected value="semua-divisi">Semua divisi</option>
+                                                <% divisi.forEach(divisi => { %>
+                                                    <% if (req.query.idDivisi == divisi.id) { %>
+                                                        <option selected value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                                                    <% } else { %>
+                                                        <option value="<%= divisi.id %>"><%= divisi.divisi %></option>
+                                                    <% } %>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2">
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Cari</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="table-responsive mt-5">
                         <table class="table table-bordered">
                             <thead>

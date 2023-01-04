@@ -7,7 +7,7 @@ const divisiService = require('../divisi/divisiService');
 // ambil data pekerjaan berdasarkan divisi
 const dataPekerjaanDivisi = async (req, res) => {
   try {
-    const { page, idDivisi } = req.query;
+    const { page, idDivisi, search } = req.query;
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
@@ -18,6 +18,17 @@ const dataPekerjaanDivisi = async (req, res) => {
       return {
         statusCode: 404,
       }
+    }
+
+    let whereObj =  {
+      idDivisi,
+      deleted: null,
+    };
+    if (search) {
+      whereObj.pekerjaan = {
+        contains: search,
+        mode: 'insensitive',
+      };
     }
 
     const data = await prisma.pekerjaan.findMany({
@@ -31,10 +42,7 @@ const dataPekerjaanDivisi = async (req, res) => {
         idLevel: true,
         idDivisi: true,
       },
-      where: {
-        idDivisi,
-        deleted: null,
-      },
+      where: whereObj,
       skip: offset,
       take: limit,
       orderBy: {
@@ -44,10 +52,7 @@ const dataPekerjaanDivisi = async (req, res) => {
 
     const countPekerjaan = await prisma.pekerjaan.aggregate({
       _count: { id: true },
-      where: {
-        idDivisi,
-        deleted: null,
-      },
+      where: whereObj,
     });
     const totalData = Number(countPekerjaan._count.id);
     const totalPage = Math.ceil(totalData / limit);
