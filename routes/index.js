@@ -7,7 +7,9 @@ const getBaseurl = require('../utils/getBaseUrl');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   const baseUrl = getBaseurl(req);
-  res.redirect(`${baseUrl}/admin/auth/login`);
+  return res.render('loginMenu', {
+    baseUrl,
+  });
 });
 
 router.use('/admin', adminController);

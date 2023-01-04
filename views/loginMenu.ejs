@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Monitoring Kinerja Pegawai - Login Pegawai</title>
+    <title>Monitoring Kinerja Pegawai</title>
 
     <!-- Custom fonts for this template-->
     <link href="<%= baseUrl %>/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -22,7 +22,7 @@
 
 </head>
 
-<body class="bg-gradient-info">
+<body class="bg-gradient-success">
 
     <div class="container mt-5">
 
@@ -41,39 +41,13 @@
                                 </h1>
                             </div>
                             <hr class="sidebar-divider">
-                            <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">Selamat Datang!</h1>
-                            </div>
-
-                            <% if (req.session.error) { %>
-                                <% req.session.error.forEach(error => { %>
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <%= error.msg %>
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    </div>
-                                <% }) %>
-                            <% } %>
-                            
-                            <% delete req.session.error; %>
-
-                            <form class="user" action="<%= baseUrl%>/user/auth/login" method="post">
-                                <div class="form-group">
-                                    <input required  name="username" type="text" class="form-control form-control-user"
-                                        placeholder="Username" value="<%= (req.session.old) ? req.session.old.username : '' %>">
-                                </div>
-                                <div class="form-group">
-                                    <input required  name="password" type="password" class="form-control form-control-user"
-                                        placeholder="Password">
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
-                                <a href="<%= baseUrl %>/" class="btn btn-primary btn-user btn-block">Kembali ke Menu Login</a>
+                            <form action="" class="user">
+                                <a href="<%= baseUrl %>/admin/auth/login" class="btn btn-primary btn-user btn-block"><i class="fa fa-cog"></i>  Login Admin</a>
+                                <a href="<%= baseUrl %>/user/auth/login" class="btn btn-primary btn-user btn-block"><i class="fa fa-user-circle"></i>  Login Pegawai</a>
                             </form>
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </div>
