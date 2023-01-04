@@ -131,4 +131,38 @@ router.get('/pegawai-terbaik', async (req, res) => {
   }
 });
 
+// pegawai dengan realisasi kosong
+router.get('/pegawai-realisasi-kosong', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await berandaService.pegawaiRealisasiKosong(req,res);
+    if (data.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/pegawai-realisasi-kosong`);
+    }
+    const divisi = await prisma.divisi.findMany({
+      select: {
+        id: true,
+        divisi: true,
+      },
+      where: { deleted: null },
+    });
+
+    return res.render('admin/beranda/pegawaiRealisasiKosong', {
+      baseUrl,
+      req,
+      divisi,
+      data: data.pegawai,
+      currentPage: data.currentPage,
+      totalPage: data.totalPage,
+    });
+  } catch (error) {
+    console.log(error.message)
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;

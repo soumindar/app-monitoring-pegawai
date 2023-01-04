@@ -174,20 +174,18 @@
     <div class="row mb-4">
         <!-- Pegawai Terbaik -->
         <div class="col-lg-6">
-            <div class="card h-100">
+            <div class="card border-left-info h-100">
                 <div class="card-body">
-                    <iframe src="<%= baseUrl %>/admin/pegawai-terbaik" class="embed-responsive-item" style="width: 100%;height: 110vh;position: relative;" frameborder="0"></iframe>
+                    <iframe src="<%= baseUrl %>/admin/pegawai-terbaik" class="embed-responsive-item" style="width: 100%;height: 70vh;position: relative;" frameborder="0"></iframe>
                 </div>
             </div>
         </div>
 
         <!-- Pegawai dengan Realisasi Kosong -->
         <div class="col-lg-6">
-            <div class="card">
+            <div class="card border-left-warning h-100">
                 <div class="card-body">
-                    <div class="h5 mb-3 text-gray-900 text-center">
-                        Pegawai dengan Realisasi Kosong <%= tahunIni %>
-                    </div>
+                    <iframe src="<%= baseUrl %>/admin/pegawai-realisasi-kosong" class="embed-responsive-item" style="width: 100%;height: 70vh;position: relative;" frameborder="0"></iframe>
                 </div>
             </div>
         </div>   

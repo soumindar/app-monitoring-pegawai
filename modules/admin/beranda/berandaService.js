@@ -367,10 +367,11 @@ const pegawaiTerbaik = async (req, res) => {
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
-
+    
     let pegawai;
     let getTotalData = 0;
     if (today < akhirTahun) {
+      
       let periodeTerakhir = Math.floor(today.getMonth() / 3) * 3;
       if (periodeTerakhir == 0) periodeTerakhir = 1;
       periodeTerakhir = toDateObj(new Date(tahun, periodeTerakhir - 1, 1));
@@ -470,8 +471,101 @@ const pegawaiTerbaik = async (req, res) => {
       totalPage,
     }
   } catch (error) {
-    console.log(error.message);
     const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+};
+
+// data pegawai dengan realisasi kosong
+const pegawaiRealisasiKosong = async (req, res) => {
+  try {
+    let { tahun, idDivisi } = req.query;
+    const { page } = req.query;
+    idDivisi = idDivisi ?? 'semua-divisi';
+    req.query.idDivisi = idDivisi;
+
+    const today = toDateObj(new Date());
+    tahun = tahun ?? today.getFullYear();
+    req.query.tahun = tahun;
+    const awalTahun = toDateObj(new Date(tahun, 0, 1));
+    const akhirTahun = toDateObj(new Date(tahun, 11, 31));
+
+    const currentPage = (Number(page) > 0) ? Number(page) : 1;
+    const limit = 10;
+    const offset = (currentPage - 1) * limit; 
+
+    let whereObj = {
+      aktivitas: {
+        some: {
+          realisasi: null,
+        },
+      },
+    };
+
+    if (idDivisi != 'semua-divisi') {
+      const divisiExist = await prisma.divisi.findFirst({
+        select: { id: true },
+        where: { id: idDivisi },
+      });
+      if (!divisiExist) {
+        req.session.error = [{ msg: 'ID divisi tidak ditemukan' }];
+        return {
+          statusCode: 404,
+        }
+      }
+      whereObj.idDivisi = idDivisi;
+    }
+
+    if (today < akhirTahun) {
+      whereObj.aktivitas.some.tglMulai = {
+        gte: awalTahun,
+        lte: today,
+      };
+      whereObj.aktivitas.some.tglSelesai = {
+        gte: awalTahun,
+        lte: today,
+      };
+    } else {
+      whereObj.aktivitas.some.tglMulai = {
+        gte: awalTahun,
+        lte: akhirTahun,
+      };
+      whereObj.aktivitas.some.tglSelesai = {
+        gte: awalTahun,
+        lte: akhirTahun,
+      };
+    }
+
+    const pegawai = await prisma.pegawai.findMany({
+      select: {
+        nama: true,
+        divisi: {
+          select: {
+            divisi: true,
+          }
+        }
+      },
+      where: whereObj,
+      skip: offset,
+      take: limit,
+      orderBy: {
+        nama: 'asc',
+      }
+    });
+
+    const totalData = pegawai.length;
+    const totalPage = Math.ceil(totalData / limit);
+
+    return {
+      statusCode: 200,
+      pegawai,
+      currentPage,
+      totalPage,
+    }
+  } catch (error) {
     return res.render('admin/error', {
       baseUrl,
       statusCode: 500,
@@ -485,4 +579,5 @@ module.exports = {
   ckpPerDivisi,
   ckpDivisi,
   pegawaiTerbaik,
+  pegawaiRealisasiKosong,
 };
