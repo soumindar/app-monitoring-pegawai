@@ -65,7 +65,7 @@ const dataLengkap = async (req, res) => {
 const dataIdPegawai = async (req, res) => {
   try {
     const { idPegawai } = req.params;
-    const { page } = req.query;
+    const { page, search } = req.query;
     let { tahun } = req.query;
 
     const today = toDateObj(new Date());
@@ -92,6 +92,27 @@ const dataIdPegawai = async (req, res) => {
       };
     }
 
+    let whereObj = {
+      idPegawai,
+      deleted: null,
+      tglMulai: {
+        gte: awalTahun,
+        lte: akhirTahun,
+      },
+      tglSelesai: {
+        gte: awalTahun,
+        lte: akhirTahun,
+      },
+    };
+    if (search) {
+      whereObj.pekerjaan = {
+        pekerjaan: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      };
+    }
+
     let data = await prisma.aktivitasPegawai.findMany({
       select: {
         id: true,
@@ -114,18 +135,7 @@ const dataIdPegawai = async (req, res) => {
           }
         },
       },
-      where: {
-        idPegawai,
-        deleted: null,
-        tglMulai: {
-          gte: awalTahun,
-          lte: akhirTahun,
-        },
-        tglSelesai: {
-          gte: awalTahun,
-          lte: akhirTahun,
-        },
-      },
+      where: whereObj,
       skip: offset,
       take: limit,
       orderBy: [
@@ -138,7 +148,12 @@ const dataIdPegawai = async (req, res) => {
       aktivitas.tglSelesai = toDateHtml(aktivitas.tglSelesai);
     });
 
-    const totalData = data.length;
+    const getTotalData = await prisma.aktivitasPegawai.aggregate({
+      _count: { id: true },
+      where: whereObj,
+    });
+
+    const totalData = getTotalData._count.id;
     const totalPage = Math.ceil(totalData / limit);
 
     return {

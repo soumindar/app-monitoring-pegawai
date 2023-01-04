@@ -38,17 +38,31 @@
                     
                     <a href="<%= baseUrl %>/admin/aktivitas/pegawai" class="btn btn-primary btn-sm mb-4"><i class="fa fa-arrow-left"></i><strong> Kembali</strong></a>
                     
-                    <div class="text-dark">Pilih tahun:</div>
-                      <div class="row">
-                        <div class="col-lg-3 mb-3">
-                          <form method="get" action="">
-                            <div class="form-group">
-                              <input required type="number" name="tahun" class="form-control" value="<%= req.query.tahun ?? '' %>">
-                            </div>
-                          </form>
-                        </div>
-                        <div class="col-lg-3">
-                          <button type="submit" class="btn btn-primary">Tampilkan</button>
+                    <div class="row mb-4">
+                        <div class="col-lg-12">
+                            <form method="get" action="">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <div class="text-gray-800">Cari pekerjaan:</div>
+                                            <input type="text" name="search" class="form-control" value="<%= req.query.search ?? '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <div class="text-dark">Pilih tahun:</div>
+                                            <input required type="number" name="tahun" class="form-control" value="<%= req.query.tahun ?? '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2">
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Cari</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
