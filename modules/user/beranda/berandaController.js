@@ -54,4 +54,27 @@ router.get('/grafik-ckp', async (req, res) => {
   }
 });
 
+// tabel realisasi kosong
+router.get('/realisasi-kosong', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await berandaService.realisasiKosong(req, res);
+
+    return res.render('user/beranda/realisasiKosong', {
+      baseUrl,
+      req,
+      data: data.aktivitas,
+      currentPage: data.currentPage,
+      totalPage: data.totalPage,
+    })
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('user/error', {
+      baseUrl,
+      req,
+      statusCode: 500,
+    });
+  }
+});
+
 module.exports = router;

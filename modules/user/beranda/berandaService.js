@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const getBaseUrl = require('../../../utils/getBaseUrl');
 const toDateObj = require('../../../utils/toDateObj');
+const toDateHtml = require('../../../utils/toDateHtml');
 
 // data pegawai di beranda
 const dataBeranda = async (req, res) => {
@@ -226,7 +227,99 @@ const dataCkp = async (req, res) => {
   }
 };
 
+// data realisasi kosong
+const realisasiKosong = async (req, res) => {
+  try {
+    const idPegawai = req.session.idPegawai;
+    let { tahun } = req.query;
+    const { page } = req.query;
+
+    const today = toDateObj(new Date());
+    tahun = tahun ?? today.getFullYear();
+    req.query.tahun = tahun;
+    const awalTahun = toDateObj(new Date(tahun, 0, 1));
+    const akhirTahun = toDateObj(new Date(tahun, 11, 31));
+
+    const currentPage = (Number(page) > 0) ? Number(page) : 1;
+    const limit = 10;
+    const offset = (currentPage - 1) * limit;
+
+    let whereObj = {
+      deleted: null,
+      idPegawai,
+      realisasi: null,
+    };
+
+    if (today < akhirTahun) {
+      whereObj.tglMulai = {
+        gte: awalTahun,
+        lte: today,
+      };
+      whereObj.tglSelesai = {
+        gte: awalTahun,
+        lte: today,
+      };
+    } else {
+      whereObj.tglMulai = {
+        gte: awalTahun,
+        lte: akhirTahun,
+      };
+      whereObj.tglSelesai = {
+        gte: awalTahun,
+        lte: akhirTahun,
+      };
+    }
+
+    let aktivitas = await prisma.aktivitasPegawai.findMany({
+      select: {
+        pekerjaan: {
+          select: {
+            pekerjaan: true,
+          }
+        },
+        tglMulai: true,
+        tglSelesai: true,
+      },
+      where: whereObj,
+      skip: offset,
+      take: limit,
+      orderBy: [
+        { tglSelesai: 'desc' },
+        { tglMulai: 'desc' },
+      ],
+    });
+
+    aktivitas.forEach(aktivitas => {
+      aktivitas.tglMulai = toDateHtml(aktivitas.tglMulai);
+      aktivitas.tglSelesai = toDateHtml(aktivitas.tglSelesai);
+    });
+
+    const getTotalData = await prisma.aktivitasPegawai.aggregate({
+      _count: { id: true },
+      where: whereObj,
+    });
+
+    const totalData = getTotalData._count.id;
+    const totalPage = Math.ceil(totalData / limit);
+
+    return {
+      statusCode: 200,
+      aktivitas,
+      currentPage,
+      totalPage,
+    }
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('user/error', {
+      baseUrl,
+      req,
+      statusCode: 500,
+    });
+  }
+};
+
 module.exports = {
   dataBeranda,
   dataCkp,
-}
+  realisasiKosong,
+};
