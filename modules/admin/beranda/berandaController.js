@@ -17,15 +17,13 @@ router.get('/', async (req, res) => {
   return res.render('admin/beranda/beranda', {
     baseUrl,
     req,
-    // divisi: data.divisi,
     jmlPegawai: data.jmlPegawai,
     jmlAktivitas: data.jmlAktivitas,
     progressCkp: data.progressCkp,
     realisasiKosong: data.realisasiKosong,
-    ckpKeseluruhan: JSON.stringify(data.ckpKeseluruhan),
+    periodeTerakhir: data.periodeTerakhir,
+    tahunIni: data.tahunIni,
     distribusiPegawai: JSON.stringify(data.distribusiPegawai),
-    progressCkpDivisi: JSON.stringify(data.progressCkpDivisi),
-    // pegawaiKosong: data.pegawaiKosong,
   });
 });
 
@@ -90,6 +88,39 @@ router.get('/grafik-ckp-divisi', async (req, res) => {
       divisi,
       namaDivisi: data.namaDivisi,
       ckpDivisi: JSON.stringify(data.ckpDivisi),
+    });
+  } catch (error) {
+    const baseUrl = getBaseUrl(req);
+    return res.render('admin/error', {
+      baseUrl,
+      statusCode: 500,
+    });
+  }
+});
+
+// pegawai terbaik
+router.get('/pegawai-terbaik', async (req, res) => {
+  try {
+    const baseUrl = getBaseUrl(req);
+    const data = await berandaService.pegawaiTerbaik(req,res);
+    if (data.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/pegawai-terbaik`);
+    }
+    const divisi = await prisma.divisi.findMany({
+      select: {
+        id: true,
+        divisi: true,
+      },
+      where: { deleted: null },
+    });
+
+    return res.render('admin/beranda/pegawaiTerbaik', {
+      baseUrl,
+      req,
+      divisi,
+      data: data.pegawai,
+      currentPage: data.currentPage,
+      totalPage: data.totalPage,
     });
   } catch (error) {
     const baseUrl = getBaseUrl(req);
