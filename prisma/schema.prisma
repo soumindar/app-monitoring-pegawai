@@ -21,7 +21,7 @@ model Admin {
 }
 
 model Jabatan {
-  id          String     @id @default(uuid())
+  id          String      @id @default(uuid())
   jabatan     String
   keterangan  String
   createdAt   DateTime    @default(now())
@@ -31,7 +31,7 @@ model Jabatan {
 }
 
 model Divisi {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   divisi        String
   keterangan    String
   createdAt     DateTime    @default(now())
@@ -65,7 +65,7 @@ model Pegawai {
 }
 
 model Level {
-  id           String     @id @default(uuid())
+  id           String       @id @default(uuid())
   level        String
   pengali      Float
   createdAt    DateTime    @default(now())
@@ -75,7 +75,7 @@ model Level {
 }
 
 model Pekerjaan {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   pekerjaan     String
   durasi        Int
   target        Float
@@ -91,7 +91,7 @@ model Pekerjaan {
 }
 
 model AktivitasPegawai {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   idPegawai     String
   idPekerjaan   String
   tglMulai      DateTime    @db.Date
@@ -100,64 +100,64 @@ model AktivitasPegawai {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
-  pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
-  pekerjaan     Pekerjaan @relation(fields: [idPekerjaan], references: [id])
+  pegawai       Pegawai     @relation(fields: [idPegawai], references: [id])
+  pekerjaan     Pekerjaan   @relation(fields: [idPekerjaan], references: [id])
 }
 
 model ckpTahunanPegawai {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   idPegawai     String
   ckp           Float?
   tahun         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
-  pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
+  pegawai       Pegawai     @relation(fields: [idPegawai], references: [id])
 
   @@unique([idPegawai, tahun])
 }
 
 model ckpBulananPegawai {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   idPegawai     String
   ckp           Float?
   bulan         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
-  pegawai       Pegawai   @relation(fields: [idPegawai], references: [id])
+  pegawai       Pegawai     @relation(fields: [idPegawai], references: [id])
 
   @@unique([idPegawai, bulan])
 }
 
 model ckpTahunanDivisi {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   idDivisi      String
   ckp           Float?
   tahun         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
-  Divisi        Divisi   @relation(fields: [idDivisi], references: [id])
+  Divisi        Divisi      @relation(fields: [idDivisi], references: [id])
 
   @@unique([idDivisi, tahun])
 }
 
 model ckpBulananDivisi {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   idDivisi      String
   ckp           Float?
   bulan         DateTime    @db.Date
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
   deleted       DateTime?
-  Divisi        Divisi   @relation(fields: [idDivisi], references: [id])
+  Divisi        Divisi      @relation(fields: [idDivisi], references: [id])
 
   @@unique([idDivisi, bulan])
 }
 
 model ckpTahunanKeseluruhan {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   ckp           Float?
   tahun         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
@@ -166,7 +166,7 @@ model ckpTahunanKeseluruhan {
 }
 
 model ckpBulananKeseluruhan {
-  id            String     @id @default(uuid())
+  id            String      @id @default(uuid())
   ckp           Float?
   bulan         DateTime    @db.Date @unique
   createdAt     DateTime    @default(now())
