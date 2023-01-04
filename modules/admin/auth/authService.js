@@ -7,7 +7,7 @@ const getBaseUrl = require('../../../utils/getBaseUrl');
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-
+    
     const adminExist = await prisma.admin.findFirst({
       select: {
         id: true,
