@@ -31,20 +31,26 @@ const dataLengkap = async (req, res) => {
 // ambil data divisi dengan pagination
 const dataPagination = async (req, res) => {
   try {
-    const { page } = req.query;
+    const { page, search } = req.query;
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
     
+    let whereObj =  { deleted: null };
+    if (search) {
+      whereObj.divisi = {
+        contains: search,
+        mode: 'insensitive',
+      };
+    }
+
     let data = await prisma.divisi.findMany({
       select: {
         id: true,
         divisi: true,
         keterangan: true,
       },
-      where: {
-        deleted: null,
-      },
+      where: whereObj,
       skip: offset,
       take: limit,
       orderBy: {
@@ -54,6 +60,7 @@ const dataPagination = async (req, res) => {
 
     const countDivisi = await prisma.divisi.aggregate({
       _count: { id: true },
+      where: whereObj,
     });
     const totalData = Number(countDivisi._count.id);
     const totalPage = Math.ceil(totalData / limit);
