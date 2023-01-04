@@ -49,10 +49,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% let i = 1 %>
+                                <% let i = 1 + ((currentPage - 1)* 10) %>
                                 <% data.forEach(pegawai => { %>
                                     <tr>
-                                        <td><%= i++ %></td>
+                                        <td><%= i++ %>.</td>
                                         <td><%= pegawai.nip %></td>
                                         <td><%= pegawai.nama %></td>
                                         <% jabatan.forEach(jabatan => { %>

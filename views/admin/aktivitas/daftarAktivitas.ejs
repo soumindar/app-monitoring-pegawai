@@ -69,10 +69,10 @@
                             </thead>
                             <tbody>
                                 <% if (data.length > 0) { %>
-                                    <% let i = 1 %>
+                                    <% let i = 1 + ((currentPage - 1)* 10) %>
                                     <% data.forEach(aktivitas => { %>
                                         <tr>
-                                            <td><%= i++ %></td>
+                                            <td><%= i++ %>.</td>
                                             <td><%= aktivitas.pekerjaan.pekerjaan %></td>
                                             <td><%= aktivitas.tglMulai %></td>
                                             <td><%= aktivitas.tglSelesai %></td>
