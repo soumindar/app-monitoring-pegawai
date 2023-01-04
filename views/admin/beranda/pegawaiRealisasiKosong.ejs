@@ -89,8 +89,7 @@
                         <tr>
                             <th width="2%">No.</th>
                             <th>Nama</th>
-                            <th width="15%">Divisi</th>
-                            <th width="20%">Detail</th>
+                            <th width="20%">Divisi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,14 +100,11 @@
                                     <td><%= i++ %>.</td>
                                     <td><%= pegawai.nama %></td>
                                     <td><%= pegawai.divisi.divisi %></td>
-                                    <td>
-                                        <a href="" data-toggle="tooltip" data-placement="top" title="Lihat detail" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></a>
-                                    </td>
                                 </tr>
                             <% }) %>
                         <% } else { %>
                             <tr>
-                                <td colspan="4" class="text-center">Tidak ada data</td>
+                                <td colspan="4" class="text-center">Tidak ada realisasi kosong</td>
                             </tr>
                         <% } %>
                     </tbody>
