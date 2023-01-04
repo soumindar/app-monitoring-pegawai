@@ -299,7 +299,6 @@ const tambahRealisasi = async (req, res) => {
       idPegawai: aktivitasExist.idPegawai,
     };
   } catch (error) {
-    console.log(error.message)
     const baseUrl = getBaseUrl(req);
     return res.render('user/error', {
       baseUrl,

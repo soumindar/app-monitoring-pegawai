@@ -633,7 +633,6 @@ const realisasiKosong = async (req, res) => {
       totalPage,
     }
   } catch (error) {
-    console.log(error.message)
     const baseUrl = getBaseUrl(req);
     return res.render('user/error', {
       baseUrl,

@@ -11,7 +11,7 @@ router.use(sessionVerify);
 // home page admin
 router.get('/', async (req, res) => {
   const baseUrl = getBaseUrl(req);
-  console.log(req.query);
+  
   const data = await berandaService.dataBeranda(req, res);
 
   return res.render('admin/beranda/beranda', {
@@ -156,7 +156,6 @@ router.get('/pegawai-realisasi-kosong', async (req, res) => {
       totalPage: data.totalPage,
     });
   } catch (error) {
-    console.log(error.message)
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,

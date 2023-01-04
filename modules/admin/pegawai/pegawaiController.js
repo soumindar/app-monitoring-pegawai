@@ -260,7 +260,6 @@ router.get('/realisasi-kosong/:idPegawai', async (req, res) => {
       totalPage: data.totalPage,
     })
   } catch (error) {
-    console.log(error.message)
     const baseUrl = getBaseUrl(req);
     return res.render('admin/error', {
       baseUrl,
