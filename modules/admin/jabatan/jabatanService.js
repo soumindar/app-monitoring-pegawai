@@ -31,20 +31,26 @@ const dataLengkap = async (req, res) => {
 // ambil data jabatan dengan pagination
 const dataPagination = async (req, res) => {
   try {
-    const { page } = req.query;
+    const { page, search } = req.query;
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
     
+    let whereObj =  { deleted: null };
+    if (search) {
+      whereObj.jabatan = {
+        contains: search,
+        mode: 'insensitive',
+      };
+    }
+
     let data = await prisma.jabatan.findMany({
       select: {
         id: true,
         jabatan: true,
         keterangan: true,
       },
-      where: {
-        deleted: null,
-      },
+      where: whereObj,
       skip: offset,
       take: limit,
       orderBy: {
