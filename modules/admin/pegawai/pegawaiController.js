@@ -17,6 +17,10 @@ router.get('/daftar', async (req, res) => {
     const jabatan = await jabatanService.dataLengkap(req, res);
     const divisi = await divisiService.dataLengkap(req, res);
 
+    if (pegawai.statusCode > 200) {
+      return res.redirect(`${baseUrl}/admin/pegawai/daftar`);
+    }
+    
     return res.render('admin/pegawai/daftarPegawai', {
       baseUrl,
       req,

@@ -8,10 +8,36 @@ const toDateHtml = require('../../../utils/toDateHtml');
 // ambil data pegawai
 const dataPegawai = async (req, res) => {
   try {
-    const { page } = req.query;
+    const { page, search } = req.query;
+    let { idDivisi } = req.query;
+    idDivisi = idDivisi ?? 'semua-divisi';
+    req.query.idDivisi = idDivisi;
+
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
+    
+    let whereObj =  { deleted: null };
+    if (search) {
+      whereObj.nama = {
+        contains: search,
+        mode: 'insensitive',
+      };
+    }
+
+    if (idDivisi != 'semua-divisi') {
+      const divisiExist = await prisma.divisi.findFirst({
+        select: { id: true },
+        where: { id: idDivisi },
+      });
+      if (!divisiExist) {
+        req.session.error = [{ msg: 'ID divisi tidak ditemukan' }];
+        return {
+          statusCode: 404,
+        }
+      }
+      whereObj.idDivisi = idDivisi;
+    }
     
     let data = await prisma.pegawai.findMany({
       select: {
@@ -27,9 +53,7 @@ const dataPegawai = async (req, res) => {
           select: { divisi: true },
         },
       },
-      where: {
-        deleted: null,
-      },
+      where: whereObj,
       skip: offset,
       take: limit,
       orderBy: {
@@ -39,6 +63,7 @@ const dataPegawai = async (req, res) => {
 
     const countPegawai = await prisma.pegawai.aggregate({
       _count: { id: true },
+      where: whereObj,
     });
     const totalData = Number(countPegawai._count.id);
     const totalPage = Math.ceil(totalData / limit);
