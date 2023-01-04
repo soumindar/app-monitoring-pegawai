@@ -60,6 +60,7 @@ const dataPagination = async (req, res) => {
 
     const countJabatan = await prisma.jabatan.aggregate({
       _count: { id: true },
+      where: whereObj,
     });
     const totalData = Number(countJabatan._count.id);
     const totalPage = Math.ceil(totalData / limit);
