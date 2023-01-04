@@ -268,7 +268,7 @@ const tambahRealisasi = async (req, res) => {
       where: { id: idAktivitas },
     });
 
-    req.body.tahun = tglSelesai.getFullYear();
+    req.body.tahun = aktivitasExist.tglSelesai.getFullYear();
     const updateCkpKeseluruhan = ckpKeseluruhanService.tambahCkp(req, res);
     if (updateCkpKeseluruhan.statusCode > 200) {
       req.session.error = [{ msg: 'Maaf, terjadi kesalahan ketika memperbarui CKP keseluruhan'}];
@@ -299,6 +299,7 @@ const tambahRealisasi = async (req, res) => {
       idPegawai: aktivitasExist.idPegawai,
     };
   } catch (error) {
+    console.log(error.message)
     const baseUrl = getBaseUrl(req);
     return res.render('user/error', {
       baseUrl,
