@@ -11,10 +11,18 @@ const ckpPegawaiService = require('../ckp/ckpService');
 const dataIdPegawai = async (req, res) => {
   try {
     const { idPegawai } = req.params;
-    const { page } = req.query;
+    const { page, search } = req.query;
+    let { tahun } = req.query;
+
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
+
+    const today = toDateObj(new Date());
+    tahun = tahun ?? today.getFullYear();
+    req.query.tahun = tahun;
+    const awalTahun = toDateObj(new Date(`${tahun}-01-01`));
+    const akhirTahun = toDateObj(new Date(`${tahun}-12-31`));
 
     const pegawaiExist = await prisma.pegawai.findFirst({
       select: { id: true },
@@ -30,6 +38,27 @@ const dataIdPegawai = async (req, res) => {
       };
     }
 
+    let whereObj = {
+      idPegawai,
+      deleted: null,
+      tglMulai: {
+        gte: awalTahun,
+        lte: akhirTahun,
+      },
+      tglSelesai: {
+        gte: awalTahun,
+        lte: akhirTahun,
+      },
+    };
+    if (search) {
+      whereObj.pekerjaan = {
+        pekerjaan: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      };
+    }
+
     let data = await prisma.aktivitasPegawai.findMany({
       select: {
         id: true,
@@ -40,10 +69,7 @@ const dataIdPegawai = async (req, res) => {
         realisasi: true,
         pekerjaan: true,
       },
-      where: {
-        idPegawai,
-        deleted: null,
-      },
+      where: whereObj,
       skip: offset,
       take: limit,
       orderBy: [
@@ -58,10 +84,7 @@ const dataIdPegawai = async (req, res) => {
 
     const countAktivitas = await prisma.aktivitasPegawai.aggregate({
       _count: { id: true },
-      where: {
-        idPegawai,
-        deleted: null,
-      },
+      where: whereObj,
     });
     const totalData = Number(countAktivitas._count.id);
     const totalPage = Math.ceil(totalData / limit);
