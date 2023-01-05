@@ -5,7 +5,7 @@ const getBaseUrl = require('../../../utils/getBaseUrl');
 const sessionVerify = async (req, res, next) => {
   try {
     const baseUrl = getBaseUrl(req);
-
+    
     if (!req.session.adminId) {
       req.session.error = [{ msg: 'Harap login terlebih dahulu!' }];
       return res.redirect(`${baseUrl}/admin/auth/login`);
