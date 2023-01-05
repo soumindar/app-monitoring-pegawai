@@ -23,10 +23,11 @@ router.get('/daftar/:id', async (req, res) => {
     let data = [];
     let currentPage = 1;
     let totalPage = 1;
-
+    let divisi;
     const pekerjaan = await pekerjaanService.dataPekerjaanDivisi(req, res);
     if (pekerjaan.statusCode == 200) {
       data = pekerjaan.data;
+      divisi = pekerjaan.divisi;
       currentPage = pekerjaan.currentPage;
       totalPage = pekerjaan.totalPage;
     }
@@ -34,6 +35,7 @@ router.get('/daftar/:id', async (req, res) => {
     return res.render('user/pekerjaan/daftarPekerjaan', {
       baseUrl,
       req,
+      divisi,
       data,
       currentPage,
       totalPage,

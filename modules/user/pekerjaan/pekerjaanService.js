@@ -5,19 +5,30 @@ const getBaseUrl = require('../../../utils/getBaseUrl');
 // ambil data pekerjaan berdasarkan divisi
 const dataPekerjaanDivisi = async (req, res) => {
   try {
-    const { page, idDivisi } = req.query;
+    const { page, idDivisi, search } = req.query;
     const currentPage = (Number(page) > 0) ? Number(page) : 1;
     const limit = 10;
     const offset = (currentPage - 1) * limit;
     
-    const dataDivisi = await prisma.divisi.findFirst({
-      select: { id: true },
+    let whereObj = {
+      idDivisi,
+      deleted: null,
+    };
+    if (search) {
+      whereObj.pekerjaan = {
+        contains: search,
+        mode: 'insensitive',
+      };
+    }
+    
+    const divisiExist = await prisma.divisi.findFirst({
+      select: { divisi: true },
       where: {
         id: idDivisi,
         deleted: null,
       },
     });
-    if (!dataDivisi) {
+    if (!divisiExist) {
       req.session.error = [{msg: 'Divisi tidak ditemukan'}];
       return {
         statusCode: 404,
@@ -34,13 +45,8 @@ const dataPekerjaanDivisi = async (req, res) => {
         target: true,
         idLevel: true,
         level: true,
-        idDivisi: true,
-        divisi: true,
       },
-      where: {
-        idDivisi,
-        deleted: null,
-      },
+      where: whereObj,
       skip: offset,
       take: limit,
       orderBy: {
@@ -50,16 +56,14 @@ const dataPekerjaanDivisi = async (req, res) => {
 
     const countPekerjaan = await prisma.pekerjaan.aggregate({
       _count: { id: true },
-      where: {
-        idDivisi,
-        deleted: null,
-      },
+      where: whereObj,
     });
     const totalData = Number(countPekerjaan._count.id);
     const totalPage = Math.ceil(totalData / limit);
 
     return {
       statusCode: 200,
+      divisi: divisiExist.divisi,
       data,
       currentPage,
       totalData,

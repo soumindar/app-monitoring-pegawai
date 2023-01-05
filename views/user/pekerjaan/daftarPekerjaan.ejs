@@ -31,10 +31,33 @@
     <div class="row">
         <div class="container-fluid">
             <h1 class="h1 mb-3 text-gray-800">
-                Daftar Pekerjaan Divisi <%= data[0].divisi.divisi %>
+                Daftar Pekerjaan Divisi <%= divisi %>
             </h1>
             <div class="card">
                 <div class="card-body">
+
+                    <div class="row mb-4">
+                        <div class="col-lg-12">
+                            <form method="get" action="">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="text-gray-800">Cari pekerjaan:</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <input type="text" name="search" class="form-control" value="<%= req.query.search ?? '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Cari</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="table-responsive mt-0">
                         <table class="table table-bordered">
                             <thead>
